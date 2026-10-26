@@ -1,0 +1,276 @@
+﻿yer_id,ulke,sehir,yer_adi,kategori,onerilen_sure,inceleme_durumu
+78,Almanya,Berlin,Berlin Duvarı Anıtı,tarih,90,TAHMIN
+76,Almanya,Berlin,Brandenburg Kapısı,tarih,90,TAHMIN
+79,Almanya,Berlin,East Side Gallery,tarih,90,TAHMIN
+83,Almanya,Berlin,Kreuzberg,gece_hayati,120,TAHMIN
+84,Almanya,Berlin,Markthalle Neun,yemek,60,TAHMIN
+80,Almanya,Berlin,Müze Adası,tarih,90,INCELE
+77,Almanya,Berlin,Reichstag Binası,tarih,90,TAHMIN
+82,Almanya,Berlin,Tempelhofer Feld,doğa,120,TAHMIN
+81,Almanya,Berlin,Tiergarten,doğa,120,TAHMIN
+95,Almanya,Dresden,Frauenkirche,tarih,90,TAHMIN
+96,Almanya,Dresden,Zwinger Sarayı,tarih,90,TAHMIN
+99,Almanya,Frankfurt,Palmengarten,doğa,120,TAHMIN
+98,Almanya,Frankfurt,Römerberg,tarih,90,TAHMIN
+89,Almanya,Hamburg,Elbphilharmonie,tarih,90,TAHMIN
+91,Almanya,Hamburg,Planten un Blomen,doğa,120,TAHMIN
+92,Almanya,Hamburg,Reeperbahn,gece_hayati,120,TAHMIN
+90,Almanya,Hamburg,Speicherstadt,tarih,90,TAHMIN
+97,Almanya,Heidelberg,Heidelberg Kalesi,tarih,90,TAHMIN
+94,Almanya,Köln,Hohenzollern Köprüsü,tarih,90,TAHMIN
+93,Almanya,Köln,Köln Katedrali,tarih,90,TAHMIN
+86,Almanya,Münih,Englischer Garten,doğa,120,TAHMIN
+85,Almanya,Münih,Marienplatz,tarih,90,TAHMIN
+87,Almanya,Münih,Nymphenburg Sarayı,tarih,90,TAHMIN
+88,Almanya,Münih,Viktualienmarkt,yemek,60,TAHMIN
+100,Almanya,Potsdam,Sanssouci Sarayı,tarih,90,TAHMIN
+273,Avusturya,Graz,Kunsthaus Graz,tarih,90,TAHMIN
+272,Avusturya,Graz,Schlossberg,doğa,120,TAHMIN
+271,Avusturya,Hallstatt,Hallstatt Eski Şehir,tarih,90,TAHMIN
+270,Avusturya,Hallstatt,Hallstatt Gölü,doğa,120,INCELE
+267,Avusturya,Innsbruck,Altın Çatı,tarih,90,TAHMIN
+268,Avusturya,Innsbruck,Bergisel Kayakla Atlama Tepesi,doğa,120,TAHMIN
+269,Avusturya,Innsbruck,Nordkette,doğa,120,TAHMIN
+274,Avusturya,Linz,Ars Electronica Center,tarih,90,TAHMIN
+265,Avusturya,Salzburg,Getreidegasse,yemek,60,TAHMIN
+266,Avusturya,Salzburg,Hellbrunn Sarayı,tarih,90,TAHMIN
+262,Avusturya,Salzburg,Hohensalzburg Kalesi,tarih,90,TAHMIN
+263,Avusturya,Salzburg,Mirabell Sarayı ve Bahçeleri,doğa,120,TAHMIN
+264,Avusturya,Salzburg,Mozart'ın Doğduğu Ev,tarih,90,TAHMIN
+253,Avusturya,Viyana,Aziz Stefan Katedrali,tarih,90,TAHMIN
+252,Avusturya,Viyana,Belvedere Sarayı,tarih,90,TAHMIN
+261,Avusturya,Viyana,Donauinsel,doğa,120,TAHMIN
+260,Avusturya,Viyana,Graben,yemek,60,TAHMIN
+254,Avusturya,Viyana,Hofburg Sarayı,tarih,90,TAHMIN
+259,Avusturya,Viyana,MuseumsQuartier,tarih,90,INCELE
+257,Avusturya,Viyana,Naschmarkt,yemek,60,TAHMIN
+256,Avusturya,Viyana,Prater,gece_hayati,120,TAHMIN
+251,Avusturya,Viyana,Schönbrunn Sarayı,tarih,90,TAHMIN
+258,Avusturya,Viyana,Stadtpark,doğa,120,TAHMIN
+255,Avusturya,Viyana,Viyana Devlet Operası,tarih,90,TAHMIN
+275,Avusturya,Wachau,Melk Manastırı,tarih,90,TAHMIN
+120,Belçika,Anvers,Anvers Merkez İstasyonu,tarih,90,TAHMIN
+119,Belçika,Anvers,Grote Markt,tarih,90,TAHMIN
+121,Belçika,Anvers,MAS Müzesi,tarih,90,INCELE
+122,Belçika,Anvers,Meir Caddesi,yemek,60,TAHMIN
+114,Belçika,Brugge,Begijnhof,tarih,90,TAHMIN
+111,Belçika,Brugge,Belfort Kulesi,tarih,90,TAHMIN
+110,Belçika,Brugge,Brugge Markt Meydanı,tarih,90,TAHMIN
+112,Belçika,Brugge,Minnewater Parkı,doğa,120,TAHMIN
+113,Belçika,Brugge,Rozenhoedkaai,tarih,90,TAHMIN
+102,Belçika,Brüksel,Atomium,tarih,90,TAHMIN
+105,Belçika,Brüksel,Cinquantenaire Parkı,doğa,120,TAHMIN
+101,Belçika,Brüksel,Grand-Place,tarih,90,TAHMIN
+104,Belçika,Brüksel,Kraliyet Galerileri Saint-Hubert,yemek,60,TAHMIN
+107,Belçika,Brüksel,Magritte Müzesi,tarih,90,INCELE
+103,Belçika,Brüksel,Manneken Pis,tarih,90,TAHMIN
+106,Belçika,Brüksel,Mont des Arts,tarih,90,TAHMIN
+109,Belçika,Brüksel,Place Saint-Géry,gece_hayati,120,TAHMIN
+108,Belçika,Brüksel,Sablon Meydanı,yemek,60,TAHMIN
+124,Belçika,Dinant,Dinant Kalesi,tarih,90,TAHMIN
+116,Belçika,Gent,Graslei ve Korenlei,tarih,90,TAHMIN
+115,Belçika,Gent,Gravensteen Kalesi,tarih,90,TAHMIN
+118,Belçika,Gent,Patershol,yemek,60,TAHMIN
+117,Belçika,Gent,Saint Bavo Katedrali,tarih,90,TAHMIN
+123,Belçika,Leuven,Grote Markt,tarih,90,TAHMIN
+125,Belçika,Namur,Namur Kalesi,tarih,90,TAHMIN
+50,Fransa,Bordeaux,Place de la Bourse,tarih,90,TAHMIN
+44,Fransa,Lyon,Les Halles de Lyon Paul Bocuse,yemek,60,TAHMIN
+45,Fransa,Lyon,Parc de la Tête d'Or,doğa,120,TAHMIN
+43,Fransa,Lyon,Vieux Lyon,tarih,90,TAHMIN
+48,Fransa,Marsilya,Calanques Ulusal Parkı,doğa,120,TAHMIN
+47,Fransa,Marsilya,Notre-Dame de la Garde,tarih,90,TAHMIN
+46,Fransa,Marsilya,Vieux-Port,yemek,60,TAHMIN
+41,Fransa,Nice,Colline du Château,doğa,120,TAHMIN
+42,Fransa,Nice,Cours Saleya Pazarı,yemek,60,TAHMIN
+40,Fransa,Nice,Promenade des Anglais,doğa,120,TAHMIN
+26,Fransa,Paris,Eyfel Kulesi,tarih,90,TAHMIN
+36,Fransa,Paris,Latin Mahallesi,gece_hayati,120,TAHMIN
+35,Fransa,Paris,Le Marais,yemek,60,TAHMIN
+27,Fransa,Paris,Louvre Müzesi,tarih,90,INCELE
+31,Fransa,Paris,Lüksemburg Bahçesi,doğa,120,TAHMIN
+29,Fransa,Paris,Montmartre,tarih,90,TAHMIN
+28,Fransa,Paris,Notre-Dame Katedrali,tarih,90,TAHMIN
+34,Fransa,Paris,Orsay Müzesi,tarih,90,INCELE
+37,Fransa,Paris,Père Lachaise Mezarlığı,tarih,90,TAHMIN
+30,Fransa,Paris,Sacré-Cœur Bazilikası,tarih,90,TAHMIN
+33,Fransa,Paris,Sainte-Chapelle,tarih,90,TAHMIN
+32,Fransa,Paris,Tuileries Bahçesi,doğa,120,TAHMIN
+49,Fransa,Strazburg,Petite France,tarih,90,TAHMIN
+38,Fransa,Versay,Versay Sarayı,tarih,90,TAHMIN
+39,Fransa,Versay,Versay Sarayı Bahçeleri,doğa,120,TAHMIN
+135,Hollanda,Amsterdam,A'DAM Lookout,gece_hayati,120,TAHMIN
+132,Hollanda,Amsterdam,Albert Cuyp Pazarı,yemek,60,TAHMIN
+128,Hollanda,Amsterdam,Anne Frank Evi,tarih,90,TAHMIN
+129,Hollanda,Amsterdam,Dam Meydanı,tarih,90,TAHMIN
+133,Hollanda,Amsterdam,De Pijp,gece_hayati,120,TAHMIN
+131,Hollanda,Amsterdam,Jordaan,yemek,60,TAHMIN
+134,Hollanda,Amsterdam,NEMO Bilim Müzesi,tarih,90,INCELE
+126,Hollanda,Amsterdam,Rijksmuseum,tarih,90,INCELE
+127,Hollanda,Amsterdam,Van Gogh Müzesi,tarih,90,INCELE
+130,Hollanda,Amsterdam,Vondelpark,doğa,120,TAHMIN
+147,Hollanda,Delft,Delft Markt,tarih,90,TAHMIN
+146,Hollanda,Haarlem,Frans Hals Müzesi,tarih,90,INCELE
+145,Hollanda,Haarlem,Grote Markt,tarih,90,TAHMIN
+141,Hollanda,Lahey,Binnenhof,tarih,90,TAHMIN
+140,Hollanda,Lahey,Mauritshuis,tarih,90,TAHMIN
+142,Hollanda,Lahey,Scheveningen Plajı,doğa,120,TAHMIN
+148,Hollanda,Leiden,Hortus Botanicus,doğa,120,TAHMIN
+149,Hollanda,Lisse,Keukenhof Bahçeleri,doğa,120,TAHMIN
+138,Hollanda,Rotterdam,Erasmus Köprüsü,tarih,90,TAHMIN
+137,Hollanda,Rotterdam,Küp Evler,tarih,90,TAHMIN
+136,Hollanda,Rotterdam,Markthal,yemek,60,TAHMIN
+139,Hollanda,Rotterdam,Museumpark,doğa,120,INCELE
+143,Hollanda,Utrecht,Dom Kulesi,tarih,90,TAHMIN
+144,Hollanda,Utrecht,Oudegracht,yemek,60,TAHMIN
+150,Hollanda,Zaandam,Zaanse Schans,tarih,90,TAHMIN
+206,İspanya,Barselona,Barceloneta Plajı,doğa,120,TAHMIN
+203,İspanya,Barselona,Casa Batlló,tarih,90,TAHMIN
+208,İspanya,Barselona,El Born,gece_hayati,120,TAHMIN
+207,İspanya,Barselona,Gotik Mahalle,tarih,90,TAHMIN
+205,İspanya,Barselona,La Boqueria Pazarı,yemek,60,TAHMIN
+204,İspanya,Barselona,La Pedrera,tarih,90,TAHMIN
+202,İspanya,Barselona,Park Güell,tarih,90,TAHMIN
+201,İspanya,Barselona,Sagrada Família,tarih,90,TAHMIN
+225,İspanya,Bilbao,Guggenheim Müzesi,tarih,90,INCELE
+220,İspanya,Granada,Albaicín,tarih,90,TAHMIN
+219,İspanya,Granada,Elhamra Sarayı,tarih,90,TAHMIN
+210,İspanya,Madrid,Kraliyet Sarayı,tarih,90,TAHMIN
+214,İspanya,Madrid,Malasaña,gece_hayati,120,TAHMIN
+213,İspanya,Madrid,Mercado de San Miguel,yemek,60,TAHMIN
+212,İspanya,Madrid,Plaza Mayor,tarih,90,TAHMIN
+209,İspanya,Madrid,Prado Müzesi,tarih,90,INCELE
+211,İspanya,Madrid,Retiro Parkı,doğa,120,TAHMIN
+224,İspanya,Málaga,Alcazaba,tarih,90,TAHMIN
+217,İspanya,Sevilla,Plaza de España,tarih,90,TAHMIN
+215,İspanya,Sevilla,Sevilla Alcázar Sarayı,tarih,90,TAHMIN
+216,İspanya,Sevilla,Sevilla Katedrali,tarih,90,TAHMIN
+218,İspanya,Sevilla,Triana,yemek,60,TAHMIN
+221,İspanya,Valensiya,Bilim ve Sanat Şehri,tarih,90,TAHMIN
+223,İspanya,Valensiya,Merkez Pazarı,yemek,60,TAHMIN
+222,İspanya,Valensiya,Turia Bahçeleri,doğa,120,TAHMIN
+167,İsviçre,Bern,Bern Eski Şehir,tarih,90,TAHMIN
+168,İsviçre,Bern,Gül Bahçesi,doğa,120,TAHMIN
+166,İsviçre,Bern,Zytglogge Saat Kulesi,tarih,90,TAHMIN
+170,İsviçre,Cenevre,Cenevre Gölü Kıyısı,doğa,120,INCELE
+169,İsviçre,Cenevre,Jet d'Eau,doğa,120,TAHMIN
+171,İsviçre,Cenevre,Saint-Pierre Katedrali,tarih,90,TAHMIN
+163,İsviçre,Grindelwald,Bachalpsee,doğa,120,TAHMIN
+162,İsviçre,Grindelwald,First Cliff Walk,doğa,120,TAHMIN
+160,İsviçre,Interlaken,Harder Kulm,doğa,120,TAHMIN
+161,İsviçre,Interlaken,Höhematte Parkı,doğa,120,TAHMIN
+164,İsviçre,Lauterbrunnen,Staubbach Şelalesi,doğa,120,TAHMIN
+165,İsviçre,Lauterbrunnen,Trümmelbach Şelaleleri,doğa,120,TAHMIN
+172,İsviçre,Lozan,Olimpiyat Müzesi,tarih,90,INCELE
+157,İsviçre,Luzern,Aslan Anıtı,tarih,90,TAHMIN
+159,İsviçre,Luzern,İsviçre Ulaşım Müzesi,tarih,90,INCELE
+156,İsviçre,Luzern,Kapellbrücke,tarih,90,TAHMIN
+158,İsviçre,Luzern,Luzern Gölü,doğa,120,INCELE
+173,İsviçre,Montreux,Chillon Şatosu,tarih,90,TAHMIN
+174,İsviçre,Zermatt,Gornergrat,doğa,120,TAHMIN
+175,İsviçre,Zermatt,Matterhorn Müzesi,tarih,90,INCELE
+155,İsviçre,Zürih,Bahnhofstrasse,yemek,60,TAHMIN
+152,İsviçre,Zürih,Grossmünster,tarih,90,TAHMIN
+153,İsviçre,Zürih,Lindenhof,tarih,90,TAHMIN
+154,İsviçre,Zürih,Uetliberg,doğa,120,TAHMIN
+151,İsviçre,Zürih,Zürih Gölü,doğa,120,INCELE
+75,İtalya,Como,Como Gölü Kıyısı,doğa,120,INCELE
+60,İtalya,Floransa,Floransa Katedrali,tarih,90,TAHMIN
+62,İtalya,Floransa,Piazzale Michelangelo,doğa,120,TAHMIN
+61,İtalya,Floransa,Ponte Vecchio,tarih,90,TAHMIN
+59,İtalya,Floransa,Uffizi Galerisi,tarih,90,TAHMIN
+67,İtalya,Milano,Duomo di Milano,tarih,90,TAHMIN
+68,İtalya,Milano,Galleria Vittorio Emanuele II,yemek,60,TAHMIN
+69,İtalya,Milano,Navigli,gece_hayati,120,TAHMIN
+71,İtalya,Napoli,Napoli Tarihi Merkezi,tarih,90,TAHMIN
+72,İtalya,Napoli,Spaccanapoli,yemek,60,TAHMIN
+70,İtalya,Pisa,Pisa Kulesi,tarih,90,TAHMIN
+73,İtalya,Pompei,Pompeii Arkeolojik Parkı,tarih,90,TAHMIN
+55,İtalya,Roma,İspanyol Merdivenleri,tarih,90,TAHMIN
+51,İtalya,Roma,Kolezyum,tarih,90,TAHMIN
+53,İtalya,Roma,Pantheon,tarih,90,TAHMIN
+58,İtalya,Roma,Piazza Navona,tarih,90,TAHMIN
+52,İtalya,Roma,Roma Forumu,tarih,90,TAHMIN
+57,İtalya,Roma,Trastevere,yemek,60,TAHMIN
+54,İtalya,Roma,Trevi Çeşmesi,tarih,90,TAHMIN
+56,İtalya,Roma,Villa Borghese Bahçeleri,doğa,120,TAHMIN
+74,İtalya,Sorrento,Marina Grande,yemek,60,TAHMIN
+66,İtalya,Venedik,Büyük Kanal,doğa,120,TAHMIN
+64,İtalya,Venedik,Dükler Sarayı,tarih,90,TAHMIN
+65,İtalya,Venedik,Rialto Köprüsü,tarih,90,TAHMIN
+63,İtalya,Venedik,San Marco Meydanı,tarih,90,TAHMIN
+248,Mısır,Asvan,Asvan Botanik Bahçesi,doğa,120,TAHMIN
+247,Mısır,Asvan,Philae Tapınağı,tarih,90,TAHMIN
+238,Mısır,Dahşur,Kırmızı Piramit,tarih,90,INCELE
+249,Mısır,Ebu Simbel,Ebu Simbel Tapınakları,tarih,90,TAHMIN
+236,Mısır,Gize,Büyük Mısır Müzesi,tarih,90,INCELE
+235,Mısır,Gize,Büyük Sfenks,tarih,90,TAHMIN
+234,Mısır,Gize,Gize Piramitleri,tarih,90,INCELE
+239,Mısır,İskenderiye,İskenderiye Kütüphanesi,tarih,90,TAHMIN
+240,Mısır,İskenderiye,Kayıtbay Kalesi,tarih,90,TAHMIN
+242,Mısır,İskenderiye,Kom el-Dikka,tarih,90,TAHMIN
+241,Mısır,İskenderiye,Montaza Sarayı Bahçeleri,doğa,120,TAHMIN
+229,Mısır,Kahire,El-Ezher Camii,tarih,90,TAHMIN
+231,Mısır,Kahire,El-Ezher Parkı,doğa,120,TAHMIN
+230,Mısır,Kahire,El-Muizz Caddesi,tarih,90,TAHMIN
+228,Mısır,Kahire,Han el-Halili Çarşısı,yemek,60,TAHMIN
+227,Mısır,Kahire,Kahire Kalesi,tarih,90,TAHMIN
+232,Mısır,Kahire,Kopt Kahire,tarih,90,TAHMIN
+226,Mısır,Kahire,Mısır Müzesi,tarih,90,INCELE
+233,Mısır,Kahire,Nil Kıyısı Yürüyüş Alanı,doğa,120,TAHMIN
+246,Mısır,Luksor,Hatşepsut Tapınağı,tarih,90,TAHMIN
+243,Mısır,Luksor,Karnak Tapınağı,tarih,90,TAHMIN
+245,Mısır,Luksor,Krallar Vadisi,tarih,90,INCELE
+244,Mısır,Luksor,Luksor Tapınağı,tarih,90,TAHMIN
+237,Mısır,Sakkara,Basamaklı Piramit,tarih,90,INCELE
+250,Mısır,Şarm eş-Şeyh,Ras Muhammed Milli Parkı,doğa,120,INCELE
+197,Portekiz,Braga,Bom Jesus do Monte,tarih,90,TAHMIN
+196,Portekiz,Coimbra,Coimbra Üniversitesi,tarih,90,TAHMIN
+198,Portekiz,Évora,Diana Tapınağı,tarih,90,TAHMIN
+200,Portekiz,Faro,Ria Formosa Doğa Parkı,doğa,120,TAHMIN
+199,Portekiz,Lagos,Praia do Camilo,doğa,120,TAHMIN
+179,Portekiz,Lizbon,Alfama,tarih,90,TAHMIN
+182,Portekiz,Lizbon,Bairro Alto,gece_hayati,120,TAHMIN
+176,Portekiz,Lizbon,Belém Kulesi,tarih,90,TAHMIN
+177,Portekiz,Lizbon,Jerónimos Manastırı,tarih,90,TAHMIN
+184,Portekiz,Lizbon,LX Factory,yemek,60,TAHMIN
+183,Portekiz,Lizbon,Parque Eduardo VII,doğa,120,TAHMIN
+180,Portekiz,Lizbon,Praça do Comércio,tarih,90,TAHMIN
+178,Portekiz,Lizbon,São Jorge Kalesi,tarih,90,TAHMIN
+181,Portekiz,Lizbon,Time Out Market,yemek,60,TAHMIN
+189,Portekiz,Porto,Dom Luís I Köprüsü,tarih,90,TAHMIN
+195,Portekiz,Porto,Galerias de Paris Caddesi,gece_hayati,120,TAHMIN
+194,Portekiz,Porto,Jardins do Palácio de Cristal,doğa,120,TAHMIN
+191,Portekiz,Porto,Livraria Lello,tarih,90,TAHMIN
+193,Portekiz,Porto,Palácio da Bolsa,tarih,90,TAHMIN
+190,Portekiz,Porto,Ribeira,yemek,60,TAHMIN
+192,Portekiz,Porto,São Bento Tren İstasyonu,tarih,90,TAHMIN
+188,Portekiz,Sintra,Monserrate Sarayı,doğa,120,TAHMIN
+187,Portekiz,Sintra,Moors Kalesi,tarih,90,TAHMIN
+185,Portekiz,Sintra,Pena Sarayı,tarih,90,TAHMIN
+186,Portekiz,Sintra,Quinta da Regaleira,tarih,90,TAHMIN
+17,Türkiye,Antalya,Aspendos Antik Tiyatrosu,tarih,90,INCELE
+16,Türkiye,Antalya,Düden Şelalesi,doğa,120,TAHMIN
+15,Türkiye,Antalya,Kaleiçi,tarih,90,TAHMIN
+18,Türkiye,Antalya,Konyaaltı Plajı,doğa,120,TAHMIN
+25,Türkiye,Gaziantep,Zeugma Mozaik Müzesi,tarih,90,INCELE
+1,Türkiye,İstanbul,Ayasofya,tarih,90,TAHMIN
+3,Türkiye,İstanbul,Galata Kulesi,tarih,90,TAHMIN
+5,Türkiye,İstanbul,Gülhane Parkı,doğa,120,TAHMIN
+7,Türkiye,İstanbul,İstiklal Caddesi,gece_hayati,120,TAHMIN
+10,Türkiye,İstanbul,Kadıköy Çarşısı,yemek,60,TAHMIN
+6,Türkiye,İstanbul,Kapalıçarşı,yemek,60,TAHMIN
+8,Türkiye,İstanbul,Ortaköy Sahili,yemek,60,TAHMIN
+4,Türkiye,İstanbul,Sultanahmet Camii,tarih,90,TAHMIN
+2,Türkiye,İstanbul,Topkapı Sarayı,tarih,90,TAHMIN
+9,Türkiye,İstanbul,Yıldız Parkı,doğa,120,TAHMIN
+11,Türkiye,İzmir,Efes Antik Kenti,tarih,90,INCELE
+13,Türkiye,İzmir,İzmir Saat Kulesi,tarih,90,TAHMIN
+12,Türkiye,İzmir,Kemeraltı Çarşısı,yemek,60,TAHMIN
+14,Türkiye,İzmir,Kordon,doğa,120,TAHMIN
+22,Türkiye,Muğla,Ölüdeniz,doğa,120,TAHMIN
+23,Türkiye,Muğla,Saklıkent Kanyonu,doğa,120,INCELE
+19,Türkiye,Nevşehir,Göreme Açık Hava Müzesi,tarih,90,INCELE
+21,Türkiye,Nevşehir,Ihlara Vadisi,doğa,120,INCELE
+20,Türkiye,Nevşehir,Uçhisar Kalesi,tarih,90,TAHMIN
+24,Türkiye,Trabzon,Sümela Manastırı,tarih,90,TAHMIN

@@ -1,0 +1,78 @@
+﻿ulke,sehir,ad,enlem,boylam,bulunan_adres,eslesme_durumu,guven_puani,kaynak
+Almanya,Berlin,Berlin Duvarı Anıtı,52.5375133,13.3946755,"Berlin Wall Memorial, Bergstraße, 13355 Berlin, Germany",GUCLU_ADAY,97.9,Geoapify
+Almanya,Berlin,Brandenburg Kapısı,52.5162699,13.3777034,"Brandenburg Gate, Pariser Platz 1, 10117 Berlin, Germany",GUCLU_ADAY,97.6,Geoapify
+Almanya,Berlin,East Side Gallery,52.5044542,13.4408392,"East Side Gallery, Kolonnenweg, 10243 Berlin, Germany",GUCLU_ADAY,97.7,Geoapify
+Almanya,Berlin,Kreuzberg,52.4976443,13.411914,"Kreuzberg, Berlin, Friedrichshain-Kreuzberg, Germany",GUCLU_ADAY,100.0,Geoapify
+Almanya,Berlin,Markthalle Neun,52.5021661,13.4314886,"Markthalle Neun, Eisenbahnstraße 42-43, 10997 Berlin, Germany",GUCLU_ADAY,97.5,Geoapify
+Almanya,Berlin,Müze Adası,52.5200335,13.3978155,"Museum Island, Am Festungsgraben, 10117 Berlin, Germany",GUCLU_ADAY,97.3,Geoapify
+Almanya,Berlin,Reichstag Binası,52.5186538,13.3761015,"Reichstag Building, Platz der Republik 1, 11011 Berlin, Germany",GUCLU_ADAY,97.7,Geoapify
+Almanya,Berlin,Tempelhofer Feld,52.4744192,13.4026007,"Berlin, Tempelhof-Schöneberg, Germany",GUCLU_ADAY,97.6,Geoapify
+Almanya,Berlin,Tiergarten,52.5097776,13.3572597,"Tiergarten, Berlin, Mitte, Germany",GUCLU_ADAY,100.0,Geoapify
+Almanya,Frankfurt,Palmengarten,50.1236712,8.6559598,"Palmengarten, Westend Süd, Frankfurt, HE, Germany",GUCLU_ADAY,97.5,Geoapify
+Almanya,Frankfurt,Römerberg,50.1102096,8.6821665,"Römerberg, Altstadt, Frankfurt, HE, Germany",GUCLU_ADAY,97.2,Geoapify
+Almanya,Hamburg,Planten un Blomen,53.5619584,9.9813309,"Planten un Blomen, Hamburg-Mitte, 20355 Hamburg, Germany",GUCLU_ADAY,97.7,Geoapify
+Almanya,Hamburg,Reeperbahn,53.5494937,9.9607801,"Reeperbahn, Hamburg-Mitte, 20359 Hamburg, Germany",GUCLU_ADAY,97.1,Geoapify
+Almanya,Hamburg,Speicherstadt,53.5440149,9.9869792,"Speicherstadt, Kehrwieder, Hamburg-Mitte, 20457 Hamburg, Germany",GUCLU_ADAY,97.4,Geoapify
+Avusturya,Graz,Schlossberg,47.0765398,15.4376074,"Schlossberg, 8010 Graz, Austria",GUCLU_ADAY,96.7,Geoapify
+Avusturya,Innsbruck,Nordkette,47.2987404,11.382586,"Nordkette, 6020 Innsbruck, Austria",GUCLU_ADAY,96.7,Geoapify
+Avusturya,Linz,Ars Electronica Center,48.3098861,14.2845997,"Ars Electronica Center, Hauptstraße 2, 4020 Linz, Austria",GUCLU_ADAY,100.0,Geoapify
+Avusturya,Salzburg,Getreidegasse,47.8000179,13.0422373,"Getreidegasse, 5020 Salzburg, Austria",GUCLU_ADAY,90.0,Geoapify
+Belçika,Brugge,Begijnhof,51.2013536,3.222875,"Begijnhof, Brugge-Centrum, 8000 Bruges, Belgium",GUCLU_ADAY,96.8,Geoapify
+Belçika,Brugge,Rozenhoedkaai,51.2071357,3.2274996,"Rozenhoedkaai, Brugge-Centrum, 8000 Bruges, Belgium",GUCLU_ADAY,90.0,Geoapify
+Belçika,Gent,Patershol,51.057922,3.7226285,"Patershol, Ghent, Belgium",GUCLU_ADAY,100.0,Geoapify
+Belçika,Leuven,Grote Markt,50.8791752,4.7018884,"Grote Markt, 3000 Leuven, Belgium",GUCLU_ADAY,96.4,Geoapify
+Fransa,Bordeaux,Place de la Bourse,44.8414565,-0.5703797,"Place de la Bourse, Bordeaux, Port of the Moon, Bordeaux Centre, 33000 Bordeaux, France",GUCLU_ADAY,97.3,Geoapify
+Fransa,Lyon,Parc de la Tête d'Or,45.7785792,4.8520963,"Parc de la Tête d'Or, Lyon, Métropole de Lyon, France",GUCLU_ADAY,98.0,Geoapify
+Fransa,Lyon,Vieux Lyon,45.7624951,4.8268635,"Vieux Lyon, Lyon, ARA, France",GUCLU_ADAY,100.0,Geoapify
+Fransa,Nice,Colline du Château,43.6963424,7.280617,"Colline du Château, Vieux Nice, Nice, Maritime Alps, France",GUCLU_ADAY,97.9,Geoapify
+Fransa,Nice,Promenade des Anglais,43.6859892,7.2374765,"Promenade des Anglais, 06206 Nice, France",GUCLU_ADAY,92.0,Geoapify
+Fransa,Paris,Le Marais,48.86366,2.35045,"Paris - BridgeStreet - Le Marais, Bonne-Nouvelle, Paris, France",GUCLU_ADAY,98.1,Geoapify
+Fransa,Paris,Montmartre,48.8861105,2.3431223,"Montmartre, Parvis du Sacré-Cœur, 75018 Paris, France",GUCLU_ADAY,100.0,Geoapify
+Fransa,Paris,Sainte-Chapelle,48.8553933,2.3449941,"Sainte-Chapelle, 8 Boulevard du Palais, 75001 Paris, France",GUCLU_ADAY,100.0,Geoapify
+Hollanda,Amsterdam,A'DAM Lookout,52.3838564,4.9021028,"A'dam Lookout, Overhoeksplein 5, 1031 KS Amsterdam, Netherlands",GUCLU_ADAY,97.3,Geoapify
+Hollanda,Amsterdam,De Pijp,52.3533455,4.8969623,"Zuid, De Pijp, Amsterdam, NH, Netherlands",GUCLU_ADAY,100.0,Geoapify
+Hollanda,Amsterdam,Jordaan,52.3754157,4.8810958,"Centrum, Jordaan, Amsterdam, NH, Netherlands",GUCLU_ADAY,100.0,Geoapify
+Hollanda,Amsterdam,Rijksmuseum,52.3598431,4.8850395,"Rijksmuseum, Museumbrug, 1017 RX Amsterdam, Netherlands",GUCLU_ADAY,97.1,Geoapify
+Hollanda,Amsterdam,Vondelpark,52.3571974,4.864119,"Vondelpark, 1054 NB Amsterdam, Netherlands",GUCLU_ADAY,97.0,Geoapify
+Hollanda,Delft,Delft Markt,52.0115073,4.358595,"City hall Delft, Markt 87, 2611 GS Delft, Netherlands",GUCLU_ADAY,99.0,Geoapify
+Hollanda,Haarlem,Grote Markt,52.3813592,4.6366131,"Grote Markt, 2011 RC Haarlem, Netherlands",GUCLU_ADAY,96.2,Geoapify
+Hollanda,Leiden,Hortus Botanicus,52.1560031,4.4839417,"Hortus botanicus Leiden, Binnenstad, Leiden, ZH, Netherlands",GUCLU_ADAY,96.6,Geoapify
+Hollanda,Rotterdam,Museumpark,51.9113962,4.4733996,"Museumpark, Centrum, Rotterdam, ZH, Netherlands",GUCLU_ADAY,97.0,Geoapify
+Hollanda,Utrecht,Oudegracht,52.0898195,5.1207652,"Oudegracht, Binnenstad, Utrecht, Netherlands",GUCLU_ADAY,96.8,Geoapify
+Hollanda,Zaandam,Zaanse Schans,52.4750534,4.8179761,"Zaandam, Zaanse Schans, Netherlands",GUCLU_ADAY,92.9,Geoapify
+İspanya,Granada,Albaicín,37.1815692,-3.5946668,"Albaicín, Granada, AN, Spain",GUCLU_ADAY,100.0,Geoapify
+İspanya,Madrid,Malasaña,40.4267079,-3.7042311,"Universidad, Malasaña, Madrid, MD, Spain",GUCLU_ADAY,100.0,Geoapify
+İspanya,Madrid,Mercado de San Miguel,40.4153741,-3.7090151,"Mercado de San Miguel, Plaza de San Miguel, 28005 Madrid, Spain",GUCLU_ADAY,97.7,Geoapify
+İspanya,Madrid,Plaza Mayor,40.4153949,-3.7069974,"Plaza Mayor, 28012 Madrid, Spain",GUCLU_ADAY,96.8,Geoapify
+İspanya,Madrid,Retiro Parkı,40.414946,-3.6832845,"El Retiro Park, Madrid, MD, Spain",GUCLU_ADAY,94.0,Geoapify
+İspanya,Málaga,Alcazaba,36.7224488,-4.4164303,"Alcazaba, Plaza Santa María, 29012 Málaga, Spain",GUCLU_ADAY,96.7,Geoapify
+İspanya,Sevilla,Plaza de España,37.3769032,-5.9856502,"Plaza de España, Avenida del Gran Capitán, 41004 Seville, Spain",GUCLU_ADAY,96.6,Geoapify
+İspanya,Sevilla,Triana,37.3834516,-6.0040669,"Triana, Seville, AN, Spain",GUCLU_ADAY,100.0,Geoapify
+İsviçre,Grindelwald,Bachalpsee,46.6695806,8.0209533,"Bachalpsee, 3818 Grindelwald, Switzerland",GUCLU_ADAY,97.2,Geoapify
+İsviçre,Grindelwald,First Cliff Walk,46.6603272,8.0530053,"First Cliff Walk by Tissot, 3818 Grindelwald, Switzerland",GUCLU_ADAY,96.2,Geoapify
+İsviçre,Interlaken,Harder Kulm,46.6996822,7.8561411,"Interlaken, BE, Switzerland",GUCLU_ADAY,97.2,Geoapify
+İsviçre,Luzern,Kapellbrücke,47.0515431,8.3074288,"Kapellbrücke, 6002 Lucerne, Switzerland",GUCLU_ADAY,96.9,Geoapify
+İsviçre,Zermatt,Gornergrat,45.9833098,7.78463,"Gornergrat - Hohtälli, 3920 Zermatt, Switzerland",GUCLU_ADAY,96.8,Geoapify
+İtalya,Napoli,Spaccanapoli,40.8500499,14.2602912,"Spaccanapoli, Via Duomo, 80187 Naples NA, Italy",GUCLU_ADAY,97.2,Geoapify
+İtalya,Roma,Pantheon,41.898616,12.4768334,"Pantheon, Piazza della Rotonda, Municipio Roma I, 00186 Rome RM, Italy",GUCLU_ADAY,96.7,Geoapify
+İtalya,Roma,Piazza Navona,41.8989282,12.4731178,"Piazza Navona, Municipio Roma I, Rome, Roma Capitale, Italy",GUCLU_ADAY,97.1,Geoapify
+İtalya,Roma,Trastevere,41.883765,12.4712699,"Trastevere, Viale delle Mura Portuensi, Municipio Roma XII, 00153 Rome RM, Italy",GUCLU_ADAY,96.7,Geoapify
+İtalya,Sorrento,Marina Grande,40.6274993,14.3656272,"Marina Grande, Sorrento, CAM, Italy",GUCLU_ADAY,100.0,Geoapify
+Portekiz,Braga,Bom Jesus do Monte,41.5547483,-8.3798086,"Elevador do Bom Jesus do Monte, Estrada de Bom Jesus, 4715-001 Braga, Portugal",GUCLU_ADAY,96.0,Geoapify
+Portekiz,Lagos,Praia do Camilo,37.0873713,-8.6684477,"Praia do Camilo, Lagos, Faro, Portugal",GUCLU_ADAY,97.1,Geoapify
+Portekiz,Porto,Jardins do Palácio de Cristal,41.1470339,-8.6262765,"Jardins do Palácio de Cristal, 4050-346 Porto, Portugal",GUCLU_ADAY,98.1,Geoapify
+Portekiz,Porto,Livraria Lello,41.14723,-8.61466,"Livraria Lello, Vitória, Porto, Cedofeita, Portugal",GUCLU_ADAY,97.0,Geoapify
+Portekiz,Porto,Palácio da Bolsa,41.141207,-8.615377,"Palácio da Bolsa (48), Rua de Ferreira Borges, 4050-295 Porto, Portugal",GUCLU_ADAY,96.5,Geoapify
+Portekiz,Porto,Ribeira,41.1407544,-8.612931,"Ribeira, Historic Centre of Porto, Porto, Cedofeita, Santo Ildefonso, Sé, Miragaia, São Nicolau e Vitória, Portugal",GUCLU_ADAY,96.7,Geoapify
+Portekiz,Sintra,Quinta da Regaleira,38.7951123,-9.3962034,"Quinta da Regaleira, Sintra - São Martinho, Sintra (Santa Maria e São Miguel, São Martinho e São Pedro de Penaferrim), Lisbon, Portugal",GUCLU_ADAY,97.6,Geoapify
+Türkiye,Antalya,Düden Şelalesi,36.964829,30.726664,"Düden Şelalesi, 1926 sokak, 07020 Antalya, Turkey",GUCLU_ADAY,100.0,Geoapify
+Türkiye,Antalya,Kaleiçi,36.8827222,30.7065667,"Good Stays Kaleiçi, Seferoğlu Sokak 8, 07100 Muratpaşa, Turkey",GUCLU_ADAY,100.0,Geoapify
+Türkiye,Antalya,Konyaaltı Plajı,36.8847027,30.679995,"Konyaaltı plajı, Konyaaltı Caddesi, 07386 Muratpaşa, Turkey",GUCLU_ADAY,100.0,Geoapify
+Türkiye,Gaziantep,Zeugma Mozaik Müzesi,37.07566,37.38573,"Gaziantep Zeugma Mozaik Müzesi, 27500 Gaziantep, Turkey",GUCLU_ADAY,99.0,Geoapify
+Türkiye,İstanbul,İstiklal Caddesi,41.033652,28.977646,"İstiklal Caddesi, 34440 Istanbul, Turkey",GUCLU_ADAY,100.0,Geoapify
+Türkiye,İstanbul,Kadıköy Çarşısı,40.990137,29.023437,"Kadıköy Çarşısı 1, 34710 Istanbul, Turkey",GUCLU_ADAY,100.0,Geoapify
+Türkiye,İstanbul,Kapalıçarşı,41.0118115,28.9690068,"Kapalıçarşı Mercan Kapısı, Tığcılar Sokağı, 34120 Fatih, Turkey",GUCLU_ADAY,98.1,Geoapify
+Türkiye,İstanbul,Yıldız Parkı,41.076634,29.006661,"Yıldız Parkı, 34870 Istanbul, Turkey",GUCLU_ADAY,100.0,Geoapify
+Türkiye,İzmir,Kordon,38.4328783,27.1376358,"Kordon Subay Orduevi, 35220 Konak, Turkey",GUCLU_ADAY,98.1,Geoapify
+Türkiye,Muğla,Ölüdeniz,36.5708861,29.1402546,"Oludeniz, Fethiye, Aegean Region, Turkey",GUCLU_ADAY,100.0,Geoapify
+Türkiye,Nevşehir,Uçhisar Kalesi,38.6299908,34.8053716,"Uçhisar Kalesi, Kale Sokak, 50210 Uçhisar Beldesi, Turkey",GUCLU_ADAY,95.0,Geoapify

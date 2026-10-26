@@ -1,0 +1,151 @@
+﻿sehir_id,sehir,yer_id,ad,kategori,veri_durumu,kaynak_aday_id,kayit_onayi,koordinat_dogrulandi,osm_teknik_eslesme,ziyaret_suresi_dk,ortalama_ucret,osm_kaynak,resmi_ziyaret_kaynagi,resmi_kaynagin_kapsami,kontrol_tarihi,eksik_kontroller
+39,Amsterdam,135,A'DAM Lookout,gece_hayati,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,132,Albert Cuyp Pazarı,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,361,Allard Pierson Museum,tarih,aday,44,False,False,True,90,,https://www.openstreetmap.org/node/34050791,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,340,Amsterdam Cheese Museum,tarih,ozel_inceleme,56,False,False,True,90,,https://www.openstreetmap.org/node/2720969322,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+39,Amsterdam,316,Amsterdam Museum,tarih,aday,43,False,False,True,90,,https://www.openstreetmap.org/node/34050790,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,357,Amsterdamse Bos - Oeverlanden - Uitkijkpunt,doğa,aday,52,False,False,True,75,,https://www.openstreetmap.org/node/1169749411,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,367,Amsterdam Tulip Museum,tarih,aday,57,False,False,True,90,,https://www.openstreetmap.org/node/2720969403,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,128,Anne Frank Evi,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,129,Dam Meydanı,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,133,De Pijp,gece_hayati,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,319,Durgerdam - Vogelkijkscherm,doğa,aday,51,False,False,True,75,,https://www.openstreetmap.org/node/1169749243,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,295,foam,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,344,Hollandsche Schouwburg,tarih,aday,48,False,False,True,90,,https://www.openstreetmap.org/node/432506873,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,283,Houseboat Museum,tarih,önceki_kayıt,,,,,90,,,https://houseboatmuseum.nl/visit/,yer ve ziyaret bilgisi; giriş noktası değil,2026-10-25,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,355,Huis Marseille,tarih,aday,53,False,False,True,90,,https://www.openstreetmap.org/node/1237228907,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,131,Jordaan,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,343,Multatuli Museum,tarih,aday,54,False,False,True,90,,https://www.openstreetmap.org/node/1293163366,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,348,Museum Het Schip,tarih,aday,50,False,False,True,90,,https://www.openstreetmap.org/node/441327444,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,331,Museum Suriname,tarih,aday,41,False,False,True,90,,https://www.openstreetmap.org/node/34050776,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,282,Museum Van Loon,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,134,NEMO Bilim Müzesi,tarih,önceki_kayıt,,,,,150,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,287,Rembrandthuis,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,126,Rijksmuseum,tarih,önceki_kayıt,,,,,180,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,339,The Amsterdam Dungeon,tarih,aday,47,False,False,True,90,,https://www.openstreetmap.org/node/251528292,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,311,Theo Thijssen Museum,tarih,aday,42,False,False,True,90,,https://www.openstreetmap.org/node/34050787,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,127,Van Gogh Müzesi,tarih,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,330,Verzetsmuseum,tarih,aday,49,False,False,True,90,,https://www.openstreetmap.org/node/440419242,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,130,Vondelpark,doğa,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,289,Wereldmuseum Amsterdam,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+39,Amsterdam,307,Willet-Holthuysen,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,301,Anti-Kriegs-Museum,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,78,Berlin Duvarı Anıtı,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,288,Berliner Unterwelten-Museum,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,76,Brandenburg Kapısı,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,324,Çarli Kontrol Noktası,tarih,ozel_inceleme,88,False,False,True,90,,https://www.openstreetmap.org/node/417346627,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+24,Berlin,292,Deutschlandmuseum,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,347,Die Mauer | The Wall,tarih,aday,91,False,False,True,90,,https://www.openstreetmap.org/node/453378190,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,302,"Dokumentationszentrum Flucht, Vertreibung, Versöhnung",tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,79,East Side Gallery,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,298,FHXB Friedrichshain-Kreuzberg Museum,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,325,Fontäne im Fennpfuhl,doğa,ozel_inceleme,81,False,False,True,75,,https://www.openstreetmap.org/node/258485623,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+24,Berlin,332,Galerie Zandi,tarih,aday,86,False,False,True,90,,https://www.openstreetmap.org/node/370766098,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,300,Gedenkstätte Deutscher Widerstand,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,363,Geschichtsspeicher Fichtebunker,tarih,aday,97,False,False,True,90,,https://www.openstreetmap.org/node/766728477,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,358,Hugenottenmuseum Berlin,tarih,aday,94,False,False,True,90,,https://www.openstreetmap.org/node/545060231,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,83,Kreuzberg,gece_hayati,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,364,Luisenbad,tarih,aday,87,False,False,True,90,,https://www.openstreetmap.org/node/384790168,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,84,Markthalle Neun,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,350,Mori-Ôgai-Gedenkstätte,tarih,aday,89,False,False,True,90,,https://www.openstreetmap.org/node/429739550,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,293,Museum für Kommunikation,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,279,Museum für Naturkunde,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,80,Müze Adası,tarih,önceki_kayıt,,,,,180,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,351,Nationaldenkmal für die Befreiungskriege,tarih,aday,80,False,False,True,90,,https://www.openstreetmap.org/node/241490725,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,373,Panoramapunkt,doğa,ozel_inceleme,98,False,False,True,75,,https://www.openstreetmap.org/node/773640801,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+24,Berlin,370,Polizeimuseum,tarih,aday,95,False,False,True,90,,https://www.openstreetmap.org/node/611632754,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,341,Puppentheater-Museum Berlin,tarih,aday,90,False,False,True,90,,https://www.openstreetmap.org/node/448810258,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,77,Reichstag Binası,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,284,Stasimuseum,tarih,önceki_kayıt,,,,,90,,,https://www.visitberlin.de/en/stasi-museum,yer ve ziyaret bilgisi; giriş noktası değil,2026-10-25,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,82,Tempelhofer Feld,doğa,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+24,Berlin,81,Tiergarten,doğa,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,297,Adam Mickiewicz Müzesi,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,278,ARTER,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,354,Askeri Müze,tarih,aday,61,False,False,True,90,,https://www.openstreetmap.org/node/1346157990,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,333,Atik Ali Paşa Medresesi,tarih,aday,73,False,False,True,90,,https://www.openstreetmap.org/node/3374681017,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,1,Ayasofya,tarih,önceki_kayıt,,,,,90,,,,,,Ücret bilinmiyor
+1,İstanbul,323,Bayram Paşa Külliyesi,tarih,aday,74,False,False,True,90,,https://www.openstreetmap.org/node/3383039241,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,365,Binbirdirek Sarnıcı,tarih,aday,67,False,False,True,90,,https://www.openstreetmap.org/node/2472730735,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,334,Çemberlitaş Hamamı,tarih,ozel_inceleme,60,False,False,True,90,,https://www.openstreetmap.org/node/663391267,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+1,İstanbul,3,Galata Kulesi,tarih,önceki_kayıt,,,,,90,,,,,,Ücret bilinmiyor
+1,İstanbul,5,Gülhane Parkı,doğa,önceki_kayıt,,,,,120,,,,,,Ücret bilinmiyor
+1,İstanbul,346,Hatice Turhan Sultan Türbesi,tarih,aday,63,False,False,True,90,,https://www.openstreetmap.org/node/1620494633,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,360,İstanbul Fotoğraf Müzesi,tarih,aday,65,False,False,True,90,,https://www.openstreetmap.org/node/1807703751,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,7,İstiklal Caddesi,gece_hayati,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,10,Kadıköy Çarşısı,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,6,Kapalıçarşı,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,326,Kara Mustafa Paşa Külliyesi,tarih,ozel_inceleme,72,False,False,True,90,,https://www.openstreetmap.org/node/3374678648,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+1,İstanbul,349,Koca Sinan Paşa Külliyesi,tarih,ozel_inceleme,71,False,False,True,90,,https://www.openstreetmap.org/node/3374678647,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+1,İstanbul,280,Masumiyet Müzesi,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,345,Milyon Taşı,tarih,aday,66,False,False,True,90,,https://www.openstreetmap.org/node/1908677124,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,276,Miniatürk Müzesi,tarih,önceki_kayıt,,,,,90,,,https://www.miniaturk.com.tr/Home/Ziyaret,yer ve ziyaret bilgisi; giriş noktası değil,2026-10-25,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,8,Ortaköy Sahili,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,369,Ortaköy Sanat Galerisi,tarih,ozel_inceleme,59,False,False,True,90,,https://www.openstreetmap.org/node/581990954,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+1,İstanbul,328,Osmanlı Bankası Müzesi,tarih,ozel_inceleme,64,False,False,True,90,,https://www.openstreetmap.org/node/1770612643,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+1,İstanbul,336,SALT Galata,tarih,ozel_inceleme,76,False,False,True,90,,https://www.openstreetmap.org/node/4889905032,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+1,İstanbul,4,Sultanahmet Camii,tarih,önceki_kayıt,,,,,90,,,,,,Ücret bilinmiyor
+1,İstanbul,2,Topkapı Sarayı,tarih,önceki_kayıt,,,,,90,,,,,,Ücret bilinmiyor
+1,İstanbul,356,Yılanlı Sütun,tarih,aday,58,False,False,True,90,,https://www.openstreetmap.org/node/415157636,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,9,Yıldız Parkı,doğa,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,304,Yıldız Sarayı,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+1,İstanbul,359,Yıldız Seramik Fabrikası,tarih,ozel_inceleme,68,False,False,True,90,,https://www.openstreetmap.org/node/3254396169,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+8,Paris,352,Belvédère de la Sibylle,doğa,aday,12,False,False,True,75,,https://www.openstreetmap.org/node/321830153,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,296,Catacombes de Paris,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,321,Cité des Enfants (5-12 ans),tarih,ozel_inceleme,15,False,False,True,90,,https://www.openstreetmap.org/node/410272989,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+8,Paris,335,Cité des Sciences et de l'Industrie,tarih,aday,10,False,False,True,90,,https://www.openstreetmap.org/node/253065826,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,281,Conciergerie,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,337,Espace Dali,tarih,aday,9,False,False,True,90,,https://www.openstreetmap.org/node/252970813,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,26,Eyfel Kulesi,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,366,Fontaine Médicis,doğa,aday,17,False,False,True,75,,https://www.openstreetmap.org/node/782601793,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,36,Latin Mahallesi,gece_hayati,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,35,Le Marais,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,27,Louvre Müzesi,tarih,önceki_kayıt,,,,,210,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,31,Lüksemburg Bahçesi,doğa,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,291,Maison de Victor Hugo,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,318,Maison européenne de la Photographie,tarih,aday,13,False,False,True,90,,https://www.openstreetmap.org/node/323911913,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,29,Montmartre,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,286,Musée de l'Armée,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,329,Musée de l'Assistance Publique Hôpitaux de Paris,tarih,aday,3,False,False,True,90,,https://www.openstreetmap.org/node/237003117,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,362,Musée des Arts Décoratifs,tarih,aday,4,False,False,True,90,,https://www.openstreetmap.org/node/247584452,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,305,Musée des Arts et Métiers,tarih,önceki_kayıt,,,,,90,,,https://www.arts-et-metiers.net/musee/horaires-et-acces,yer ve ziyaret bilgisi; giriş noktası değil,2026-10-25,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,371,Musée Edith Piaf,tarih,aday,8,False,False,True,90,,https://www.openstreetmap.org/node/252211317,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,315,Musée Grévin,tarih,aday,7,False,False,True,90,,https://www.openstreetmap.org/node/251851363,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,314,Musée national Gustave Moreau,tarih,aday,6,False,False,True,90,,https://www.openstreetmap.org/node/251318666,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,28,Notre-Dame Katedrali,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,34,Orsay Müzesi,tarih,önceki_kayıt,,,,,150,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,37,Père Lachaise Mezarlığı,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,309,Point zéro des Routes de France,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,308,Robinier du square René Viviani,doğa,önceki_kayıt,,,,,75,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,30,Sacré-Cœur Bazilikası,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,33,Sainte-Chapelle,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+8,Paris,32,Tuileries Bahçesi,doğa,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,277,Albertina,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,299,Architekturzentrum Wien,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,317,Arnold Schönberg Center,tarih,aday,35,False,False,True,90,,https://www.openstreetmap.org/node/412510725,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,253,Aziz Stefan Katedrali,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,338,Bank Austria Kunstforum,tarih,aday,27,False,False,True,90,,https://www.openstreetmap.org/node/288513134,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,252,Belvedere Sarayı,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,368,Bezirksmuseum Hernals,tarih,aday,34,False,False,True,90,,https://www.openstreetmap.org/node/331418208,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,313,Café Central,yemek,ozel_inceleme,32,False,False,True,60,,https://www.openstreetmap.org/node/319734659,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+82,Viyana,342,Denkmal der Republik,tarih,aday,29,False,False,True,90,,https://www.openstreetmap.org/node/317769180,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,261,Donauinsel,doğa,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,260,Graben,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,306,Heldenplatz,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,254,Hofburg Sarayı,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,372,Hundertwasserhaus,tarih,aday,21,False,False,True,90,,https://www.openstreetmap.org/node/76469807,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,290,Jüdisches Museum Wien,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,303,Kaisergruft,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,310,Kaiserliche Schatzkammer,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,312,Literaturmuseum,tarih,aday,37,False,False,True,90,,https://www.openstreetmap.org/node/478856085,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,322,Museum des Blindenwesens,tarih,aday,24,False,False,True,90,,https://www.openstreetmap.org/node/76653086,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,327,Museum of Art Fakes Fälschermuseum,tarih,ozel_inceleme,22,False,False,True,90,,https://www.openstreetmap.org/node/76470544,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor; Özel inceleme
+82,Viyana,259,MuseumsQuartier,tarih,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,257,Naschmarkt,yemek,önceki_kayıt,,,,,60,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,353,Pfadfindermuseum,tarih,aday,30,False,False,True,90,,https://www.openstreetmap.org/node/319605564,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,256,Prater,gece_hayati,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,251,Schönbrunn Sarayı,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,294,Sisi Museum,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,285,Spanische Hofreitschule,tarih,önceki_kayıt,,,,,90,,,https://www.srs.at/en/visitor-information/vienna/opening-hours,yer ve ziyaret bilgisi; giriş noktası değil,2026-10-25,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,258,Stadtpark,doğa,önceki_kayıt,,,,,120,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,255,Viyana Devlet Operası,tarih,önceki_kayıt,,,,,90,,,,,,Giriş koordinatı yok; Ücret bilinmiyor
+82,Viyana,320,Wiener Kriminalmuseum,tarih,aday,33,False,False,True,90,,https://www.openstreetmap.org/node/323060663,,,,GEÇİCİ - ziyaret uygunluğu onaysız; Giriş koordinatı yok; Ücret bilinmiyor

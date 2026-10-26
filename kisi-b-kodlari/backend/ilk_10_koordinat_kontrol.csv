@@ -1,0 +1,11 @@
+﻿yer_id,ulke,sehir,yer_adi,durum,aday_enlem,aday_boylam,ilk_tur_adres,ikinci_tur_adres,ikinci_tur_puan,harita_kontrolu,onayli_enlem,onayli_boylam
+95,Almanya,Dresden,Frauenkirche,IKI_TUR_UYUMLU_KONTROL,51.051957,13.7416198,"Church of Our Lady, Neumarkt, 01067 Dresden, Germany","Church of Our Lady, Neumarkt, 01067 Dresden, Germany",47.5,BEKLIYOR,,
+96,Almanya,Dresden,Zwinger Sarayı,IKI_TUR_UYUMLU_KONTROL,51.0530296,13.7349775,"Zwinger, Dresden, SN, Germany","Zwinger, Postplatz, 01067 Dresden, Germany",57.0,BEKLIYOR,,
+94,Almanya,Köln,Hohenzollern Köprüsü,IKI_TUR_UYUMLU_KONTROL,50.928344,7.002998,"Köln, Cologne, NW, Germany","Köln, Cologne, NW, Germany",52.9,BEKLIYOR,,
+85,Almanya,Münih,Marienplatz,IKI_TUR_UYUMLU_KONTROL,48.1370318,11.5759246,"Marienplatz, 80331 Munich, Germany","Marienplatz, 80331 Munich, Germany",72.0,BEKLIYOR,,
+88,Almanya,Münih,Viktualienmarkt,IKI_TUR_UYUMLU_KONTROL,48.135518,11.5761813,"Viktualienmarkt, Prälat-Zistl-Straße, 80331 Munich, Germany","Viktualienmarkt, Prälat-Zistl-Straße, 80331 Munich, Germany",72.4,BEKLIYOR,,
+273,Avusturya,Graz,Kunsthaus Graz,IKI_TUR_UYUMLU_KONTROL,47.0712975,15.4341193,"Modern Art Museum Graz, Lendkai 1, 8020 Graz, Austria","Modern Art Museum Graz, Lendkai 1, 8020 Graz, Austria",44.9,BEKLIYOR,,
+252,Avusturya,Viyana,Belvedere Sarayı,IKI_TUR_UYUMLU_KONTROL,48.191893,16.383224,"Belvedere, 1040 Vienna, Austria","Belvedere, 1040 Vienna, Austria",40.4,BEKLIYOR,,
+261,Avusturya,Viyana,Donauinsel,IKI_TUR_UYUMLU_KONTROL,48.2266108,16.4122378,"Donauinsel, Vienna, Bezirk Tulln, Austria","Donauinsel, Vienna, Bezirk Tulln, Austria",75.0,BEKLIYOR,,
+260,Avusturya,Viyana,Graben,IKI_TUR_UYUMLU_KONTROL,48.2083656,16.3702037,"Graben, 1010 Vienna, Austria","Graben, 1010 Vienna, Austria",71.7,BEKLIYOR,,
+259,Avusturya,Viyana,MuseumsQuartier,IKI_TUR_UYUMLU_KONTROL,48.2031934,16.3593419,"MuseumsQuartier, Tonspurpassage, 1070 Vienna, Austria","MuseumsQuartier, Tonspurpassage, 1070 Vienna, Austria",72.0,BEKLIYOR,,
