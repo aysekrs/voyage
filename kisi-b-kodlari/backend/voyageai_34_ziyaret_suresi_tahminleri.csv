@@ -1,0 +1,35 @@
+﻿yer_id,ulke,sehir,yer_adi,kategori,eski_oneri_dk,onaylanan_sure,durum,aciklama
+80,Almanya,Berlin,Müze Adası,tarih,90,180,TAHMIN_INCELEME_BEKLIYOR,Müze Adası: seçilmiş 1-2 müze veya kısa alan gezisi; tüm müzeleri kapsamaz
+270,Avusturya,Hallstatt,Hallstatt Gölü,doğa,120,120,TAHMIN_INCELEME_BEKLIYOR,Hallstatt Gölü: kıyıda kısa yürüyüş; tekne turu dahil değil
+259,Avusturya,Viyana,MuseumsQuartier,tarih,90,120,TAHMIN_INCELEME_BEKLIYOR,MuseumsQuartier: alan gezisi ve tek bir sergi; kapsam değişebilir
+121,Belçika,Anvers,MAS Müzesi,tarih,90,120,TAHMIN_INCELEME_BEKLIYOR,MAS Müzesi: ana sergilere odaklı ziyaret
+107,Belçika,Brüksel,Magritte Müzesi,tarih,90,90,TAHMIN_INCELEME_BEKLIYOR,Magritte Müzesi: seçilmiş galerilere odaklı ziyaret
+27,Fransa,Paris,Louvre Müzesi,tarih,90,210,TAHMIN_INCELEME_BEKLIYOR,Louvre: seçilmiş koleksiyonlar; tüm müzeyi gezmek mümkün değil
+34,Fransa,Paris,Orsay Müzesi,tarih,90,150,TAHMIN_INCELEME_BEKLIYOR,Orsay: ana koleksiyonlar için yaklaşık süre
+134,Hollanda,Amsterdam,NEMO Bilim Müzesi,tarih,90,150,TAHMIN_INCELEME_BEKLIYOR,NEMO: etkileşimli sergiler nedeniyle daha uzun planlandı
+126,Hollanda,Amsterdam,Rijksmuseum,tarih,90,180,TAHMIN_INCELEME_BEKLIYOR,Rijksmuseum: seçilmiş koleksiyonlar için süre
+127,Hollanda,Amsterdam,Van Gogh Müzesi,tarih,90,120,TAHMIN_INCELEME_BEKLIYOR,Van Gogh Müzesi: temel koleksiyon için süre
+146,Hollanda,Haarlem,Frans Hals Müzesi,tarih,90,90,TAHMIN_INCELEME_BEKLIYOR,Frans Hals Müzesi: ana sergiler için tahmin
+139,Hollanda,Rotterdam,Museumpark,doğa,120,60,TAHMIN_INCELEME_BEKLIYOR,Museumpark: açık alan gezintisi; çevredeki müzeler dahil değil
+225,İspanya,Bilbao,Guggenheim Müzesi,tarih,90,120,TAHMIN_INCELEME_BEKLIYOR,Guggenheim Bilbao: ana sergi gezisi
+209,İspanya,Madrid,Prado Müzesi,tarih,90,180,TAHMIN_INCELEME_BEKLIYOR,Prado: seçilmiş salonlar; tüm eserleri kapsamaz
+170,İsviçre,Cenevre,Cenevre Gölü Kıyısı,doğa,120,90,TAHMIN_INCELEME_BEKLIYOR,Cenevre Gölü kıyısı: belirli bir kıyı yürüyüşü; göl turu dahil değil
+172,İsviçre,Lozan,Olimpiyat Müzesi,tarih,90,120,TAHMIN_INCELEME_BEKLIYOR,Olimpiyat Müzesi: standart sergi ziyareti
+159,İsviçre,Luzern,İsviçre Ulaşım Müzesi,tarih,90,180,TAHMIN_INCELEME_BEKLIYOR,İsviçre Ulaşım Müzesi: seçilmiş bölümler; tam gün olabilir
+158,İsviçre,Luzern,Luzern Gölü,doğa,120,90,TAHMIN_INCELEME_BEKLIYOR,Luzern Gölü: kıyı gezintisi; tekne gezisi dahil değil
+175,İsviçre,Zermatt,Matterhorn Müzesi,tarih,90,75,TAHMIN_INCELEME_BEKLIYOR,Matterhorn Müzesi: ana sergiler için tahmin
+151,İsviçre,Zürih,Zürih Gölü,doğa,120,90,TAHMIN_INCELEME_BEKLIYOR,Zürih Gölü: kıyı gezintisi; tekne gezisi dahil değil
+75,İtalya,Como,Como Gölü Kıyısı,doğa,120,90,TAHMIN_INCELEME_BEKLIYOR,Como Gölü kıyısı: kıyıda yürüyüş; göl çevresi yolculuk değil
+238,Mısır,Dahşur,Kırmızı Piramit,tarih,90,90,TAHMIN_INCELEME_BEKLIYOR,Kırmızı Piramit: saha ziyareti; erişim koşulları değişebilir
+236,Mısır,Gize,Büyük Mısır Müzesi,tarih,90,210,TAHMIN_INCELEME_BEKLIYOR,Büyük Mısır Müzesi: seçilmiş koleksiyonlar için tahmin
+234,Mısır,Gize,Gize Piramitleri,tarih,90,210,TAHMIN_INCELEME_BEKLIYOR,Gize Piramitleri: temel sahalar arası gezi; ulaşım/yoğunluk hariç
+226,Mısır,Kahire,Mısır Müzesi,tarih,90,150,TAHMIN_INCELEME_BEKLIYOR,Mısır Müzesi: seçilmiş koleksiyonlar için süre
+245,Mısır,Luksor,Krallar Vadisi,tarih,90,180,TAHMIN_INCELEME_BEKLIYOR,Krallar Vadisi: seçilmiş mezarlar; ulaşım/yoğunluk hariç
+237,Mısır,Sakkara,Basamaklı Piramit,tarih,90,120,TAHMIN_INCELEME_BEKLIYOR,Basamaklı Piramit: arkeolojik alan ziyareti; erişim değişebilir
+250,Mısır,Şarm eş-Şeyh,Ras Muhammed Milli Parkı,doğa,120,240,TAHMIN_INCELEME_BEKLIYOR,Ras Muhammed: yarım günlük gezi varsayımı; aktivite/transfer hariç
+17,Türkiye,Antalya,Aspendos Antik Tiyatrosu,tarih,90,75,TAHMIN_INCELEME_BEKLIYOR,Aspendos tiyatro gezisi; çevre antik kent dahil değil
+25,Türkiye,Gaziantep,Zeugma Mozaik Müzesi,tarih,90,120,TAHMIN_INCELEME_BEKLIYOR,Zeugma Mozaik Müzesi: ana koleksiyon ziyareti
+11,Türkiye,İzmir,Efes Antik Kenti,tarih,90,150,TAHMIN_INCELEME_BEKLIYOR,Efes: ana arkeolojik alan yürüyüşü; yoğunluk hariç
+23,Türkiye,Muğla,Saklıkent Kanyonu,doğa,120,150,TAHMIN_INCELEME_BEKLIYOR,Saklıkent: kısa kanyon yürüyüşü; hava ve parkur belirleyici
+19,Türkiye,Nevşehir,Göreme Açık Hava Müzesi,tarih,90,120,TAHMIN_INCELEME_BEKLIYOR,Göreme Açık Hava Müzesi: ana duraklar; kuyruklar hariç
+21,Türkiye,Nevşehir,Ihlara Vadisi,doğa,120,180,TAHMIN_INCELEME_BEKLIYOR,Ihlara Vadisi: seçilmiş kısa/orta parkur; tüm vadi değil

@@ -1,0 +1,35 @@
+﻿yer_id,ulke,sehir,yer_adi,kategori,onerilen_sure,inceleme_durumu,onaylanan_sure,not
+80,Almanya,Berlin,Müze Adası,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+270,Avusturya,Hallstatt,Hallstatt Gölü,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+259,Avusturya,Viyana,MuseumsQuartier,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+121,Belçika,Anvers,MAS Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+107,Belçika,Brüksel,Magritte Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+27,Fransa,Paris,Louvre Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+34,Fransa,Paris,Orsay Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+134,Hollanda,Amsterdam,NEMO Bilim Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+126,Hollanda,Amsterdam,Rijksmuseum,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+127,Hollanda,Amsterdam,Van Gogh Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+146,Hollanda,Haarlem,Frans Hals Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+139,Hollanda,Rotterdam,Museumpark,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+225,İspanya,Bilbao,Guggenheim Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+209,İspanya,Madrid,Prado Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+170,İsviçre,Cenevre,Cenevre Gölü Kıyısı,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+172,İsviçre,Lozan,Olimpiyat Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+159,İsviçre,Luzern,İsviçre Ulaşım Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+158,İsviçre,Luzern,Luzern Gölü,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+175,İsviçre,Zermatt,Matterhorn Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+151,İsviçre,Zürih,Zürih Gölü,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+75,İtalya,Como,Como Gölü Kıyısı,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+238,Mısır,Dahşur,Kırmızı Piramit,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+236,Mısır,Gize,Büyük Mısır Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+234,Mısır,Gize,Gize Piramitleri,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+226,Mısır,Kahire,Mısır Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+245,Mısır,Luksor,Krallar Vadisi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+237,Mısır,Sakkara,Basamaklı Piramit,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+250,Mısır,Şarm eş-Şeyh,Ras Muhammed Milli Parkı,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+17,Türkiye,Antalya,Aspendos Antik Tiyatrosu,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+25,Türkiye,Gaziantep,Zeugma Mozaik Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+11,Türkiye,İzmir,Efes Antik Kenti,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+23,Türkiye,Muğla,Saklıkent Kanyonu,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+19,Türkiye,Nevşehir,Göreme Açık Hava Müzesi,tarih,90,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
+21,Türkiye,Nevşehir,Ihlara Vadisi,doğa,120,INCELE,,Ziyaret kapsami ve resmi kaynakla sureyi incele; dakika yazinca onaylanir.
