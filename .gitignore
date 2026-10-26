@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.nuxt/
+.output/
+.venv/
+venv/
+__pycache__/
+*.pyc
