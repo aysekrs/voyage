@@ -263,7 +263,7 @@ async function onayla() {
           <input v-model="kart.end_date" type="date" />
         </label>
         <label :class="{ eksik: eksikMi('budget_try') }">Bütçe (TL)
-          <input v-model.number="kart.budget_try" type="number" min="1" step="500" />
+          <input v-model.number="kart.budget_try" type="number" min="1" step="any" inputmode="decimal" />
         </label>
         <label :class="{ eksik: eksikMi('people_count') }">Kişi sayısı
           <input v-model.number="kart.people_count" type="number" min="1" max="20" />
@@ -272,7 +272,7 @@ async function onayla() {
         <fieldset :class="['agirliklar', { eksik: eksikMi('nature_weight') }]">
           <legend>İlgi alanları <span :class="{ uyari: agirlikToplami !== 100 }">(toplam {{ agirlikToplami }}/100)</span></legend>
           <label v-for="a in AGIRLIK_ALANLARI" :key="a.anahtar">{{ a.ad }}
-            <input v-model.number="kart[a.anahtar]" type="number" min="0" max="100" step="5" />
+            <input v-model.number="kart[a.anahtar]" type="number" min="0" max="100" step="1" />
           </label>
         </fieldset>
 

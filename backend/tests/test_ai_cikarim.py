@@ -228,3 +228,18 @@ def test_eksiz_kalkis_varis_sayilmaz():
 
 def test_kucuk_harfli_kelime_sehir_sanilmaz():
     assert "destination" not in kural_tabanli_cikar("nice yıllara, roma rakamı", BUGUN, ["Nice", "Roma"])
+
+
+def test_karttaki_tam_sayilar_korunur():
+    tam = {"origin_city": "İzmir", "budget_try": 6000, "people_count": 3,
+           "start_date": "2026-12-12", "end_date": "2026-12-16",
+           "nature_weight": 33, "food_weight": 33, "history_weight": 34, "nightlife_weight": 0}
+    temiz, eksik, hatalar = dogrula(tam, BUGUN)
+    assert not eksik and not hatalar
+    assert temiz["budget_try"] == 6000
+    assert (temiz["nature_weight"], temiz["history_weight"]) == (33, 34)
+
+
+def test_kusuratli_butce_kabul():
+    temiz, _, hatalar = dogrula({"budget_try": 6000.5}, BUGUN)
+    assert temiz["budget_try"] == 6000.5 and not hatalar

@@ -415,6 +415,9 @@ def dogrula(bilgi: dict, bugun: date,
             pass
     if len(agirlik) < 4 or sum(agirlik) == 0:
         eksik.append("interests")
+    elif sum(agirlik) == 100:
+        # Kullanıcının kartta girdiği değerler (5'in katı olmasa da) aynen korunur
+        temiz.update(dict(zip(AGIRLIKLAR, agirlik)))
     else:
         temiz.update(agirliklari_yuvarla(dict(zip(AGIRLIKLAR, agirlik))))
 
