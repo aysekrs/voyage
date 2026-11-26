@@ -61,6 +61,9 @@ watch(() => route.fullPath, () => {
         <NuxtLink to="/oneriler" class="nav-link" :class="{ aktif: route.path === '/oneriler' }">
           Bana öner
         </NuxtLink>
+        <NuxtLink to="/asistan" class="nav-link" :class="{ aktif: route.path === '/asistan' }">
+          AI asistan
+        </NuxtLink>
         <NuxtLink to="/seyahatler" class="nav-link" :class="{ aktif: route.path.startsWith('/seyahatler') }">
           Seyahatlerim
         </NuxtLink>

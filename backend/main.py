@@ -1096,3 +1096,7 @@ trip_options.register(app, conn, current_user)
 from explore_routes import router as explore_router  # noqa: E402
 
 app.include_router(explore_router)
+
+# 5. hafta (Kişi B): AI asistan
+from ai_routes import router as ai_router
+app.include_router(ai_router)
