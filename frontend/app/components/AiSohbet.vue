@@ -6,10 +6,12 @@ interface Mesaj {
   id: number | string
   role: 'user' | 'assistant'
   content: string
+  trip_id?: number | null
 }
 
 interface Bilgi {
   origin_city: string | null
+  destination: string | null
   origin_airport_code: string | null
   budget_try: number | null
   people_count: number | null
@@ -59,16 +61,27 @@ const onaylaniyor = ref(false)
 const yukleniyor = ref(true)
 const hata = ref('')
 const liste = ref<HTMLElement | null>(null)
+const sehirAdlari = ref<string[]>([])
+
+// Seyahat oluşturulan sohbetin son mesajı: altına seyahat bağlantısı ve ayraç gelir
+function seyahatMesajiMi(m: Mesaj) {
+  return m.role === 'assistant' && !!m.trip_id && m.content.startsWith('Seyahatin oluşturuldu')
+}
 
 function bosBilgi(): Bilgi {
   return {
-    origin_city: null, origin_airport_code: null, budget_try: null, people_count: null,
+    origin_city: null, destination: null, origin_airport_code: null, budget_try: null, people_count: null,
     start_date: null, end_date: null,
     nature_weight: null, food_weight: null, history_weight: null, nightlife_weight: null
   }
 }
 
-const gorunenMesajlar = computed(() => [HOSGELDIN, ...mesajlar.value])
+// Önce seyahate dönüşmüş eski sohbetler, sonra karşılama, sonra açık sohbet
+const gorunenMesajlar = computed(() => [
+  ...mesajlar.value.filter(m => m.trip_id),
+  HOSGELDIN,
+  ...mesajlar.value.filter(m => !m.trip_id)
+])
 const kartVar = computed(() => Object.values(durum.value?.bilgi ?? {}).some(v => v !== null && v !== undefined))
 const agirlikToplami = computed(() =>
   AGIRLIK_ALANLARI.reduce((t, a) => t + (Number(kart.value[a.anahtar]) || 0), 0)
@@ -97,6 +110,10 @@ async function asagiKaydir() {
 }
 
 onMounted(async () => {
+  // Gidilecek şehir kutusu için öneri listesi (hata olursa kutu yine elle yazılabilir)
+  $fetch<{ name: string }[]>('/api/kesfet')
+    .then(liste => { sehirAdlari.value = liste.map(s => s.name).sort((a, b) => a.localeCompare(b, 'tr')) })
+    .catch(() => {})
   try {
     const veri = await $fetch<{ messages: Mesaj[]; durum: Durum }>('/api/ai/chat')
     mesajlar.value = veri.messages
@@ -140,7 +157,8 @@ async function yeniSohbet() {
   hata.value = ''
   try {
     await $fetch('/api/ai/chat', { method: 'DELETE' })
-    mesajlar.value = []
+    // Seyahate dönüşmüş eski sohbetler kalır, yarım kalan sohbet silinir
+    mesajlar.value = mesajlar.value.filter(m => m.trip_id)
     durum.value = null
     kart.value = bosBilgi()
   } catch (err: any) {
@@ -157,6 +175,7 @@ async function onayla() {
       method: 'POST',
       body: {
         ...kart.value,
+        destination: kart.value.destination?.trim() || null,
         origin_airport_code: kart.value.origin_airport_code?.toUpperCase() ?? null,
         budget_try: Number(kart.value.budget_try),
         people_count: Number(kart.value.people_count),
@@ -181,18 +200,24 @@ async function onayla() {
           <p class="v-ust-yazi">AI asistan</p>
           <h2 class="v-baslik">Seyahatini anlat</h2>
         </div>
-        <button v-if="mesajlar.length" type="button" class="v-buton-ikincil" @click="yeniSohbet">Yeni sohbet</button>
+        <button v-if="mesajlar.some(m => !m.trip_id)" type="button" class="v-buton-ikincil" @click="yeniSohbet">Yeni sohbet</button>
       </div>
 
       <div ref="liste" class="mesajlar" aria-live="polite">
         <p v-if="yukleniyor" class="b-not">Yükleniyor...</p>
-        <div v-for="m in gorunenMesajlar" :key="m.id" :class="['balon', m.role === 'user' ? 'kullanici' : 'asistan']">
-          {{ m.content }}
-        </div>
+        <template v-for="m in gorunenMesajlar" :key="m.id">
+          <div :class="['balon', m.role === 'user' ? 'kullanici' : 'asistan', { eski: m.trip_id }]">
+            {{ m.content }}
+            <NuxtLink v-if="seyahatMesajiMi(m)" :to="`/seyahatler/${m.trip_id}`" class="seyahat-link">
+              Seyahati aç →
+            </NuxtLink>
+          </div>
+          <div v-if="seyahatMesajiMi(m)" class="ayrac"><span>Yeni sohbet</span></div>
+        </template>
         <div v-if="gonderiliyor" class="balon asistan yaziyor">Düşünüyorum…</div>
       </div>
 
-      <div v-if="!mesajlar.length && !yukleniyor" class="ornekler">
+      <div v-if="!mesajlar.some(m => !m.trip_id) && !yukleniyor" class="ornekler">
         <p class="b-durak-alt">Örnek cümleler:</p>
         <button v-for="o in ORNEKLER" :key="o" type="button" class="v-cip ornek" @click="gonder(o)">{{ o }}</button>
       </div>
@@ -220,6 +245,13 @@ async function onayla() {
       <form v-else class="alanlar" @submit.prevent="onayla">
         <label :class="{ eksik: eksikMi('origin_city') }">Kalkış şehri
           <input v-model="kart.origin_city" type="text" maxlength="150" />
+        </label>
+        <label class="genis">Gidilecek şehir (isteğe bağlı)
+          <input v-model="kart.destination" type="text" list="ai-sehirler" maxlength="150"
+            placeholder="Boş bırakırsan sonra önerilerden seçersin" />
+          <datalist id="ai-sehirler">
+            <option v-for="ad in sehirAdlari" :key="ad" :value="ad" />
+          </datalist>
         </label>
         <label :class="{ eksik: eksikMi('origin_airport_code') }">Havalimanı kodu
           <input v-model="kart.origin_airport_code" type="text" maxlength="3" style="text-transform: uppercase" />
@@ -252,7 +284,7 @@ async function onayla() {
           {{ onaylaniyor ? 'Seyahat oluşturuluyor...' : 'Onayla ve seyahati oluştur' }}
         </button>
         <p class="b-not">
-          Gidilecek şehri bir sonraki adımda, bütçene ve ilgi alanlarına göre önerilen şehirlerden seçeceksin.
+          <template v-if="!kart.destination">Gidilecek şehri bir sonraki adımda, bütçene ve ilgi alanlarına göre önerilen şehirlerden seçeceksin.</template>
           <span v-if="durum?.kaynak === 'kural'"> (Yapay zekâ anahtarı tanımlı değil; bilgiler kurallarla çıkarıldı.)</span>
         </p>
       </form>
@@ -320,6 +352,42 @@ async function onayla() {
   background: var(--v-gradient-button);
   color: white;
   font-weight: 600;
+}
+
+.balon.eski {
+  opacity: 0.75;
+}
+
+.seyahat-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: var(--v-lilac-deep);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.ayrac {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+  color: var(--v-soft);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+}
+
+.ayrac::before,
+.ayrac::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--v-line);
+}
+
+.alanlar .genis {
+  grid-column: 1 / -1;
 }
 
 .yaziyor {

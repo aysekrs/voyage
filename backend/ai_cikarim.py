@@ -20,7 +20,7 @@ import re
 from datetime import date, timedelta
 
 ALANLAR = [
-    "origin_city", "origin_airport_code", "budget_try", "people_count",
+    "origin_city", "origin_airport_code", "destination", "budget_try", "people_count",
     "start_date", "end_date",
     "nature_weight", "food_weight", "history_weight", "nightlife_weight",
 ]
@@ -97,10 +97,27 @@ def agirliklari_yuvarla(puanlar: dict[str, float]) -> dict[str, int]:
 
 # ---------------------------------------------------------------- kural tabanlı
 
-def kural_tabanli_cikar(metin: str, bugun: date) -> dict:
+def varis_bul(metin: str, sehirler: list[str]) -> str | None:
+    """Gidilecek şehri bulur: "Paris'e", "Roma'ya", "Viyana'da", "Lizbon gezisi".
+    Sadece veritabanındaki şehir adları aranır; "İzmir'den" gibi kalkış ekleri sayılmaz."""
+    k = kucult(metin)
+    for sehir in sorted(sehirler, key=len, reverse=True):  # uzun ad önce (ör. "Ebu Simbel")
+        s = re.escape(kucult(sehir))
+        if re.search(rf"(?<!\w){s}['’]?(y?a|y?e|da|de|ta|te)(?!\w)", k) or re.search(
+            rf"(?<!\w){s}['’]?\s+(gezisi|gezi|tatili|tatil|seyahati|turu|tur)\b", k
+        ):
+            return sehir
+    return None
+
+
+def kural_tabanli_cikar(metin: str, bugun: date, sehirler: list[str] | None = None) -> dict:
     """Cümleden bulabildiği alanları döndürür. Bulamadığı alan sözlükte yer almaz."""
     k = kucult(metin)
     sonuc: dict = {}
+    if sehirler:
+        varis = varis_bul(metin, sehirler)
+        if varis:
+            sonuc["destination"] = varis
 
     # Kalkış şehri: "İzmir'den", "izmirden", "Ankara çıkışlı"
     for sehir, kod in HAVALIMANLARI.items():
@@ -211,6 +228,9 @@ def kural_tabanli_cikar(metin: str, bugun: date) -> dict:
                     tablo[a] = 1
             sonuc.update(agirliklari_yuvarla(tablo))
 
+    # "İzmir'de yaşıyorum, İzmir'den..." gibi durumlarda kalkış şehri varış sayılmasın
+    if sonuc.get("destination") and sonuc.get("destination") == sonuc.get("origin_city"):
+        del sonuc["destination"]
     return sonuc
 
 
@@ -223,6 +243,7 @@ Bugünün tarihi: {bugun}.
 Alanlar (bilmediğin alanı null bırak, ASLA tahmin etme ya da uydurma):
 - origin_city: kalkış şehri (Türkçe ad, örn. "İzmir")
 - origin_airport_code: kalkış havalimanı IATA kodu (biliyorsan, örn. "ADB")
+- destination: gitmek istediği şehir, Türkçe adıyla (örn. "Roma", "Viyana"). Söylemediyse null.
 - budget_try: toplam bütçe, Türk lirası, sayı (örn. "40 bin" -> 40000). Başka para birimi ise null.
 - people_count: kişi sayısı, tam sayı
 - start_date, end_date: "YYYY-AA-GG". Yıl söylenmediyse bugünden sonraki ilk tarih.
@@ -268,11 +289,12 @@ def llm_ile_cikar(kullanici_mesajlari: list[str], bugun: date, zaman_asimi: floa
     return {a: veri[a] for a in ALANLAR if veri.get(a) not in (None, "")}
 
 
-def cikar(kullanici_mesajlari: list[str], bugun: date) -> tuple[dict, str]:
+def cikar(kullanici_mesajlari: list[str], bugun: date,
+          sehirler: list[str] | None = None) -> tuple[dict, str]:
     """Bütün kullanıcı mesajlarından bilgi çıkarır. (bilgi, kaynak) döner."""
     kural: dict = {}
     for mesaj in kullanici_mesajlari:  # sonraki mesaj öncekini günceller
-        kural = birlestir(kural, kural_tabanli_cikar(mesaj, bugun))
+        kural = birlestir(kural, kural_tabanli_cikar(mesaj, bugun, sehirler))
     llm = llm_ile_cikar(kullanici_mesajlari, bugun)
     if llm is None:
         return kural, "kural"
@@ -304,11 +326,29 @@ def _tarih(deger) -> date | None:
         return None
 
 
-def dogrula(bilgi: dict, bugun: date) -> tuple[dict, list[str], list[str]]:
-    """(temiz_bilgi, eksik_alanlar, hata_mesajlari) döndürür."""
+def dogrula(bilgi: dict, bugun: date,
+            sehirler: list[str] | None = None) -> tuple[dict, list[str], list[str]]:
+    """(temiz_bilgi, eksik_alanlar, hata_mesajlari) döndürür.
+
+    Gidilecek şehir isteğe bağlıdır. Verildiyse ve şehir listesinde yoksa
+    seyahati engellemez; temiz["varis_notu"] ile kullanıcıya söylenir.
+    """
     temiz = dict(bilgi)
+    temiz.pop("varis_notu", None)
     eksik: list[str] = []
     hatalar: list[str] = []
+
+    varis = str(temiz.get("destination") or "").strip()
+    if not varis:
+        temiz["destination"] = None
+    elif sehirler is not None:
+        eslesen = next((s for s in sehirler if kucult(s) == kucult(varis)), None)
+        temiz["destination"] = eslesen
+        if eslesen is None:
+            temiz["varis_notu"] = (
+                f"{varis} şu an şehir listemizde yok; seyahat oluşunca sana önerilen "
+                "şehirlerden birini seçebilirsin."
+            )
 
     sehir = str(temiz.get("origin_city") or "").strip()
     if sehir:
@@ -406,4 +446,6 @@ def yanit_uret(eksik: list[str], hatalar: list[str]) -> str:
 def baslik_uret(bilgi: dict) -> str:
     bas, bit = _tarih(bilgi.get("start_date")), _tarih(bilgi.get("end_date"))
     tarih = f" ({bas:%d.%m}–{bit:%d.%m.%Y})" if bas and bit else ""
+    if bilgi.get("destination"):
+        return f"{bilgi.get('origin_city', 'Yeni')} → {bilgi['destination']} seyahati{tarih}"[:150]
     return f"{bilgi.get('origin_city', 'Yeni')} çıkışlı seyahat{tarih}"[:150]

@@ -33,6 +33,7 @@ class MesajGirdisi(BaseModel):
 
 class OnayGirdisi(BaseModel):
     origin_city: str | None = None
+    destination: str | None = None
     origin_airport_code: str | None = None
     budget_try: float | None = None
     people_count: int | None = None
@@ -61,6 +62,26 @@ def _acik_mesajlar(db, user_id: int):
     ).fetchall()
 
 
+def _sehirler(db) -> list[str]:
+    """Gidilecek şehir olarak tanınan adlar (B'nin sehirler tablosu)."""
+    return [r["ad"] for r in db.execute("SELECT ad FROM sehirler").fetchall()]
+
+
+def _gecmis(db, user_id: int, limit: int = 80):
+    """Ekranda gösterilecek son mesajlar: seyahate dönüşmüş eski sohbetler dahil."""
+    satirlar = db.execute(
+        """
+        SELECT id, trip_id, role, content, created_at
+        FROM ai_messages
+        WHERE user_id = %s
+        ORDER BY created_at DESC, id DESC
+        LIMIT %s
+        """,
+        (user_id, limit),
+    ).fetchall()
+    return list(reversed(satirlar))
+
+
 def _durum(mesajlar) -> dict:
     """Son asistan mesajındaki anlaşılan bilgiler."""
     for m in reversed(mesajlar):
@@ -71,15 +92,16 @@ def _durum(mesajlar) -> dict:
 
 def _cikti(m) -> dict:
     return {"id": m["id"], "role": m["role"], "content": m["content"],
-            "created_at": m["created_at"].isoformat()}
+            "trip_id": m.get("trip_id"), "created_at": m["created_at"].isoformat()}
 
 
 @router.get("/chat")
 def sohbeti_getir(voyage_session: str | None = Cookie(default=None)):
     user_id, _ = _kullanici(voyage_session)
     with _main().conn() as db:
-        mesajlar = _acik_mesajlar(db, user_id)
-    return {"messages": [_cikti(m) for m in mesajlar], "durum": _durum(mesajlar)}
+        acik = _acik_mesajlar(db, user_id)
+        gecmis = _gecmis(db, user_id)
+    return {"messages": [_cikti(m) for m in gecmis], "durum": _durum(acik)}
 
 
 @router.post("/chat")
@@ -96,13 +118,14 @@ def mesaj_gonder(
     with _main().conn() as db:
         kullanici_mesaji = db.execute(
             """INSERT INTO ai_messages (user_id, role, content)
-               VALUES (%s, 'user', %s) RETURNING id, role, content, created_at""",
+               VALUES (%s, 'user', %s) RETURNING id, trip_id, role, content, created_at""",
             (user_id, data.message.strip()),
         ).fetchone()
 
         gecmis = [m["content"] for m in _acik_mesajlar(db, user_id) if m["role"] == "user"]
-        bilgi, kaynak = cikar(gecmis, bugun)
-        temiz, eksik, hatalar = dogrula(bilgi, bugun)
+        sehirler = _sehirler(db)
+        bilgi, kaynak = cikar(gecmis, bugun, sehirler)
+        temiz, eksik, hatalar = dogrula(bilgi, bugun, sehirler)
         durum = {
             "bilgi": {a: temiz.get(a) for a in ALANLAR},
             "eksik": eksik,
@@ -111,9 +134,11 @@ def mesaj_gonder(
             "kaynak": kaynak,
         }
         cevap = yanit_uret(eksik, hatalar)
+        if temiz.get("varis_notu"):
+            cevap = temiz["varis_notu"] + " " + cevap
         asistan_mesaji = db.execute(
             """INSERT INTO ai_messages (user_id, role, content, extracted_json)
-               VALUES (%s, 'assistant', %s, %s) RETURNING id, role, content, created_at""",
+               VALUES (%s, 'assistant', %s, %s) RETURNING id, trip_id, role, content, created_at""",
             (user_id, cevap, json.dumps(durum, ensure_ascii=False)),
         ).fetchone()
 
@@ -134,9 +159,13 @@ def onayla(data: OnayGirdisi, voyage_session: str | None = Cookie(default=None))
     main = _main()
     user_id, _ = _kullanici(voyage_session)
 
-    temiz, eksik, hatalar = dogrula(data.model_dump(), date.today())
+    with main.conn() as db:
+        sehirler = _sehirler(db)
+    temiz, eksik, hatalar = dogrula(data.model_dump(), date.today(), sehirler)
     if eksik or hatalar:
         raise HTTPException(422, yanit_uret(eksik, hatalar))
+    if temiz.get("varis_notu"):
+        raise HTTPException(422, temiz["varis_notu"] + " Şehir alanını boş bırakabilirsin.")
 
     with main.conn() as db:
         kullanici_metni = " ".join(
@@ -146,7 +175,8 @@ def onayla(data: OnayGirdisi, voyage_session: str | None = Cookie(default=None))
     try:
         seyahat_girdisi = main.TripCreate(
             title=baslik_uret(temiz),
-            destination=None,  # şehir sonra öneri ekranından seçilir
+            # Boşsa şehir sonra öneri ekranından seçilir
+            destination=temiz.get("destination"),
             user_text=kullanici_metni,
             start_date=temiz["start_date"],
             end_date=temiz["end_date"],
@@ -173,7 +203,10 @@ def onayla(data: OnayGirdisi, voyage_session: str | None = Cookie(default=None))
         db.execute(
             """INSERT INTO ai_messages (user_id, trip_id, role, content)
                VALUES (%s, %s, 'assistant', %s)""",
-            (user_id, seyahat["id"], "Seyahatin oluşturuldu! Şimdi sana uygun şehirleri seçebilirsin."),
+            (user_id, seyahat["id"],
+             f"Seyahatin oluşturuldu: {seyahat['title']}. "
+             + ("Uçuş ve otel aramaya geçebilirsin." if seyahat.get("destination")
+                else "Şimdi sana uygun şehirleri seçebilirsin.")),
         )
 
     return {"trip": seyahat}

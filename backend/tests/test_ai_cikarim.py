@@ -176,3 +176,42 @@ def test_baslik():
 def test_onay_kartinda_bos_kod_sehirden_dolar():
     temiz, eksik, _ = dogrula({"origin_city": "Ankara", "origin_airport_code": None}, BUGUN)
     assert temiz["origin_airport_code"] == "ESB" and "origin_airport_code" not in eksik
+
+
+# ---------- gidilecek şehir ----------
+
+SEHIRLER = ["Paris", "Roma", "Viyana", "İzmir", "Antalya", "Ebu Simbel", "Lizbon"]
+
+
+@pytest.mark.parametrize("metin,sehir", [
+    ("İzmir'den Paris'e gitmek istiyoruz", "Paris"),
+    ("Roma'ya 3 kişi", "Roma"),
+    ("viyanada 4 gece", "Viyana"),
+    ("Lizbon gezisi planlıyorum", "Lizbon"),
+    ("İstanbul'dan Antalya'ya", "Antalya"),
+    ("Ebu Simbel'e tur", "Ebu Simbel"),
+])
+def test_varis(metin, sehir):
+    assert kural_tabanli_cikar(metin, BUGUN, SEHIRLER)["destination"] == sehir
+
+
+def test_kalkis_varis_sayilmaz():
+    assert "destination" not in kural_tabanli_cikar("İzmir'den 2 kişi", BUGUN, SEHIRLER)
+
+
+def test_varis_yoksa_bos():
+    assert "destination" not in kural_tabanli_cikar("tatile gitmek istiyorum", BUGUN, SEHIRLER)
+
+
+def test_listede_olmayan_varis_engellemez():
+    temiz, _, hatalar = dogrula({"destination": "Tokyo"}, BUGUN, SEHIRLER)
+    assert temiz["destination"] is None and "Tokyo" in temiz["varis_notu"] and not hatalar
+
+
+def test_varis_buyuk_kucuk_harf_duzelir():
+    temiz, _, _ = dogrula({"destination": "paris"}, BUGUN, SEHIRLER)
+    assert temiz["destination"] == "Paris"
+
+
+def test_varisli_baslik():
+    assert baslik_uret({"origin_city": "İzmir", "destination": "Roma"}) == "İzmir → Roma seyahati"
