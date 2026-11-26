@@ -3,11 +3,12 @@
 import { computed, ref, watch } from 'vue'
 import UcusSonuclari from './UcusSonuclari.vue'
 import OtelSonuclari from './OtelSonuclari.vue'
+import SehirOnerileri from './SehirOnerileri.vue'
 
 interface SeyahatDetay {
   id: number
   title: string
-  destination: string
+  destination: string | null
   selected_destination_id: number | null
   start_date: string
   end_date: string
@@ -102,6 +103,18 @@ const geceSayisi = computed(() => {
   return fark >= 0 ? fark : null
 })
 
+// Şehir önerilerinden biri seçilince ekranı boşaltmadan detayı tazele
+async function secimSonrasiYenile() {
+  try {
+    const response = await fetch(`/api/trips/${props.tripId}`, {
+      credentials: 'include'
+    })
+    if (response.ok) seyahat.value = await response.json()
+  } catch {
+    // sessizce geç; seçim zaten kaydedildi
+  }
+}
+
 watch(
   () => props.tripId,
   id => detayGetir(id),
@@ -164,7 +177,7 @@ watch(
 
             <div class="route-place">
               <span class="route-caption">NEREYE</span>
-              <strong>{{ seyahat.destination }}</strong>
+              <strong>{{ seyahat.destination || 'Henüz seçilmedi' }}</strong>
               <span>Varış noktası</span>
             </div>
           </div>
@@ -237,6 +250,30 @@ watch(
         </span>
       </div>
 
+      <!-- 5. Hafta: Şehir önerileri -->
+      <div class="detail-service">
+        <div class="service-heading">
+          <div>
+            <span class="service-eyebrow">ÖNERİLER</span>
+            <h3>Sana uygun şehirler</h3>
+            <p>
+              Toplam maliyeti, kalan bütçeyi ve ilgi alanlarına uyumu karşılaştır.
+            </p>
+          </div>
+
+          <span class="service-mark" aria-hidden="true">★</span>
+        </div>
+
+        <div class="service-content">
+          <SehirOnerileri
+            :key="seyahat.id"
+            :trip-id="seyahat.id"
+            :is-owner="seyahat.role === 'owner'"
+            @secildi="secimSonrasiYenile"
+          />
+        </div>
+      </div>
+
       <!-- Uçuşlar -->
       <div class="detail-service">
         <div class="service-heading">
@@ -253,7 +290,7 @@ watch(
 
         <div class="service-content">
           <UcusSonuclari
-            :key="seyahat.id"
+            :key="`${seyahat.id}-${seyahat.selected_destination_id}`"
             :trip-id="seyahat.id"
             :destination-id="seyahat.selected_destination_id"
             :origin-airport="seyahat.origin_airport_code"
@@ -279,7 +316,7 @@ watch(
 
         <div class="service-content">
           <OtelSonuclari
-            :key="seyahat.id"
+            :key="`${seyahat.id}-${seyahat.selected_destination_id}`"
             :trip-id="seyahat.id"
             :destination-id="seyahat.selected_destination_id"
             :destination="seyahat.destination"
