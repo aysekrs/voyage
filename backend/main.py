@@ -571,7 +571,11 @@ from pydantic import BaseModel, Field, model_validator
 
 class TripCreate(BaseModel):
     title: str = Field(min_length=1, max_length=150)
-    destination: str = Field(min_length=1, max_length=150)
+    # Boş bırakılabilir: AI asistanı seyahati şehir seçmeden oluşturur,
+    # şehir 5. haftadaki öneri ekranından seçilir.
+    destination: str | None = Field(default=None, max_length=150)
+    # Kullanıcının AI'a yazdığı cümle (varsa)
+    user_text: str | None = Field(default=None, max_length=2000)
     start_date: date
     end_date: date
 
@@ -635,22 +639,26 @@ def create_trip(
 
     with conn() as db:
         with db.transaction():
-            destination_id = find_destination_id(db, data.destination)
+            destination = (data.destination or "").strip() or None
+            destination_id = (
+                find_destination_id(db, destination) if destination else None
+            )
             trip = db.execute(
                 """
                 INSERT INTO trips (
                     user_id, title, destination,
                     start_date, end_date,
                     origin_city, origin_airport_code,
-                    budget_try, people_count, selected_destination_id
+                    budget_try, people_count, selected_destination_id,
+                    user_text
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING *
                 """,
                 (
                     user_id,
                     data.title.strip(),
-                    data.destination.strip(),
+                    destination,
                     data.start_date,
                     data.end_date,
                     data.origin_city.strip(),
@@ -658,6 +666,7 @@ def create_trip(
                     data.budget_try,
                     data.people_count,
                     destination_id,
+                    data.user_text,
                 ),
             ).fetchone()
 
@@ -764,7 +773,10 @@ def update_trip(
 
     with conn() as db:
         with db.transaction():
-            destination_id = find_destination_id(db, data.destination)
+            destination = (data.destination or "").strip() or None
+            destination_id = (
+                find_destination_id(db, destination) if destination else None
+            )
             trip = db.execute(
                 """
                 UPDATE trips
@@ -789,7 +801,7 @@ def update_trip(
                 """,
                 (
                     data.title.strip(),
-                    data.destination.strip(),
+                    destination,
                     data.start_date,
                     data.end_date,
                     data.origin_city.strip(),
@@ -1073,3 +1085,9 @@ def save_trip_accommodation(
             ).fetchone()
 
     return accommodation
+
+
+# 5. Hafta - Şehir önerileri (maliyet + puan), bkz. trip_options.py
+import trip_options  # noqa: E402
+
+trip_options.register(app, conn, current_user)
