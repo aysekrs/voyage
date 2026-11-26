@@ -179,7 +179,7 @@ watch(() => props.tripId, seyahatiGetir, { immediate: true })
 
       <div class="alan">
         <label for="duzenle-butce">Bütçe (TL)</label>
-        <input id="duzenle-butce" v-model.number="form.budget_try" type="number" min="1" required>
+        <input id="duzenle-butce" v-model.number="form.budget_try" type="number" min="1" step="any" inputmode="decimal" required>
       </div>
 
       <div class="alan">

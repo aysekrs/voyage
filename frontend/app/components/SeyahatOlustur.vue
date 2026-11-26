@@ -253,7 +253,7 @@ async function seyahatOlustur() {
               v-model.number="form.budget_try"
               type="number"
               min="0.01"
-              step="0.01"
+              step="any"
               required
             />
           </div>

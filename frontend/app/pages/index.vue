@@ -140,7 +140,7 @@ onMounted(async () => {
 
         <label class="arama-alan">
           <span>Bütçe (TL)</span>
-          <input v-model.number="arama.budget_try" type="number" min="1" step="1000">
+          <input v-model.number="arama.budget_try" type="number" min="1" step="any" inputmode="decimal">
         </label>
 
         <button type="submit" class="arama-buton" aria-label="Seyahati planla">
