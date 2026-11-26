@@ -44,6 +44,7 @@ const sonuclar = ref<Havalimani[]>([])
 const acik = ref(false)
 const aktif = ref(-1)
 const yukleniyor = ref(false)
+const hata = ref('')
 const listeId = `hs-liste-${Math.random().toString(36).slice(2, 8)}`
 let zamanlayici: ReturnType<typeof setTimeout> | null = null
 let istekNo = 0
@@ -92,8 +93,13 @@ async function ara(q: string) {
     if (buIstek !== istekNo) return
     sonuclar.value = liste
     aktif.value = liste.length ? 0 : -1
-  } catch {
-    if (buIstek === istekNo) sonuclar.value = []
+    hata.value = ''
+  } catch (err: any) {
+    if (buIstek === istekNo) {
+      sonuclar.value = []
+      // "Bulunamadı" ile sunucu hatası karışmasın
+      hata.value = err?.data?.message || 'Havalimanı listesi alınamadı (sunucuya ulaşılamadı).'
+    }
   } finally {
     if (buIstek === istekNo) yukleniyor.value = false
   }
@@ -179,6 +185,7 @@ onBeforeUnmount(() => {
     >
     <ul v-show="acik && (sonuclar.length || yukleniyor || metin.trim().length >= 2)" :id="listeId" class="hs-liste" role="listbox">
       <li v-if="yukleniyor && !sonuclar.length" class="hs-bilgi">Aranıyor...</li>
+      <li v-else-if="hata" class="hs-bilgi hs-hata">{{ hata }}</li>
       <li v-else-if="!sonuclar.length" class="hs-bilgi">Bu adla havalimanı bulunamadı.</li>
       <li
         v-for="(h, i) in sonuclar"
@@ -291,6 +298,10 @@ onBeforeUnmount(() => {
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.hs-hata {
+  color: var(--v-pink-deep);
 }
 
 .hs-bilgi {
