@@ -1,0 +1,31 @@
+﻿yer_id;ulke;sehir;gezilecek_yer;arama_metni;aday_sirasi;enlem;boylam;eslesen_adres;sonuc_adi;confidence;confidence_city_level;durum
+271;Avusturya;Hallstatt;Hallstatt Eski Şehir;Hallstatt Eski Şehir, Hallstatt, Avusturya;;;;;;;;SONUC_YOK
+268;Avusturya;Innsbruck;Bergisel Kayakla Atlama Tepesi;Bergisel Kayakla Atlama Tepesi, Innsbruck, Avusturya;;;;;;;;SONUC_YOK
+120;Belçika;Anvers;Anvers Merkez İstasyonu;Anvers Merkez İstasyonu, Anvers, Belçika;;;;;;;;SONUC_YOK
+110;Belçika;Brugge;Brugge Markt Meydanı;Brugge Markt Meydanı, Brugge, Belçika;;;;;;;;SONUC_YOK
+104;Belçika;Brüksel;Kraliyet Galerileri Saint-Hubert;Kraliyet Galerileri Saint-Hubert, Brüksel, Belçika;;;;;;;;SONUC_YOK
+48;Fransa;Marsilya;Calanques Ulusal Parkı;Calanques Ulusal Parkı, Marsilya, Fransa;;;;;;;;SONUC_YOK
+38;Fransa;Versay;Versay Sarayı;Versay Sarayı, Versay, Fransa;;;;;;;;SONUC_YOK
+39;Fransa;Versay;Versay Sarayı Bahçeleri;Versay Sarayı Bahçeleri, Versay, Fransa;;;;;;;;SONUC_YOK
+207;İspanya;Barselona;Gotik Mahalle;Gotik Mahalle, Barselona, İspanya;;;;;;;;SONUC_YOK
+219;İspanya;Granada;Elhamra Sarayı;Elhamra Sarayı, Granada, İspanya;;;;;;;;SONUC_YOK
+223;İspanya;Valensiya;Merkez Pazarı;Merkez Pazarı, Valensiya, İspanya;;;;;;;;SONUC_YOK
+170;İsviçre;Cenevre;Cenevre Gölü Kıyısı;Cenevre Gölü Kıyısı, Cenevre, İsviçre;;;;;;;;SONUC_YOK
+172;İsviçre;Lozan;Olimpiyat Müzesi;Olimpiyat Müzesi, Lozan, İsviçre;;;;;;;;SONUC_YOK
+159;İsviçre;Luzern;İsviçre Ulaşım Müzesi;İsviçre Ulaşım Müzesi, Luzern, İsviçre;;;;;;;;SONUC_YOK
+151;İsviçre;Zürih;Zürih Gölü;Zürih Gölü, Zürih, İsviçre;;;;;;;;SONUC_YOK
+60;İtalya;Floransa;Floransa Katedrali;Floransa Katedrali, Floransa, İtalya;;;;;;;;SONUC_YOK
+71;İtalya;Napoli;Napoli Tarihi Merkezi;Napoli Tarihi Merkezi, Napoli, İtalya;;;;;;;;SONUC_YOK
+73;İtalya;Pompei;Pompeii Arkeolojik Parkı;Pompeii Arkeolojik Parkı, Pompei, İtalya;;;;;;;;SONUC_YOK
+64;İtalya;Venedik;Dükler Sarayı;Dükler Sarayı, Venedik, İtalya;;;;;;;;SONUC_YOK
+248;Mısır;Asvan;Asvan Botanik Bahçesi;Asvan Botanik Bahçesi, Asvan, Mısır;;;;;;;;SONUC_YOK
+238;Mısır;Dahşur;Kırmızı Piramit;Kırmızı Piramit, Dahşur, Mısır;;;;;;;;SONUC_YOK
+249;Mısır;Ebu Simbel;Ebu Simbel Tapınakları;Ebu Simbel Tapınakları, Ebu Simbel, Mısır;;;;;;;;SONUC_YOK
+236;Mısır;Gize;Büyük Mısır Müzesi;Büyük Mısır Müzesi, Gize, Mısır;;;;;;;;SONUC_YOK
+235;Mısır;Gize;Büyük Sfenks;Büyük Sfenks, Gize, Mısır;;;;;;;;SONUC_YOK
+229;Mısır;Kahire;El-Ezher Camii;El-Ezher Camii, Kahire, Mısır;;;;;;;;SONUC_YOK
+231;Mısır;Kahire;El-Ezher Parkı;El-Ezher Parkı, Kahire, Mısır;;;;;;;;SONUC_YOK
+232;Mısır;Kahire;Kopt Kahire;Kopt Kahire, Kahire, Mısır;;;;;;;;SONUC_YOK
+233;Mısır;Kahire;Nil Kıyısı Yürüyüş Alanı;Nil Kıyısı Yürüyüş Alanı, Kahire, Mısır;;;;;;;;SONUC_YOK
+237;Mısır;Sakkara;Basamaklı Piramit;Basamaklı Piramit, Sakkara, Mısır;;;;;;;;SONUC_YOK
+250;Mısır;Şarm eş-Şeyh;Ras Muhammed Milli Parkı;Ras Muhammed Milli Parkı, Şarm eş-Şeyh, Mısır;;;;;;;;SONUC_YOK
