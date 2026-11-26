@@ -1,669 +1,642 @@
-
 <script setup lang="ts">
-import { ref, computed, onMounted,nextTick} from "vue";
-import SeyahatOlustur from '~/components/SeyahatOlustur.vue'
-import SeyahatListesi from '~/components/SeyahatListesi.vue'
-
-const route = useRoute()
-const seyahatFormuAcik = ref(false)
-const girisYapildi = ref(false)
-const oturumKontrolEdiliyor = ref(false)
-
-async function seyahatOlusturAc() {
-  oturumKontrolEdiliyor.value = true
-
-  try {
-    await $fetch('/api/ben')
-
-    seyahatFormuAcik.value = true
-    await nextTick()
-
-    document.getElementById('seyahat-olustur')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  } catch {
-    await navigateTo('/login?redirect=%2F%3FseyahatOlustur%3D1')
-  } finally {
-    oturumKontrolEdiliyor.value = false
-  }
-}
-
-onMounted(() => {
-  $fetch('/api/ben')
-    .then(() => { girisYapildi.value = true })
-    .catch(() => { girisYapildi.value = false })
-
-  if (route.query.seyahatOlustur === '1') {
-    seyahatOlusturAc()
-  }
-})
-
+// Keşfet: Airbnb tarzı arama çubuğu + kategori şeridi + şehir kartları
+import { computed, onMounted, reactive, ref } from 'vue'
 
 interface Sehir {
-  id: number;
-  name: string;
-  country: string;
+  id: number
+  name: string
+  country: string
+  place_count: number
+  categories: Record<'history' | 'nature' | 'food' | 'nightlife', number>
 }
 
-interface Yer {
-  id: number;
-  name: string;
-  category: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  visit_duration: number | null;
-  average_price: number | null;
-}
+const { kullanici, yenile } = useKullanici()
 
-const API_URL = "http://127.0.0.1:8000";
+const sehirler = ref<Sehir[]>([])
+const yukleniyor = ref(true)
+const hata = ref('')
+const secilenKategori = ref<string>('hepsi')
+const aramaMetni = ref('')
+const KART_SAYISI = 12
+const hepsiniGoster = ref(false)
 
-const sehirler = ref<Sehir[]>([]);
-const secilenUlke = ref("");
-const secilenSehir = ref("");
-const yerler = ref<Yer[]>([]);
-const secilenKategori = ref("hepsi");
-const secilenYerId = ref<number | null>(null);
-const haritadaOlanYerler = ref<number[]>([]);
+const arama = reactive({
+  origin_city: '',
+  start_date: '',
+  end_date: '',
+  people_count: 2,
+  budget_try: 40000
+})
 
-const kategoriler = [
-  { deger: "hepsi", ad: "Tümü" },
-  { deger: "tarih", ad: "🏛️ Tarih" },
-  { deger: "doğa", ad: "🌿 Doğa" },
-  { deger: "yemek", ad: "🍽️ Yemek" },
-  { deger: "gece_hayati", ad: "🌙 Gece Hayatı" }
-];
+const bugun = new Date().toISOString().slice(0, 10)
 
-const filtrelenmisYerler = computed(() => {
-  if (secilenKategori.value === "hepsi") {
-    return yerler.value;
+const filtrelenmis = computed(() => {
+  const metin = aramaMetni.value.trim().toLocaleLowerCase('tr')
+  let liste = sehirler.value.filter(s => s.place_count > 0)
+
+  if (metin) {
+    liste = liste.filter(s =>
+      `${s.name} ${s.country}`.toLocaleLowerCase('tr').includes(metin)
+    )
   }
 
-  return yerler.value.filter(
-    yer => yer.category === secilenKategori.value
-  );
-});
+  if (secilenKategori.value !== 'hepsi') {
+    const k = secilenKategori.value as keyof Sehir['categories']
+    liste = liste
+      .filter(s => s.categories[k] > 0)
+      .sort((a, b) => b.categories[k] - a.categories[k])
+  }
 
-const toplamZiyaretSuresi = computed(() => {
-  return filtrelenmisYerler.value.reduce(
-    (toplam, yer) => toplam + (yer.visit_duration ?? 0),
-    0
-  );
-});
+  return liste
+})
 
-const eksikSureSayisi = computed(() =>
-  filtrelenmisYerler.value.filter(
-    yer => yer.visit_duration == null
-  ).length
-);
+const gorunenler = computed(() =>
+  hepsiniGoster.value ? filtrelenmis.value : filtrelenmis.value.slice(0, KART_SAYISI)
+)
 
-function sureyiYazdir(dakika: number) {
-  const saat = Math.floor(dakika / 60);
-  const kalanDakika = dakika % 60;
-
-  if (saat === 0) return `${kalanDakika} dakika`;
-  if (kalanDakika === 0) return `${saat} saat`;
-
-  return `${saat} saat ${kalanDakika} dakika`;
+function baskinKategori(s: Sehir) {
+  return [...kategoriler].sort((a, b) => s.categories[b.anahtar] - s.categories[a.anahtar])[0]!
 }
 
-const yukleniyor = ref(true);
-const yerlerYukleniyor = ref(false);
-const hata = ref("");
+async function planla() {
+  const sorgu: Record<string, string> = {}
+  for (const [anahtar, deger] of Object.entries(arama)) {
+    if (deger !== '' && deger !== null) sorgu[anahtar] = String(deger)
+  }
+  const hedef = { path: '/seyahatler/yeni', query: sorgu }
 
-const ulkeler = computed(() => {
-  return [...new Set(sehirler.value.map(s => s.country))]
-    .sort((a, b) => a.localeCompare(b, "tr"));
-});
-
-const filtreliSehirler = computed(() => {
-  return sehirler.value.filter(
-    s => s.country === secilenUlke.value
-  );
-});
+  const girisli = kullanici.value ?? (await yenile())
+  if (girisli) {
+    await navigateTo(hedef)
+  } else {
+    await navigateTo({
+      path: '/login',
+      query: { redirect: useRouter().resolve(hedef).fullPath }
+    })
+  }
+}
 
 onMounted(async () => {
   try {
-    const response = await fetch(`${API_URL}/destinations`);
-
-    if (!response.ok) {
-      throw new Error("Şehirler alınamadı");
-    }
-
-    sehirler.value = await response.json();
+    sehirler.value = await $fetch<Sehir[]>('/api/kesfet')
   } catch {
-    hata.value = "Şehirler yüklenemedi. Backend bağlantısını kontrol et.";
+    hata.value = 'Şehirler yüklenemedi. Backend çalışıyor mu?'
   } finally {
-    yukleniyor.value = false;
+    yukleniyor.value = false
   }
-});
-
-function ulkeDegisti() {
-  secilenSehir.value = "";
-  yerler.value = [];
-  hata.value = "";
-}
-
-async function sehirDegisti() {
-  haritadaOlanYerler.value = [];
-  secilenYerId.value = null;
-  secilenKategori.value = "hepsi";
-  yerler.value = [];
-  hata.value = "";
-
-  if (!secilenSehir.value) return;
-
-  yerlerYukleniyor.value = true;
-
-  try {
-    const response = await fetch(
-      `${API_URL}/destinations/${secilenSehir.value}/places`
-    );
-
-    if (!response.ok) {
-      throw new Error("Gezilecek yerler alınamadı");
-    }
-
-    yerler.value = await response.json();
-  } catch {
-    hata.value = "Gezilecek yerler yüklenemedi.";
-  } finally {
-    yerlerYukleniyor.value = false;
-  }
-}
-
-const aktifSehir = computed(() =>
-  sehirler.value.find(
-    s => String(s.id) === secilenSehir.value
-  )
-);
-
-async function onerilenSehriAc(ulke: string, sehirAdi: string) {
-  const bulunanSehir = sehirler.value.find(
-    s => s.country === ulke && s.name === sehirAdi
-  );
-
-  if (!bulunanSehir) {
-    hata.value = `${sehirAdi} şehir listesinde bulunamadı.`;
-    return;
-  }
-
-  secilenUlke.value = bulunanSehir.country;
-  secilenSehir.value = String(bulunanSehir.id);
-
-  await sehirDegisti();
-
-  await nextTick();
-
-  document.getElementById("gezilecek-yerler")
-    ?.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-}
-
+})
 </script>
 
 <template>
-<main class="min-h-screen p-4 text-slate-900 md:p-6">
-  <div class="mx-auto max-w-6xl">
+  <div>
+    <!-- Karşılama + arama -->
+    <section class="kap kahraman">
+      <div class="kahraman-arka" aria-hidden="true">
+        <span class="gunes"></span>
+        <span class="ucak">✈</span>
+        <span class="yol"></span>
+        <span class="tepe tepe-arka"></span>
+        <span class="tepe tepe-on"></span>
+      </div>
 
-  <!-- Üst bar -->
-  <nav class="ana-nav">
-    <NuxtLink to="/" class="ana-marka">
-      <span class="marka-yildiz" aria-hidden="true">✦</span>
-      Voyage<em>AI</em>
-    </NuxtLink>
-
-    <NuxtLink to="/login" class="nav-buton">
-      {{ girisYapildi ? 'Hesabım' : 'Giriş yap' }}
-    </NuxtLink>
-  </nav>
-
-  <!-- Karşılama alanı -->
-  <header class="ana-banner">
-    <div class="banner-yazi">
-      <span class="banner-etiket">VOYAGEAI / SEYAHAT PLANLAYICI</span>
-      <h1>Dünyayı keşfet, <em>seyahatini planla.</em></h1>
-      <p>
-        Bütçeni ve ilgi alanlarını söyle; sana uygun şehirleri, uçuşları,
-        otelleri ve gün gün rotanı birlikte çıkaralım.
-      </p>
-
-      <button
-        type="button"
-        :disabled="oturumKontrolEdiliyor"
-        class="banner-buton"
-        @click="seyahatOlusturAc"
-      >
-        {{ oturumKontrolEdiliyor ? 'Kontrol ediliyor…' : '✈  Seyahat oluştur' }}
-      </button>
-    </div>
-
-    <div class="banner-sanat" aria-hidden="true">
-      <span class="sanat-gunes"></span>
-      <span class="sanat-ucak">✈</span>
-      <span class="sanat-yol"></span>
-      <span class="sanat-tepe tepe-arka"></span>
-      <span class="sanat-tepe tepe-on"></span>
-    </div>
-  </header>
-
-<div
-  v-if="seyahatFormuAcik"
-  id="seyahat-olustur"
-  class="mb-8 scroll-mt-6"
->
-  <SeyahatOlustur />
-</div>
-
-<div v-if="seyahatFormuAcik" class="mb-8">
-  <SeyahatListesi />
-</div>
-
-      <section class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
-        <h2 class="mb-6 text-2xl font-semibold">
-          Nereye gitmek istersin?
-        </h2>
-
-        <div class="grid gap-5 md:grid-cols-2">
-
-          <div>
-            <label for="ulke" class="mb-2 block font-medium">
-              Ülke seç
-            </label>
-
-            <select
-              id="ulke"
-              v-model="secilenUlke"
-              @change="ulkeDegisti"
-              class="w-full rounded-lg border border-gray-300 p-3"
-            >
-              <option value="">Ülke seçiniz</option>
-
-              <option
-                v-for="ulke in ulkeler"
-                :key="ulke"
-                :value="ulke"
-              >
-                {{ ulke }}
-              </option>
-            </select>
-          </div>
-
-          <div>
-            <label for="sehir" class="mb-2 block font-medium">
-              Şehir seç
-            </label>
-
-            <select
-              id="sehir"
-              v-model="secilenSehir"
-              @change="sehirDegisti"
-              :disabled="!secilenUlke"
-              class="w-full rounded-lg border border-gray-300 p-3 disabled:bg-gray-100"
-            >
-              <option value="">Şehir seçiniz</option>
-
-              <option
-                v-for="sehir in filtreliSehirler"
-                :key="sehir.id"
-                :value="String(sehir.id)"
-              >
-                {{ sehir.name }}
-              </option>
-            </select>
-          </div>
-
-        </div>
-      </section>
-
-      <p v-if="yukleniyor" class="mt-6">
-        Şehirler yükleniyor...
-      </p>
-
-      <p v-if="hata" class="mt-6 text-red-600">
-        {{ hata }}
-      </p>
-
-      <section
-  v-if="aktifSehir"
-  id="gezilecek-yerler"
-  class="mt-10 scroll-mt-6"
->
-        <h2 class="mb-5 text-2xl font-bold">
-          {{ aktifSehir.name }} Gezilecek Yerler
-        </h2>
-        
-<div class="mb-6 rounded-xl bg-white p-5 shadow-sm">
-
-  <label
-    for="kategori"
-    class="mb-2 block font-semibold text-gray-700"
-  >
-    Gezilecek yer kategorisi
-  </label>
-
-  <select
-    id="kategori"
-    v-model="secilenKategori"
-    class="w-full rounded-lg border border-gray-300 p-3 md:w-80"
-  >
-    <option
-      v-for="kategori in kategoriler"
-      :key="kategori.deger"
-      :value="kategori.deger"
-    >
-      {{ kategori.ad }}
-    </option>
-  </select>
-
-  <div class="mt-5 grid gap-3 md:grid-cols-2">
-
-    <div class="rounded-lg bg-blue-50 p-4">
-      <p class="text-sm text-gray-600">
-        Görüntülenen gezilecek yer
-      </p>
-
-      <p class="mt-1 text-2xl font-bold text-blue-700">
-        {{ filtrelenmisYerler.length }}
-      </p>
-    </div>
-
-    <div class="rounded-lg bg-green-50 p-4">
-      <p class="text-sm text-gray-600">
-        Toplam tahmini ziyaret süresi
-      </p>
-
-      <p class="mt-1 text-2xl font-bold text-green-700">
-        {{ sureyiYazdir(toplamZiyaretSuresi) }}
-      </p>
-
-      <p
-        v-if="eksikSureSayisi > 0"
-        class="mt-1 text-xs text-gray-500"
-      >
-        {{ eksikSureSayisi }} yerin süresi bilinmiyor.
-      </p>
-    </div>
-
-  </div>
-
-  <p class="mt-3 text-xs text-gray-500">
-    Süreler tahminidir; ulaşım, sıra bekleme ve mola süreleri
-    hesaplamaya dahil değildir.
-  </p>
-
-</div>
-
-
-        <p v-if="yerlerYukleniyor">
-          Gezilecek yerler yükleniyor...
+      <div class="kahraman-yazi">
+        <span class="v-ust-yazi">Yapay zekâ destekli seyahat planlayıcı</span>
+        <h1>Dünyayı keşfet, <em>seyahatini planla.</em></h1>
+        <p>
+          Bütçeni ve ilgi alanlarını söyle; sana uygun şehirleri, uçuşları,
+          otelleri ve gün gün rotanı birlikte çıkaralım.
         </p>
+      </div>
 
-        <p
-          v-else-if="!hata && filtrelenmisYerler.length === 0"
-          class="text-gray-600"
+      <form class="arama-cubugu" @submit.prevent="planla">
+        <label class="arama-alan">
+          <span>Nereden</span>
+          <select v-model="arama.origin_city">
+            <option value="">Kalkış şehri</option>
+            <option v-for="(_, sehir) in havalimanlari" :key="sehir" :value="sehir">
+              {{ sehir }}
+            </option>
+          </select>
+        </label>
+
+        <label class="arama-alan">
+          <span>Gidiş</span>
+          <input v-model="arama.start_date" type="date" :min="bugun">
+        </label>
+
+        <label class="arama-alan">
+          <span>Dönüş</span>
+          <input v-model="arama.end_date" type="date" :min="arama.start_date || bugun">
+        </label>
+
+        <label class="arama-alan dar">
+          <span>Kişi</span>
+          <input v-model.number="arama.people_count" type="number" min="1" max="20">
+        </label>
+
+        <label class="arama-alan">
+          <span>Bütçe (TL)</span>
+          <input v-model.number="arama.budget_try" type="number" min="1" step="1000">
+        </label>
+
+        <button type="submit" class="arama-buton" aria-label="Seyahati planla">
+          <span aria-hidden="true">✈</span>
+          <span class="buton-yazi">Planla</span>
+        </button>
+      </form>
+    </section>
+
+    <!-- Kategori şeridi -->
+    <section class="kap kesfet">
+      <div class="kesfet-ust">
+        <div>
+          <span class="v-ust-yazi">Keşfet</span>
+          <h2 class="v-baslik">İlham veren şehirler</h2>
+        </div>
+
+        <label class="sehir-ara">
+          <span aria-hidden="true">⌕</span>
+          <input v-model="aramaMetni" type="search" placeholder="Şehir ya da ülke ara">
+        </label>
+      </div>
+
+      <div class="kategori-seridi" role="tablist" aria-label="Kategoriler">
+        <button
+          type="button"
+          class="v-cip"
+          :class="{ aktif: secilenKategori === 'hepsi' }"
+          @click="secilenKategori = 'hepsi'"
         >
-          Bu kategori için gezilecek yer bulunamadı.
-        </p>
+          ✦ Tümü
+        </button>
+        <button
+          v-for="k in kategoriler"
+          :key="k.anahtar"
+          type="button"
+          class="v-cip"
+          :class="{ aktif: secilenKategori === k.anahtar }"
+          @click="secilenKategori = k.anahtar"
+        >
+          {{ k.ikon }} {{ k.ad }}
+        </button>
+      </div>
 
-        <div class="grid gap-5 md:grid-cols-3">
-          <article
-            v-for="yer in filtrelenmisYerler"
-            :key="yer.id"
-            class="rounded-xl bg-white p-5 shadow transition hover:shadow-lg"
-          >
-            <h3 class="text-lg font-bold text-blue-700">
-              {{ yer.name }}
-            </h3>
+      <p v-if="yukleniyor" class="durum">Şehirler yükleniyor…</p>
+      <p v-else-if="hata" class="durum hata">{{ hata }}</p>
+      <p v-else-if="!filtrelenmis.length" class="durum">Aramana uygun şehir bulunamadı.</p>
 
-            <p class="mt-2 text-sm text-gray-600">
-              Kategori: {{ yer.category ?? "Belirtilmedi" }}
-            </p>
+      <div class="sehir-izgara">
+        <NuxtLink
+          v-for="sehir in gorunenler"
+          :key="sehir.id"
+          :to="`/sehir/${sehir.id}`"
+          class="sehir-kart"
+        >
+          <div class="kart-gorsel" :style="{ background: sehirGecisi(sehir.id) }">
+            <span class="kart-ikon" aria-hidden="true">{{ baskinKategori(sehir).ikon }}</span>
+            <span class="kart-harf" aria-hidden="true">{{ sehir.name[0] }}</span>
+          </div>
 
-            <p class="mt-3 text-sm">
-              Ziyaret süresi:
-              {{
-                yer.visit_duration === null
-                  ? "Henüz bilinmiyor"
-                  : `${yer.visit_duration} dakika`
-              }}
-            </p>
+          <div class="kart-yazi">
+            <div class="kart-satir">
+              <strong>{{ sehir.name }}</strong>
+              <span class="yer-sayisi">{{ sehir.place_count }} yer</span>
+            </div>
+            <span class="ulke">{{ sehir.country }}</span>
+            <div class="kart-etiketler">
+              <span
+                v-for="k in kategoriler.filter(k => sehir.categories[k.anahtar] > 0)"
+                :key="k.anahtar"
+              >
+                {{ k.ikon }} {{ sehir.categories[k.anahtar] }}
+              </span>
+            </div>
+          </div>
+        </NuxtLink>
+      </div>
 
-            <p class="mt-2 text-sm">
-              Ortalama ücret:
-              {{
-                yer.average_price === null
-                  ? "Henüz bilinmiyor"
-                  : yer.average_price
-              }}
-            </p>
-            <button
-            v-if="haritadaOlanYerler.includes(yer.id)"
-  type="button"
-  @click="secilenYerId = yer.id"
-  class="mt-5 rounded-lg bg-blue-600 px-4 py-2
-         text-sm font-semibold text-white hover:bg-blue-700"
->
-  📍 Haritada Göster
-</button>
-<p
-  v-if="!haritadaOlanYerler.includes(yer.id)"
-  class="mt-5 text-sm text-gray-400"
->
-  📍 Konum bilgisi henüz mevcut değil.
-</p>
-          </article>
-        </div>
-      </section>
-     <SehirHaritasi
-  v-if="aktifSehir"
-  :city-id="aktifSehir.id"
-  :selected-place-id="secilenYerId"
-  @konumlar-yuklendi="haritadaOlanYerler = $event"
-/>
-<GunlukGeziPlani
-  v-if="aktifSehir && !yerlerYukleniyor && !hata"
-  :key="aktifSehir.id"
-  :city-name="aktifSehir.name"
-  :places="yerler"
-/>
-<RotaPaneli
-  v-if="aktifSehir"
-  :key="aktifSehir.id"
-  :city-id="aktifSehir.id"
-/>
-<OneriPaneli @sehir-kesfet="onerilenSehriAc" />
-    </div>
-  </main>
+      <div v-if="filtrelenmis.length > KART_SAYISI" class="daha-fazla">
+        <button type="button" class="v-buton-ikincil" @click="hepsiniGoster = !hepsiniGoster">
+          {{ hepsiniGoster ? 'Daha az göster' : `Tüm şehirleri göster (${filtrelenmis.length})` }}
+        </button>
+      </div>
+    </section>
+
+    <!-- Nasıl çalışır -->
+    <section class="kap adimlar">
+      <div class="adim v-kart">
+        <span class="adim-no">1</span>
+        <h3>Anlat</h3>
+        <p>Nereden çıkacağını, bütçeni, tarihlerini ve neyi sevdiğini yaz.</p>
+      </div>
+      <div class="adim v-kart">
+        <span class="adim-no">2</span>
+        <h3>Karşılaştır</h3>
+        <p>Her şehir için uçuş, otel, yemek ve aktivite dahil toplam maliyeti gör.</p>
+      </div>
+      <div class="adim v-kart">
+        <span class="adim-no">3</span>
+        <h3>Yola çık</h3>
+        <p>Şehrini seç; gün gün rotan haritada hazır olsun.</p>
+      </div>
+    </section>
+  </div>
 </template>
 
 <style scoped>
-.ana-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-  padding: 6px 4px;
-}
-
-.ana-marka {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--v-ink);
-  font-family: var(--v-font-accent);
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.8px;
-  text-decoration: none;
-}
-
-.ana-marka em {
-  color: var(--v-lilac-deep);
-  font-style: italic;
-  font-weight: 400;
-}
-
-.marka-yildiz {
-  color: var(--v-lilac);
-  font-family: var(--v-font);
-  font-size: 18px;
-}
-
-.nav-buton {
-  padding: 9px 18px;
-  border: 1px solid var(--v-line);
-  border-radius: 12px;
-  background: white;
-  color: var(--v-muted);
-  font-size: 14px;
-  font-weight: 750;
-  text-decoration: none;
-  transition: border-color 0.2s, color 0.2s;
-}
-
-.nav-buton:hover {
-  border-color: var(--v-lilac);
-  color: var(--v-lilac-deep);
-}
-
-.ana-banner {
+/* ---------- Karşılama ---------- */
+.kahraman {
   position: relative;
-  display: flex;
-  align-items: center;
-  min-height: 300px;
-  margin-bottom: 32px;
-  padding: 48px clamp(24px, 5vw, 72px);
+  margin-top: 28px;
+  padding-top: clamp(44px, 6vw, 72px);
+  padding-bottom: 0;
+}
+
+.kahraman-arka {
+  position: absolute;
+  inset: 0 clamp(16px, 4vw, 40px) 60px;
+  z-index: -1;
   overflow: hidden;
-  border-radius: 28px;
+  border-radius: 32px;
   background: var(--v-gradient-soft);
 }
 
-.banner-yazi {
-  position: relative;
-  z-index: 2;
-  max-width: 620px;
-}
-
-.banner-etiket {
-  color: #677fae;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-}
-
-.banner-yazi h1 {
-  margin: 16px 0 14px;
-  color: var(--v-ink);
-  font-size: clamp(32px, 4.4vw, 54px);
-  font-weight: 750;
-  letter-spacing: -1.6px;
-  line-height: 1.1;
-}
-
-.banner-yazi h1 em {
-  color: var(--v-lilac-deep);
-  font-family: var(--v-font-accent);
-  font-weight: 400;
-}
-
-.banner-yazi p {
-  max-width: 520px;
-  margin: 0 0 26px;
-  color: #63708a;
-  font-size: 15px;
-  line-height: 1.75;
-}
-
-.banner-buton {
-  padding: 14px 26px;
-  border: 0;
-  border-radius: 14px;
-  background: var(--v-gradient-button);
-  box-shadow: 0 12px 28px rgba(133, 114, 183, 0.25);
-  color: white;
-  font: inherit;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.banner-buton:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 16px 32px rgba(133, 114, 183, 0.32);
-}
-
-.banner-buton:disabled {
-  cursor: default;
-  opacity: 0.7;
-}
-
-.banner-sanat {
+.gunes {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 40%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.sanat-gunes {
-  position: absolute;
-  top: 40px;
-  right: 24%;
-  width: 130px;
-  height: 130px;
+  top: 46px;
+  right: 14%;
+  width: 140px;
+  height: 140px;
   border-radius: 50%;
   background: #f9cfdb;
 }
 
-.sanat-ucak {
+.ucak {
   position: absolute;
-  top: 58px;
-  right: 40%;
+  top: 70px;
+  right: 25%;
   color: #7c86bb;
-  font-size: 54px;
+  font-size: 52px;
   transform: rotate(-18deg);
 }
 
-.sanat-yol {
+.yol {
   position: absolute;
-  top: 135px;
-  right: 48%;
-  width: 110px;
+  top: 140px;
+  right: 31%;
+  width: 120px;
   height: 64px;
   border-bottom: 2px dashed #a9a1d4;
   border-radius: 50%;
   transform: rotate(20deg);
 }
 
-.sanat-tepe {
+.tepe {
   position: absolute;
-  width: 120%;
-  height: 180px;
+  width: 60%;
+  height: 200px;
   border-radius: 50% 50% 0 0;
 }
 
 .tepe-arka {
-  right: -20%;
-  bottom: -95px;
-  transform: rotate(-12deg);
-  background: #c3b7e7;
+  right: -8%;
+  bottom: -110px;
+  transform: rotate(-8deg);
+  background: #c9bdea;
 }
 
 .tepe-on {
-  right: -35%;
-  bottom: -115px;
-  transform: rotate(12deg);
-  background: #a8bee8;
+  right: -20%;
+  bottom: -130px;
+  transform: rotate(8deg);
+  background: #b4c7ec;
 }
 
-@media (max-width: 760px) {
-  .banner-sanat {
+.kahraman-yazi {
+  max-width: 640px;
+  padding-inline: clamp(24px, 5vw, 64px);
+}
+
+.kahraman-yazi h1 {
+  margin: 14px 0 14px;
+  font-size: clamp(34px, 5vw, 60px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1.05;
+}
+
+.kahraman-yazi h1 em {
+  color: var(--v-lilac-deep);
+  font-family: var(--v-font-accent);
+  font-weight: 400;
+  letter-spacing: -1px;
+}
+
+.kahraman-yazi p {
+  max-width: 520px;
+  margin: 0;
+  color: #5f6a82;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* ---------- Arama çubuğu ---------- */
+.arama-cubugu {
+  display: flex;
+  align-items: center;
+  max-width: 980px;
+  margin: 40px auto 0;
+  padding: 8px 8px 8px 12px;
+  border: 1px solid #ebe8f3;
+  border-radius: 999px;
+  background: white;
+  box-shadow: 0 16px 44px rgba(77, 86, 140, 0.16);
+}
+
+.arama-alan {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-width: 0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.arama-alan + .arama-alan {
+  border-left: 1px solid #eeecf4;
+}
+
+.arama-alan:hover {
+  background: var(--v-surface-soft);
+}
+
+.arama-alan.dar {
+  flex: 0.6 1 0;
+}
+
+.arama-alan span {
+  color: var(--v-ink);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.arama-alan input,
+.arama-alan select {
+  width: 100%;
+  min-width: 0;
+  padding: 2px 0 0;
+  border: 0;
+  background: transparent;
+  color: var(--v-muted);
+  font: inherit;
+  font-size: 14px;
+  box-shadow: none;
+  appearance: none;
+}
+
+.arama-alan input:focus,
+.arama-alan select:focus {
+  box-shadow: none;
+}
+
+.arama-buton {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--v-gradient-button);
+  box-shadow: 0 10px 22px rgba(133, 114, 183, 0.3);
+  color: white;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.arama-buton:hover {
+  transform: scale(1.03);
+}
+
+/* ---------- Keşfet ---------- */
+.kesfet {
+  margin-top: 64px;
+}
+
+.kesfet-ust {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.sehir-ara {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: min(100%, 300px);
+  padding: 10px 16px;
+  border: 1px solid #e7e5ef;
+  border-radius: 999px;
+  background: white;
+  color: var(--v-soft);
+}
+
+.sehir-ara input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--v-ink);
+  font: inherit;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.kategori-seridi {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 28px;
+  padding-bottom: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.durum {
+  color: var(--v-muted);
+}
+
+.durum.hata {
+  color: var(--v-pink-deep);
+}
+
+.sehir-izgara {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 28px 22px;
+}
+
+.sehir-kart {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.kart-gorsel {
+  position: relative;
+  aspect-ratio: 1 / 0.8;
+  overflow: hidden;
+  border-radius: 20px;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.sehir-kart:hover .kart-gorsel {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(77, 86, 140, 0.18);
+}
+
+.kart-ikon {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 18px;
+}
+
+.kart-harf {
+  position: absolute;
+  right: 18px;
+  bottom: 6px;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--v-font-accent);
+  font-size: 96px;
+  font-style: italic;
+  line-height: 1;
+}
+
+.kart-yazi {
+  display: grid;
+  gap: 3px;
+  padding: 0 2px;
+}
+
+.kart-satir {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.kart-satir strong {
+  font-size: 16px;
+}
+
+.yer-sayisi {
+  color: var(--v-muted);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ulke {
+  color: var(--v-muted);
+  font-size: 14px;
+}
+
+.kart-etiketler {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+  color: var(--v-soft);
+  font-size: 12px;
+}
+
+.daha-fazla {
+  display: flex;
+  justify-content: center;
+  margin-top: 36px;
+}
+
+/* ---------- Adımlar ---------- */
+.adimlar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-top: 72px;
+}
+
+.adim {
+  padding: 26px;
+}
+
+.adim-no {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f0ebfa;
+  color: var(--v-lilac-deep);
+  font-weight: 800;
+}
+
+.adim h3 {
+  margin: 16px 0 6px;
+  font-size: 18px;
+}
+
+.adim p {
+  margin: 0;
+  color: var(--v-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* ---------- Mobil ---------- */
+@media (max-width: 900px) {
+  .arama-cubugu {
+    flex-wrap: wrap;
+    gap: 4px;
+    border-radius: 26px;
+    padding: 10px;
+  }
+
+  .arama-alan {
+    flex: 1 1 40%;
+    border-radius: 16px;
+  }
+
+  .arama-alan + .arama-alan {
+    border-left: 0;
+  }
+
+  .arama-buton {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+
+  .adimlar {
+    grid-template-columns: 1fr;
+  }
+
+  .kahraman-arka .gunes,
+  .kahraman-arka .ucak,
+  .kahraman-arka .yol {
     opacity: 0.35;
-    width: 70%;
   }
 }
 </style>

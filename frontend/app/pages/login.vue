@@ -4,7 +4,7 @@
 
     <!-- ─── Yükleniyor ──────────────────────────────────────────── -->
 
-    <div v-if="yukleniyor" class="kart yukle-kart">
+    <div v-if="yukleniyor || mevcutKullanici" class="kart yukle-kart">
 
       <div class="spinner"></div>
 
@@ -12,25 +12,6 @@
 
     </div>
 
-    <!-- ─── Giriş Yapılmış (Kullanıcı Paneli / Dashboard) ──────── -->
-
-    <UserDashboard
-
-      v-else-if="mevcutKullanici"
-
-      :kullanici="mevcutKullanici"
-
-      :islem="islem"
-
-      @openProfile="profilModalAcik = true"
-
-      @openSessions="oturumlarModalAcik = true"
-
-      @openLogs="loglarModalAcik = true"
-
-      @logout="cikisYap"
-
-    />
 
     <!-- ─── Giriş / Kayıt ───────────────────────────────────────── -->
 
@@ -190,33 +171,6 @@
 
     </div>
 
-    <!-- Aktif Oturumlar Modali -->
-
-    <ActiveSessionsModal
-
-      v-model="oturumlarModalAcik"
-
-      @allRevoked="onAllSessionsRevoked"
-
-      @sessionRevoked="onSessionRevoked"
-
-    />
-
-    <!-- Güvenlik Logları Modali -->
-
-    <AuditLogsModal
-
-      v-model="loglarModalAcik"
-
-    />
-
-    <!-- Profil Ayarları Modali -->
-
-    <ProfileModal
-
-      v-model="profilModalAcik"
-
-    />
 
   </div>
 
@@ -261,6 +215,17 @@ onMounted(() => {
     el.classList.remove('theme-dark', 'theme-light')
   }
 })
+
+const route = useRoute()
+
+async function yonlendir() {
+  const redirect = route.query.redirect
+  if (typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//')) {
+    await navigateTo(redirect)
+  } else {
+    await navigateTo('/')
+  }
+}
 
 let mesajZamanlayici: ReturnType<typeof setTimeout> | null = null
 
@@ -313,6 +278,8 @@ onMounted(async () => {
     const veri = await $fetch<{ kullanici: string }>('/api/ben')
 
     mevcutKullanici.value = veri.kullanici
+    // Zaten giriş yapılmış: hesap menüsü üst barda
+    await yonlendir()
 
   } catch {
 
@@ -334,15 +301,8 @@ async function onLoginSuccess(kullanici: string) {
   hataliGirisSayaci.value = 0
   aktifSekme.value = 'giris'
   mesajTemizle()
-
-  const route = useRoute()
-  const redirect = route.query.redirect
-
-  if (typeof redirect === 'string' && redirect.startsWith('/') && !redirect.startsWith('//')) {
-    await navigateTo(redirect)
-  } else {
-    await navigateTo('/')
-  }
+  await useKullanici().yenile()
+  await yonlendir()
 }
 
 
@@ -1721,6 +1681,8 @@ async function cikisYap() {
 
 
 /* ===== VoyageAI ortak pastel tema (giriş sayfası) ===== */
+.sayfa:has(.form-kart), .sayfa:has(.yukle-kart) { min-height: calc(100dvh - 74px); }
+.sayfa:has(.yukle-kart) { display: flex; align-items: center; justify-content: center; }
 .sayfa { font-family: var(--v-font); color: var(--v-ink); background: transparent; }
 .sayfa.theme-light:has(.form-kart) {
   background:

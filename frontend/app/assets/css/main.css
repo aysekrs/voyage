@@ -92,11 +92,7 @@ body {
 }
 
 body {
-  background:
-    radial-gradient(ellipse 60% 45% at 0% 0%, rgba(225, 234, 251, 0.9), transparent 70%),
-    radial-gradient(ellipse 55% 40% at 100% 10%, rgba(249, 223, 233, 0.7), transparent 70%),
-    var(--v-page);
-  background-attachment: fixed;
+  background: #fcfbfe;
   color: var(--v-ink);
   font-family: var(--v-font);
   -webkit-font-smoothing: antialiased;
@@ -119,4 +115,113 @@ textarea:focus {
   border-color: var(--v-lilac);
   outline: none;
   box-shadow: 0 0 0 3px rgba(182, 164, 218, 0.25);
+}
+
+/* ---------- Ortak yapı taşları (bütün sayfalar) ---------- */
+
+.kap {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+}
+
+.v-buton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--v-gradient-button);
+  box-shadow: 0 10px 24px rgba(133, 114, 183, 0.24);
+  color: white;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.v-buton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(133, 114, 183, 0.3);
+}
+
+.v-buton:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.v-buton-ikincil {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: 1px solid #e3e1ec;
+  border-radius: 14px;
+  background: white;
+  color: var(--v-ink);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.v-buton-ikincil:hover {
+  border-color: var(--v-lilac);
+  background: var(--v-surface-soft);
+}
+
+.v-kart {
+  border: 1px solid #eeecf4;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 6px 24px rgba(77, 86, 140, 0.06);
+}
+
+.v-ust-yazi {
+  color: #8b83ba;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
+
+.v-baslik {
+  margin: 0;
+  color: var(--v-ink);
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+
+.v-cip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #e7e5ef;
+  border-radius: 999px;
+  background: white;
+  color: var(--v-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.v-cip:hover {
+  border-color: #cfc6e8;
+  color: var(--v-ink);
+}
+
+.v-cip.aktif {
+  border-color: var(--v-ink);
+  background: var(--v-ink);
+  color: white;
 }

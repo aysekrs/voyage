@@ -1,21 +1,11 @@
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 
-const havalimanlari: Record<string, string> = {
-  İstanbul: 'IST',
-  Ankara: 'ESB',
-  İzmir: 'ADB',
-  Antalya: 'AYT',
-  Adana: 'COV',
-  Trabzon: 'TZX',
-  Gaziantep: 'GZT',
-  Kayseri: 'ASR',
-  Diyarbakır: 'DIY',
-  Samsun: 'SZF',
-  Bodrum: 'BJV',
-  Dalaman: 'DLM'
-}
+const emit = defineEmits<{ (e: 'olusturuldu'): void }>()
+const route = useRoute()
+
+// havalimanlari: app/utils/havalimanlari.ts (ortak)
 
 type Agirlik =
   | 'nature_weight'
@@ -55,6 +45,20 @@ const toplamAgirlik = computed(() =>
   Number(form.history_weight) +
   Number(form.nightlife_weight)
 )
+
+// Ana sayfadaki arama çubuğundan gelen bilgilerle formu doldur
+onMounted(() => {
+  const q = route.query
+  const metin = (v: unknown) => (typeof v === 'string' ? v : '')
+  if (metin(q.origin_city) in havalimanlari) {
+    form.origin_city = metin(q.origin_city)
+    sehirDegisti()
+  }
+  if (metin(q.start_date)) form.start_date = metin(q.start_date)
+  if (metin(q.end_date)) form.end_date = metin(q.end_date)
+  if (Number(q.people_count) > 0) form.people_count = Number(q.people_count)
+  if (Number(q.budget_try) > 0) form.budget_try = Number(q.budget_try)
+})
 
 function sehirDegisti() {
   form.origin_airport_code =
@@ -99,6 +103,7 @@ async function seyahatOlustur() {
 
     basarili.value = true
     mesaj.value = 'Seyahatin başarıyla oluşturuldu!'
+    emit('olusturuldu')
   } catch (error) {
     mesaj.value = error instanceof Error
       ? error.message

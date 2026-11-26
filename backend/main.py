@@ -1091,3 +1091,8 @@ def save_trip_accommodation(
 import trip_options  # noqa: E402
 
 trip_options.register(app, conn, current_user)
+
+# Keşfet sayfası (şehir kartları), bkz. explore_routes.py
+from explore_routes import router as explore_router  # noqa: E402
+
+app.include_router(explore_router)
