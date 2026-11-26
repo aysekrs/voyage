@@ -23,6 +23,7 @@ const hepsiniGoster = ref(false)
 
 const arama = reactive({
   origin_city: '',
+  origin_airport_code: '',
   start_date: '',
   end_date: '',
   people_count: 2,
@@ -115,12 +116,12 @@ onMounted(async () => {
       <form class="arama-cubugu" @submit.prevent="planla">
         <label class="arama-alan">
           <span>Nereden</span>
-          <select v-model="arama.origin_city">
-            <option value="">Kalkış şehri</option>
-            <option v-for="(_, sehir) in havalimanlari" :key="sehir" :value="sehir">
-              {{ sehir }}
-            </option>
-          </select>
+          <HavalimaniSecici
+            v-model="arama.origin_airport_code"
+            v-model:sehir="arama.origin_city"
+            sade
+            placeholder="Kalkış şehri"
+          />
         </label>
 
         <label class="arama-alan">

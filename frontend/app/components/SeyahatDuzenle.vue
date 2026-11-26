@@ -111,10 +111,6 @@ const response = await fetch(`/api/trips/${props.tripId}`, {
   }
 }
 
-function kalkisDegisti() {
-  form.value.origin_airport_code = havalimanlari[form.value.origin_city] ?? form.value.origin_airport_code
-}
-
 const ILGI_ALANLARI = [
   { key: 'nature_weight', label: 'Doğa', ikon: '🌿' },
   { key: 'food_weight', label: 'Yeme & içme', ikon: '🍽️' },
@@ -162,19 +158,18 @@ watch(() => props.tripId, seyahatiGetir, { immediate: true })
 
       <div class="alan">
         <label for="duzenle-kalkis">Kalkış şehri</label>
-        <select id="duzenle-kalkis" v-model="form.origin_city" required @change="kalkisDegisti">
-          <option v-if="form.origin_city && !(form.origin_city in havalimanlari)" :value="form.origin_city">
-            {{ form.origin_city }}
-          </option>
-          <option v-for="(kod, sehir) in havalimanlari" :key="sehir" :value="sehir">
-            {{ sehir }} ({{ kod }})
-          </option>
-        </select>
+        <HavalimaniSecici
+          id="duzenle-kalkis"
+          v-model="form.origin_airport_code"
+          v-model:sehir="form.origin_city"
+          required
+        />
       </div>
 
       <div class="alan">
         <label for="duzenle-kod">Havalimanı kodu</label>
-        <input id="duzenle-kod" v-model="form.origin_airport_code" required maxlength="10">
+        <input id="duzenle-kod" v-model="form.origin_airport_code" readonly required maxlength="3"
+          placeholder="Kalkış şehrinden otomatik">
       </div>
 
       <div class="alan">

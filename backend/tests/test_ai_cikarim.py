@@ -243,3 +243,50 @@ def test_karttaki_tam_sayilar_korunur():
 def test_kusuratli_butce_kabul():
     temiz, _, hatalar = dogrula({"budget_try": 6000.5}, BUGUN)
     assert temiz["budget_try"] == 6000.5 and not hatalar
+
+
+# ---------- havalimanı tablosuyla kalkış ----------
+
+import csv as _csv  # noqa: E402
+from havalimani_arama import kalkis_sozlugu_olustur, normalize  # noqa: E402
+
+_HAVALIMANLARI = list(_csv.DictReader(
+    (Path(__file__).resolve().parent.parent / "veri" / "havalimanlari.csv").open(encoding="utf-8")))
+SOZLUK = kalkis_sozlugu_olustur(_HAVALIMANLARI)
+KODLAR = {h["iata"] for h in _HAVALIMANLARI}
+
+
+@pytest.mark.parametrize("metin,sehir,kod", [
+    ("Münih'ten 2 kişi", "Münih", "MUC"),
+    ("londradan geliyoruz", "Londra", "LHR"),
+    ("New York'tan uçacağım", "New York", "JFK"),
+    ("İstanbul'dan", "İstanbul", "IST"),
+    ("Berlin çıkışlı", "Berlin", "BER"),
+    ("Lefkoşa'dan", "Lefkoşa", "ECN"),
+    ("Bursa'dan", "Bursa", "YEI"),
+])
+def test_dunya_kalkis(metin, sehir, kod):
+    b = kural_tabanli_cikar(metin, BUGUN, None, SOZLUK, KODLAR)
+    assert (b.get("origin_city"), b.get("origin_airport_code")) == (sehir, kod)
+
+
+def test_kod_ile_kalkis_dunya():
+    assert kural_tabanli_cikar("CDG'den uçalım", BUGUN, None, SOZLUK, KODLAR)["origin_airport_code"] == "CDG"
+
+
+def test_olmayan_sehir_kalkis_sayilmaz():
+    assert "origin_city" not in kural_tabanli_cikar("Hayalkent'ten gidiyoruz", BUGUN, None, SOZLUK, KODLAR)
+
+
+def test_olmayan_kod_hata():
+    _, _, hatalar = dogrula({"origin_city": "X", "origin_airport_code": "QQQ"}, BUGUN, None, SOZLUK, KODLAR)
+    assert any("QQQ" in h for h in hatalar)
+
+
+def test_karttaki_sehirden_kod_bulunur():
+    temiz, eksik, _ = dogrula({"origin_city": "münih"}, BUGUN, None, SOZLUK, KODLAR)
+    assert temiz["origin_airport_code"] == "MUC" and temiz["origin_city"] == "Münih"
+
+
+def test_normalize():
+    assert normalize("İSTANBUL Münih  ÇORLU") == "istanbul munih corlu"

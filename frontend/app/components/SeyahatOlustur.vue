@@ -5,7 +5,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 const emit = defineEmits<{ (e: 'olusturuldu', id: number): void }>()
 const route = useRoute()
 
-// havalimanlari: app/utils/havalimanlari.ts (ortak)
+// Kalkış havalimanı: HavalimaniSecici (dünyadaki tarifeli havalimanları, airports tablosu)
 
 type Agirlik =
   | 'nature_weight'
@@ -50,9 +50,10 @@ const toplamAgirlik = computed(() =>
 onMounted(() => {
   const q = route.query
   const metin = (v: unknown) => (typeof v === 'string' ? v : '')
-  if (metin(q.origin_city) in havalimanlari) {
+  // Ana sayfada seçilen kalkış havalimanı
+  if (/^[A-Z]{3}$/.test(metin(q.origin_airport_code))) {
+    form.origin_airport_code = metin(q.origin_airport_code)
     form.origin_city = metin(q.origin_city)
-    sehirDegisti()
   }
   if (metin(q.destination)) form.destination = metin(q.destination)
   if (metin(q.start_date)) form.start_date = metin(q.start_date)
@@ -60,11 +61,6 @@ onMounted(() => {
   if (Number(q.people_count) > 0) form.people_count = Number(q.people_count)
   if (Number(q.budget_try) > 0) form.budget_try = Number(q.budget_try)
 })
-
-function sehirDegisti() {
-  form.origin_airport_code =
-    havalimanlari[form.origin_city] ?? ''
-}
 
 async function seyahatOlustur() {
   mesaj.value = ''
@@ -206,21 +202,12 @@ async function seyahatOlustur() {
 
           <div class="field">
             <label for="trip-origin">Kalkış şehri</label>
-            <select
+            <HavalimaniSecici
               id="trip-origin"
-              v-model="form.origin_city"
+              v-model="form.origin_airport_code"
+              v-model:sehir="form.origin_city"
               required
-              @change="sehirDegisti"
-            >
-              <option value="">Şehir seç</option>
-              <option
-                v-for="(kod, sehir) in havalimanlari"
-                :key="sehir"
-                :value="sehir"
-              >
-                {{ sehir }}
-              </option>
-            </select>
+            />
           </div>
 
           <div class="field">

@@ -269,18 +269,21 @@ async function onayla() {
       <p v-if="!kartVar" class="b-aciklama">Sen yazdıkça anladığım bilgiler burada görünecek. Yanlış olanı buradan düzeltebilirsin.</p>
 
       <form v-else class="alanlar" @submit.prevent="onayla">
-        <label :class="{ eksik: eksikMi('origin_city') }">Kalkış şehri
-          <input v-model="kart.origin_city" type="text" maxlength="150" />
-        </label>
+        <div :class="['genis', 'alan-etiket', { eksik: eksikMi('origin_city') || eksikMi('origin_airport_code') }]">
+          <label :for="`ai-kalkis-${props.kompakt ? 'k' : 's'}`">Kalkış havalimanı</label>
+          <HavalimaniSecici
+            :id="`ai-kalkis-${props.kompakt ? 'k' : 's'}`"
+            v-model="kart.origin_airport_code"
+            v-model:sehir="kart.origin_city"
+            placeholder="Şehir ya da havalimanı yaz"
+          />
+        </div>
         <label class="genis">Gidilecek şehir (isteğe bağlı)
           <input v-model="kart.destination" type="text" list="ai-sehirler" maxlength="150"
             placeholder="Boş bırakırsan sonra önerilerden seçersin" />
           <datalist id="ai-sehirler">
             <option v-for="ad in sehirAdlari" :key="ad" :value="ad" />
           </datalist>
-        </label>
-        <label :class="{ eksik: eksikMi('origin_airport_code') }">Havalimanı kodu
-          <input v-model="kart.origin_airport_code" type="text" maxlength="3" style="text-transform: uppercase" />
         </label>
         <label :class="{ eksik: eksikMi('start_date') }">Gidiş
           <input v-model="kart.start_date" type="date" />
@@ -476,6 +479,23 @@ async function onayla() {
 
 .alanlar .genis {
   grid-column: 1 / -1;
+}
+
+.alan-etiket {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.alan-etiket label {
+  color: var(--v-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.alan-etiket.eksik :deep(input) {
+  border-color: var(--v-pink);
+  background: #fff7fa;
 }
 
 .yaziyor {

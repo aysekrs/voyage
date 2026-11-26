@@ -89,6 +89,26 @@ def _acik_mesajlar(db, user_id: int):
     ).fetchall()
 
 
+_HAVALIMANI_ONBELLEK: dict = {}
+
+
+def _havalimanlari(db) -> tuple[dict, set[str]]:
+    """(kalkış şehri sözlüğü, geçerli kodlar). airports tablosu nadiren değiştiği
+    için ilk istekte bir kez okunur. Tablo yoksa (migration çalışmadıysa) boş döner."""
+    if "veri" not in _HAVALIMANI_ONBELLEK:
+        from havalimani_arama import kalkis_sozlugu_olustur
+        try:
+            # Savepoint: tablo yoksa hata sadece bu sorguyu geri alır
+            with db.transaction():
+                satirlar = db.execute("SELECT iata, city, city_tr, type FROM airports").fetchall()
+        except Exception:
+            return {}, None
+        _HAVALIMANI_ONBELLEK["veri"] = (
+            kalkis_sozlugu_olustur(satirlar), {s["iata"] for s in satirlar}
+        )
+    return _HAVALIMANI_ONBELLEK["veri"]
+
+
 def _sehirler(db) -> list[str]:
     """Gidilecek şehir olarak tanınan adlar (B'nin sehirler tablosu)."""
     return [r["ad"] for r in db.execute("SELECT ad FROM sehirler").fetchall()]
@@ -153,8 +173,9 @@ def mesaj_gonder(
 
         gecmis = [m["content"] for m in _acik_mesajlar(db, user_id) if m["role"] == "user"]
         sehirler = _sehirler(db)
-        bilgi, kaynak = cikar(gecmis, bugun, sehirler)
-        temiz, eksik, hatalar = dogrula(bilgi, bugun, sehirler)
+        sozluk, kodlar = _havalimanlari(db)
+        bilgi, kaynak = cikar(gecmis, bugun, sehirler, sozluk or None, kodlar)
+        temiz, eksik, hatalar = dogrula(bilgi, bugun, sehirler, sozluk or None, kodlar)
         durum = {
             "bilgi": {a: temiz.get(a) for a in ALANLAR},
             "eksik": eksik,
@@ -190,7 +211,8 @@ def onayla(data: OnayGirdisi, voyage_session: str | None = Cookie(default=None))
 
     with main.conn() as db:
         sehirler = _sehirler(db)
-    temiz, eksik, hatalar = dogrula(data.model_dump(), date.today(), sehirler)
+        sozluk, kodlar = _havalimanlari(db)
+    temiz, eksik, hatalar = dogrula(data.model_dump(), date.today(), sehirler, sozluk or None, kodlar)
     if eksik or hatalar:
         raise HTTPException(422, yanit_uret(eksik, hatalar))
     if temiz.get("varis_notu"):

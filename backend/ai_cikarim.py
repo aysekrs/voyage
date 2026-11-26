@@ -116,8 +116,34 @@ def varis_bul(metin: str, sehirler: list[str]) -> str | None:
     return None
 
 
-def kural_tabanli_cikar(metin: str, bugun: date, sehirler: list[str] | None = None) -> dict:
-    """Cümleden bulabildiği alanları döndürür. Bulamadığı alan sözlükte yer almaz."""
+def kalkis_bul(metin: str, kalkis_sozlugu: dict[str, tuple[str, str]]) -> tuple[str, str] | None:
+    """Havalimanı tablosundaki herhangi bir şehri kalkış olarak bulur:
+    "Münih'ten", "londradan", "New York'tan", "Berlin çıkışlı". (şehir, IATA) döner."""
+    from havalimani_arama import normalize
+
+    k = kucult(metin)
+    adaylar = []
+    for m in re.finditer(r"((?:[^\W\d_]+\s)?[^\W\d_]+?)['’]?(?:den|dan|ten|tan)\b", k):
+        adaylar.append(m.group(1))
+    for m in re.finditer(r"((?:[^\W\d_]+\s)?[^\W\d_]+)\s+(?:çıkışlı|kalkışlı|çıkış|kalkış)", k):
+        adaylar.append(m.group(1))
+    for aday in adaylar:
+        kelimeler = aday.split()
+        # Önce iki kelime ("new york"), sonra tek kelime ("york" değil, "münih")
+        for parca in ([" ".join(kelimeler)] if len(kelimeler) > 1 else []) + [kelimeler[-1]]:
+            bulunan = kalkis_sozlugu.get(normalize(parca))
+            if bulunan:
+                return bulunan
+    return None
+
+
+def kural_tabanli_cikar(metin: str, bugun: date, sehirler: list[str] | None = None,
+                        kalkis_sozlugu: dict | None = None, kodlar: set[str] | None = None) -> dict:
+    """Cümleden bulabildiği alanları döndürür. Bulamadığı alan sözlükte yer almaz.
+
+    kalkis_sozlugu/kodlar verilirse (airports tablosundan) dünyadaki bütün tarifeli
+    havalimanları tanınır; verilmezse içerideki küçük Türkiye listesi kullanılır.
+    """
     k = kucult(metin)
     sonuc: dict = {}
     if sehirler:
@@ -125,8 +151,13 @@ def kural_tabanli_cikar(metin: str, bugun: date, sehirler: list[str] | None = No
         if varis:
             sonuc["destination"] = varis
 
+    if kalkis_sozlugu:
+        bulunan = kalkis_bul(metin, kalkis_sozlugu)
+        if bulunan:
+            sonuc["origin_city"], sonuc["origin_airport_code"] = bulunan
+
     # Kalkış şehri: "İzmir'den", "izmirden", "Ankara çıkışlı"
-    for sehir, kod in HAVALIMANLARI.items():
+    for sehir, kod in ({} if kalkis_sozlugu else HAVALIMANLARI).items():
         s = kucult(sehir)
         if re.search(rf"\b{s}['’]?\s*(den|dan|ten|tan)\b", k) or re.search(
             rf"\b{s}['’]?(den|dan|ten|tan)\b", k
@@ -134,7 +165,7 @@ def kural_tabanli_cikar(metin: str, bugun: date, sehirler: list[str] | None = No
             sonuc["origin_city"], sonuc["origin_airport_code"] = sehir, kod
             break
     kod_eslesme = re.search(r"\b([A-Z]{3})\b", metin)
-    if kod_eslesme and kod_eslesme.group(1) in BILINEN_KODLAR:
+    if kod_eslesme and kod_eslesme.group(1) in (kodlar or BILINEN_KODLAR):
         sonuc["origin_airport_code"] = kod_eslesme.group(1)
 
     # Bütçe: "40 bin TL", "40.000 TL", "40k", "bütçem 25 bin"
@@ -296,11 +327,12 @@ def llm_ile_cikar(kullanici_mesajlari: list[str], bugun: date, zaman_asimi: floa
 
 
 def cikar(kullanici_mesajlari: list[str], bugun: date,
-          sehirler: list[str] | None = None) -> tuple[dict, str]:
+          sehirler: list[str] | None = None,
+          kalkis_sozlugu: dict | None = None, kodlar: set[str] | None = None) -> tuple[dict, str]:
     """Bütün kullanıcı mesajlarından bilgi çıkarır. (bilgi, kaynak) döner."""
     kural: dict = {}
     for mesaj in kullanici_mesajlari:  # sonraki mesaj öncekini günceller
-        kural = birlestir(kural, kural_tabanli_cikar(mesaj, bugun, sehirler))
+        kural = birlestir(kural, kural_tabanli_cikar(mesaj, bugun, sehirler, kalkis_sozlugu, kodlar))
     llm = llm_ile_cikar(kullanici_mesajlari, bugun)
     if llm is None:
         return kural, "kural"
@@ -333,7 +365,9 @@ def _tarih(deger) -> date | None:
 
 
 def dogrula(bilgi: dict, bugun: date,
-            sehirler: list[str] | None = None) -> tuple[dict, list[str], list[str]]:
+            sehirler: list[str] | None = None,
+            kalkis_sozlugu: dict | None = None,
+            kodlar: set[str] | None = None) -> tuple[dict, list[str], list[str]]:
     """(temiz_bilgi, eksik_alanlar, hata_mesajlari) döndürür.
 
     Gidilecek şehir isteğe bağlıdır. Verildiyse ve şehir listesinde yoksa
@@ -358,16 +392,26 @@ def dogrula(bilgi: dict, bugun: date,
 
     sehir = str(temiz.get("origin_city") or "").strip()
     if sehir:
-        eslesen = next((s for s in HAVALIMANLARI if kucult(s) == kucult(sehir)), None)
-        if eslesen:
-            temiz["origin_city"] = eslesen
-            if not temiz.get("origin_airport_code"):
-                temiz["origin_airport_code"] = HAVALIMANLARI[eslesen]
+        if kalkis_sozlugu:
+            from havalimani_arama import normalize
+            bulunan = kalkis_sozlugu.get(normalize(sehir))
+            if bulunan:
+                temiz["origin_city"] = bulunan[0]
+                if not temiz.get("origin_airport_code"):
+                    temiz["origin_airport_code"] = bulunan[1]
+        else:
+            eslesen = next((s for s in HAVALIMANLARI if kucult(s) == kucult(sehir)), None)
+            if eslesen:
+                temiz["origin_city"] = eslesen
+                if not temiz.get("origin_airport_code"):
+                    temiz["origin_airport_code"] = HAVALIMANLARI[eslesen]
     else:
         eksik.append("origin_city")
     kod = str(temiz.get("origin_airport_code") or "").strip().upper()
     if kod:
         temiz["origin_airport_code"] = kod
+        if kodlar is not None and kod not in kodlar:
+            hatalar.append(f"{kod} geçerli bir havalimanı kodu değil; listeden bir havalimanı seç.")
     elif sehir:
         eksik.append("origin_airport_code")
 

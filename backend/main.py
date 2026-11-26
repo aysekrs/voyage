@@ -617,6 +617,16 @@ class TripCreate(BaseModel):
         return self
 
 
+def check_origin_airport(db, code: str) -> None:
+    """Kalkış havalimanı kodu airports tablosunda olmalı (var olmayan kod girilemesin)."""
+    from airport_routes import havalimani_getir
+    if not havalimani_getir(db, code):
+        raise HTTPException(
+            422,
+            f"'{code.strip().upper()}' geçerli bir havalimanı kodu değil. Listeden bir havalimanı seçin.",
+        )
+
+
 def find_destination_id(db, destination_name: str) -> int:
     """Seçilen şehri veritabanından bul; şehir ID'sini sabit kodlama."""
     name = destination_name.strip()
@@ -639,6 +649,7 @@ def create_trip(
 
     with conn() as db:
         with db.transaction():
+            check_origin_airport(db, data.origin_airport_code)
             destination = (data.destination or "").strip() or None
             destination_id = (
                 find_destination_id(db, destination) if destination else None
@@ -773,6 +784,7 @@ def update_trip(
 
     with conn() as db:
         with db.transaction():
+            check_origin_airport(db, data.origin_airport_code)
             destination = (data.destination or "").strip() or None
             destination_id = (
                 find_destination_id(db, destination) if destination else None
@@ -1100,3 +1112,7 @@ app.include_router(explore_router)
 # 5. hafta (Kişi B): AI asistan
 from ai_routes import router as ai_router
 app.include_router(ai_router)
+
+# Havalimanı arama (kalkış şehri seçimi)
+from airport_routes import router as airport_router
+app.include_router(airport_router)
