@@ -117,17 +117,27 @@ onMounted(async () => {
   $fetch<{ name: string }[]>('/api/kesfet')
     .then(liste => { sehirAdlari.value = liste.map(s => s.name).sort((a, b) => a.localeCompare(b, 'tr')) })
     .catch(() => {})
+  await yukle()
+})
+
+// Sohbeti sunucudan yeniden al (asistan paneli her açıldığında çağrılır;
+// böylece başka sayfada silinen seyahatlerin mesajları ekranda kalmaz)
+async function yukle() {
+  if (gonderiliyor.value || onaylaniyor.value) return
   try {
     const veri = await $fetch<{ messages: Mesaj[]; durum: Durum }>('/api/ai/chat')
     mesajlar.value = veri.messages
     durumuUygula(veri.durum)
+    hata.value = ''
   } catch (err: any) {
     hata.value = err?.data?.message || 'Sohbet yüklenemedi.'
   } finally {
     yukleniyor.value = false
     asagiKaydir()
   }
-})
+}
+
+defineExpose({ yukle })
 
 async function gonder(metin?: string) {
   const mesaj = (metin ?? girdi.value).trim()

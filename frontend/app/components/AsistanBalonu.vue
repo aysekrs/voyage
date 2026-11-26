@@ -11,14 +11,22 @@ const acik = useState('asistan-acik', () => false)
 // Panel bir kez açılınca bileşen yerinde kalır (yazılan metin kaybolmasın)
 const birKezAcildi = ref(false)
 const ipucu = ref(false)
+const sohbet = ref<{ yukle: () => Promise<void> } | null>(null)
 
 const gizli = computed(() => route.path === '/asistan' || route.path.startsWith('/login'))
 
 watch(acik, (deger) => {
   if (deger) {
+    // İlk açılışta bileşen kendisi yükler; sonraki açılışlarda güncel hali çek
+    if (birKezAcildi.value) sohbet.value?.yukle()
     birKezAcildi.value = true
     ipucu.value = false
   }
+})
+
+// Panel açıkken sayfa değişirse (ör. seyahat silindikten sonra) sohbeti tazele
+watch(() => route.fullPath, () => {
+  if (acik.value) sohbet.value?.yukle()
 })
 
 // Sayfa değişince panel açık kalır ama /asistan'a gidilirse kapanır
@@ -113,7 +121,7 @@ async function seyahatOlustu(id: number) {
               Giriş yap
             </NuxtLink>
           </div>
-          <AiSohbet v-else-if="birKezAcildi" kompakt @olusturuldu="seyahatOlustu" />
+          <AiSohbet v-else-if="birKezAcildi" ref="sohbet" kompakt @olusturuldu="seyahatOlustu" />
         </div>
       </section>
     </Transition>

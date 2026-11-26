@@ -50,6 +50,33 @@ def _kullanici(voyage_session):
     return int(payload["sub"]), email
 
 
+ONAY_MESAJI = "Seyahatin oluşturuldu"
+
+
+def _yetimleri_temizle(db, user_id: int) -> None:
+    """Silinmiş seyahatlerden kalan mesajları siler.
+
+    Eski veritabanı kuralı (ON DELETE SET NULL) yüzünden seyahat silinince
+    mesajların trip_id'si boşalıyordu. Seyahati onaylayan "Seyahatin oluşturuldu"
+    mesajı sadece seyahate bağlı olarak yazılır; trip_id'si boş böyle bir mesaj
+    varsa o sohbetin seyahati silinmiş demektir. Bu mesaj ve ondan önceki
+    trip_id'si boş bütün mesajlar silinir; sonrasında başlamış açık sohbet kalır.
+    """
+    db.execute(
+        """
+        DELETE FROM ai_messages m
+        WHERE m.user_id = %s AND m.trip_id IS NULL
+          AND EXISTS (
+              SELECT 1 FROM ai_messages o
+              WHERE o.user_id = m.user_id AND o.trip_id IS NULL
+                AND o.role = 'assistant' AND o.content LIKE %s
+                AND (o.created_at, o.id) >= (m.created_at, m.id)
+          )
+        """,
+        (user_id, ONAY_MESAJI + "%"),
+    )
+
+
 def _acik_mesajlar(db, user_id: int):
     return db.execute(
         """
@@ -99,6 +126,7 @@ def _cikti(m) -> dict:
 def sohbeti_getir(voyage_session: str | None = Cookie(default=None)):
     user_id, _ = _kullanici(voyage_session)
     with _main().conn() as db:
+        _yetimleri_temizle(db, user_id)
         acik = _acik_mesajlar(db, user_id)
         gecmis = _gecmis(db, user_id)
     return {"messages": [_cikti(m) for m in gecmis], "durum": _durum(acik)}
@@ -116,6 +144,7 @@ def mesaj_gonder(
 
     bugun = date.today()
     with _main().conn() as db:
+        _yetimleri_temizle(db, user_id)
         kullanici_mesaji = db.execute(
             """INSERT INTO ai_messages (user_id, role, content)
                VALUES (%s, 'user', %s) RETURNING id, trip_id, role, content, created_at""",
@@ -204,7 +233,7 @@ def onayla(data: OnayGirdisi, voyage_session: str | None = Cookie(default=None))
             """INSERT INTO ai_messages (user_id, trip_id, role, content)
                VALUES (%s, %s, 'assistant', %s)""",
             (user_id, seyahat["id"],
-             f"Seyahatin oluşturuldu: {seyahat['title']}. "
+             f"{ONAY_MESAJI}: {seyahat['title']}. "
              + ("Uçuş ve otel aramaya geçebilirsin." if seyahat.get("destination")
                 else "Şimdi sana uygun şehirleri seçebilirsin.")),
         )
