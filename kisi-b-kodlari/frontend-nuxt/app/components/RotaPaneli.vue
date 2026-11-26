@@ -10,12 +10,15 @@ interface RotaYeri {
   longitude: number;
   visit_minutes: number;
   distance_from_previous_km: number;
+  travel_minutes: number;
 }
 
 interface Gun {
   day: number;
   places: RotaYeri[];
   visit_minutes: number;
+  travel_minutes: number;
+  total_minutes: number;
   distance_km: number;
   distance_before_2opt_km: number;
 }
@@ -27,6 +30,7 @@ interface RotaCevabi {
   days: number;
   hours_per_day: number;
   total_distance_km: number;
+  total_travel_minutes: number;
   routed_places: number;
   itinerary: Gun[];
   excluded: {
@@ -50,7 +54,7 @@ const gunSayisi = ref(3);
 const gunlukSaat = ref(5);
 const aktifGun = ref(0);
 const rota = ref<RotaCevabi | null>(null);
-const adayTestModu = ref(true);
+const adayTestModu = ref(false);
 const aktifRotaTest = ref(false);
 const yukleniyor = ref(false);
 const kaydediliyor = ref(false);
@@ -65,6 +69,14 @@ const API = "http://127.0.0.1:8001";
 
 const seciliGun = computed(() => rota.value?.itinerary[aktifGun.value] ?? null);
 const durakSayisi = computed(() => rota.value?.itinerary.reduce((a, g) => a + g.places.length, 0) ?? 0);
+
+function sureYaz(dakika: number): string {
+  const dk = Math.round(dakika);
+  if (dk < 60) return `${dk} dk`;
+  const saat = Math.floor(dk / 60);
+  const kalan = dk % 60;
+  return kalan ? `${saat} sa ${kalan} dk` : `${saat} sa`;
+}
 
 function sayi(deger: unknown, varsayilan = 0): number {
   const n = Number(deger);
@@ -91,7 +103,8 @@ function kayitliRotayiDuzenle(veri: KayitliRota): RotaCevabi {
       latitude: sayi(y.latitude),
       longitude: sayi(y.longitude),
       visit_minutes: sayi(y.visit_minutes),
-      distance_from_previous_km: sayi(y.distance_from_previous_km)
+      distance_from_previous_km: sayi(y.distance_from_previous_km),
+      travel_minutes: sayi(y.travel_minutes)
     }));
     let mesafe = 0;
     for (let i = 1; i < yerler.length; i++) {
@@ -101,10 +114,14 @@ function kayitliRotayiDuzenle(veri: KayitliRota): RotaCevabi {
       }
       mesafe += yerler[i].distance_from_previous_km;
     }
+    const ziyaret = sayi(g.visit_minutes, yerler.reduce((a, y) => a + y.visit_minutes, 0));
+    const yol = sayi(g.travel_minutes, yerler.reduce((a, y) => a + y.travel_minutes, 0));
     return {
       day: sayi(g.day, indeks + 1),
       places: yerler,
-      visit_minutes: sayi(g.visit_minutes, yerler.reduce((a, y) => a + y.visit_minutes, 0)),
+      visit_minutes: ziyaret,
+      travel_minutes: yol,
+      total_minutes: sayi(g.total_minutes, ziyaret + yol),
       distance_km: sayi(g.distance_km, mesafe),
       distance_before_2opt_km: sayi(g.distance_before_2opt_km, mesafe)
     };
@@ -115,6 +132,7 @@ function kayitliRotayiDuzenle(veri: KayitliRota): RotaCevabi {
     days: sayi(veri.days, gunler.length),
     hours_per_day: sayi(veri.hours_per_day, 5),
     total_distance_km: sayi(veri.total_distance_km, toplamMesafe),
+    total_travel_minutes: sayi(veri.total_travel_minutes, gunler.reduce((a, g) => a + g.travel_minutes, 0)),
     routed_places: sayi(veri.routed_places, gunler.reduce((a, g) => a + g.places.length, 0)),
     itinerary: gunler,
     excluded: {
@@ -298,10 +316,14 @@ function ayarlarDegisti() {
     <p v-if="hata" class="mt-4 text-red-600" role="alert">{{ hata }}</p>
 
     <div v-if="rota" class="mt-8">
-      <div class="grid gap-3 md:grid-cols-3">
+      <div class="grid gap-3 md:grid-cols-4">
         <div class="rounded-xl bg-blue-50 p-4">
           <p class="text-sm text-gray-600">Kuş uçuşu mesafe</p>
           <p class="text-2xl font-bold text-purple-700">{{ rota.total_distance_km.toFixed(2) }} km</p>
+        </div>
+        <div class="rounded-xl bg-blue-50 p-4">
+          <p class="text-sm text-gray-600">Tahmini yol süresi</p>
+          <p class="text-2xl font-bold text-purple-700">{{ sureYaz(rota.total_travel_minutes) }}</p>
         </div>
         <div class="rounded-xl bg-blue-50 p-4">
           <p class="text-sm text-gray-600">Durak sayısı</p>
@@ -324,7 +346,8 @@ function ayarlarDegisti() {
       <div v-if="seciliGun" class="mt-5 rounded-xl border p-5">
         <h3 class="text-xl font-bold">{{ seciliGun.day }}. Gün Rotası</h3>
         <p class="mt-2 text-sm text-gray-600">
-          Ziyaret süresi: {{ seciliGun.visit_minutes }} dk · Mesafe: {{ seciliGun.distance_km.toFixed(2) }} km
+          Ziyaret: {{ sureYaz(seciliGun.visit_minutes) }} · Yol: ~{{ sureYaz(seciliGun.travel_minutes) }} ·
+          <strong>Toplam: {{ sureYaz(seciliGun.total_minutes) }}</strong> · Mesafe: {{ seciliGun.distance_km.toFixed(2) }} km
         </p>
         <p v-if="seciliGun.places.length === 0" class="mt-5 text-gray-500">
           Bu gün için koordinatı ve ziyaret süresi uygun yer bulunamadı.
@@ -332,7 +355,11 @@ function ayarlarDegisti() {
         <div v-for="yer in seciliGun.places" :key="yer.place_id" class="mt-4 rounded-lg bg-slate-50 p-4">
           <p class="font-semibold">{{ yer.order }}. {{ yer.name }}</p>
           <p class="mt-1 text-sm text-gray-600">{{ yer.category ?? "Kategori belirtilmedi" }} · {{ yer.visit_minutes }} dakika</p>
-          <p class="mt-1 text-sm text-blue-700">Önceki duraktan: {{ yer.distance_from_previous_km }} km</p>
+          <p v-if="yer.order > 1" class="mt-1 text-sm text-blue-700">
+            Önceki duraktan: {{ yer.distance_from_previous_km }} km · ~{{ yer.travel_minutes }} dk
+            {{ yer.distance_from_previous_km <= 1.5 ? "🚶 yürüyüş" : "🚇 toplu taşıma" }}
+          </p>
+          <p v-else class="mt-1 text-sm text-blue-700">Günün başlangıç noktası</p>
         </div>
         <ClientOnly>
           <RotaHaritasi v-if="seciliGun.places.length > 0" :key="`${cityId}-${seciliGun.day}-${kayitNo ?? 'yeni'}`" :places="seciliGun.places" />

@@ -3,7 +3,8 @@ from sqlalchemy import select, text
 
 from database import SessionLocal
 from city_models import Sehir, Yer
-from rota_algoritmasi import rota_olustur, haversine
+from rota_algoritmasi import haversine, nearest_neighbor, rota_mesafesi
+from rota_planlayici import gunlere_bol, yol_suresi_dk
 
 router = APIRouter()
 
@@ -76,29 +77,24 @@ def get_destination_route(
             })
 
         gunluk_limit = hours_per_day * 60
-        gunler = [{'day': i + 1, 'places': [], 'visit_minutes': 0} for i in range(days)]
-        sigmayan_yerler = []
-        for yer in uygun_yerler:
-            yerlestirildi = False
-            for gun in gunler:
-                if gun['visit_minutes'] + yer['ziyaret_suresi'] <= gunluk_limit:
-                    gun['places'].append(yer)
-                    gun['visit_minutes'] += yer['ziyaret_suresi']
-                    yerlestirildi = True
-                    break
-            if not yerlestirildi:
-                sigmayan_yerler.append(yer['id'])
+        gun_listesi, sigmayan_yerler = gunlere_bol(uygun_yerler, days, gunluk_limit)
 
+        gunler = []
         toplam_mesafe = 0.0
-        for gun in gunler:
-            sonuc = rota_olustur(gun['places'])
-            sirali_yerler = sonuc['rota']
+        toplam_yol_dk = 0
+        for gun_no, sirali_yerler in enumerate(gun_listesi, 1):
+            nn_mesafe = rota_mesafesi(nearest_neighbor(sirali_yerler)) if sirali_yerler else 0.0
             duraklar = []
             onceki = None
+            gun_mesafe = 0.0
+            gun_yol_dk = 0
             for sira, yer in enumerate(sirali_yerler, 1):
                 mesafe_km = 0.0
                 if onceki is not None:
                     mesafe_km = haversine(onceki['lat'], onceki['lon'], yer['lat'], yer['lon'])
+                yol_dk = yol_suresi_dk(mesafe_km)
+                gun_mesafe += mesafe_km
+                gun_yol_dk += yol_dk
                 duraklar.append({
                     'order': sira,
                     'place_id': yer['id'],
@@ -108,14 +104,23 @@ def get_destination_route(
                     'longitude': yer['lon'],
                     'visit_minutes': yer['ziyaret_suresi'],
                     'distance_from_previous_km': round(mesafe_km, 3),
+                    'travel_minutes': yol_dk,
                     'coordinate_status': yer['coordinate_status']
                 })
                 onceki = yer
 
-            gun['places'] = duraklar
-            gun['distance_km'] = sonuc['son_mesafe_km']
-            gun['distance_before_2opt_km'] = sonuc['ilk_mesafe_km']
-            toplam_mesafe += sonuc['son_mesafe_km']
+            ziyaret_dk = sum(y['ziyaret_suresi'] for y in sirali_yerler)
+            gunler.append({
+                'day': gun_no,
+                'places': duraklar,
+                'visit_minutes': ziyaret_dk,
+                'travel_minutes': gun_yol_dk,
+                'total_minutes': ziyaret_dk + gun_yol_dk,
+                'distance_km': round(gun_mesafe, 3),
+                'distance_before_2opt_km': round(max(nn_mesafe, gun_mesafe), 3),
+            })
+            toplam_mesafe += gun_mesafe
+            toplam_yol_dk += gun_yol_dk
 
         return {
             'destination_id': destination_id,
@@ -123,12 +128,13 @@ def get_destination_route(
             'country': sehir.ulke,
             'days': days,
             'hours_per_day': hours_per_day,
-            'algorithm': 'nearest_neighbor + 2-opt',
+            'algorithm': 'nearest_neighbor + 2-opt (bolgesel gun bolme)',
             'distance_type': 'straight_line',
             'coordinate_source': 'yerler + koordinat_adaylari (TEST)' if include_candidates else 'yerler',
             'test_mode': include_candidates,
             'candidate_places_available': aday_kullanilan,
             'total_distance_km': round(toplam_mesafe, 3),
+            'total_travel_minutes': toplam_yol_dk,
             'routed_places': sum(len(gun['places']) for gun in gunler),
             'excluded': {
                 'missing_or_invalid_coordinates': koordinatsiz,
@@ -140,7 +146,7 @@ def get_destination_route(
                 'TEST MODU: Bazi koordinatlar dogrulanmamis adaylardir. '
                 'Gercek ziyaret/giris noktasi olarak kullanmayin. '
                 if include_candidates else ''
-            ) + 'Mesafeler kus ucusudur; gercek yol, ulasim ve mola sureleri dahil degildir.'
+            ) + 'Mesafeler kus ucusudur. Yol sureleri tahminidir (1.5 km\'ye kadar yuruyus, ustu toplu tasima); gercek yol tarifi degildir.'
         }
     finally:
         db.close()
