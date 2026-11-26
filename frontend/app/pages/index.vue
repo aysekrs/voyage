@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Keşfet: Airbnb tarzı arama çubuğu + kategori şeridi + şehir kartları
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 
 interface Sehir {
   id: number
@@ -11,6 +11,7 @@ interface Sehir {
 }
 
 const { kullanici, yenile } = useKullanici()
+const { fotolar, getir: fotoGetir } = useSehirFotografi()
 
 const sehirler = ref<Sehir[]>([])
 const yukleniyor = ref(true)
@@ -53,6 +54,9 @@ const filtrelenmis = computed(() => {
 const gorunenler = computed(() =>
   hepsiniGoster.value ? filtrelenmis.value : filtrelenmis.value.slice(0, KART_SAYISI)
 )
+
+// Ekranda görünen kartların fotoğraflarını getir
+watch(gorunenler, liste => liste.forEach(s => fotoGetir(s.id)), { immediate: true })
 
 function baskinKategori(s: Sehir) {
   return [...kategoriler].sort((a, b) => s.categories[b.anahtar] - s.categories[a.anahtar])[0]!
@@ -193,8 +197,15 @@ onMounted(async () => {
           class="sehir-kart"
         >
           <div class="kart-gorsel" :style="{ background: sehirGecisi(sehir.id) }">
+            <img
+              v-if="fotolar[sehir.id]?.url"
+              :src="fotolar[sehir.id]!.url!"
+              :alt="`${sehir.name} fotoğrafı`"
+              class="kart-foto"
+              loading="lazy"
+            >
+            <span v-else class="kart-harf" aria-hidden="true">{{ sehir.name[0] }}</span>
             <span class="kart-ikon" aria-hidden="true">{{ baskinKategori(sehir).ikon }}</span>
-            <span class="kart-harf" aria-hidden="true">{{ sehir.name[0] }}</span>
           </div>
 
           <div class="kart-yazi">
@@ -499,13 +510,36 @@ onMounted(async () => {
   transition: transform 0.25s, box-shadow 0.25s;
 }
 
+.sehir-kart:hover .kart-foto {
+  transform: scale(1.04);
+}
+
+.kart-foto {
+  transition: transform 0.4s ease;
+}
+
 .sehir-kart:hover .kart-gorsel {
   transform: translateY(-3px);
   box-shadow: 0 16px 34px rgba(77, 86, 140, 0.18);
 }
 
+.kart-foto {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: belir 0.4s ease;
+}
+
+@keyframes belir {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .kart-ikon {
   position: absolute;
+  z-index: 1;
   top: 14px;
   left: 14px;
   display: grid;

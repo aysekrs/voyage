@@ -13,7 +13,7 @@ import AppHeader from '~/components/AppHeader.vue'
     <footer class="site-alt">
       <div class="kap alt-ic">
         <span>© {{ new Date().getFullYear() }} VoyageAI · Bitirme projesi</span>
-        <span>Hayal et · Planla · Keşfet</span>
+        <span>Şehir fotoğrafları: Vikipedi / Wikimedia Commons</span>
       </div>
     </footer>
   </div>

@@ -19,6 +19,7 @@ interface Yer {
 }
 
 const API_URL = 'http://127.0.0.1:8000'
+const { fotolar, getir: fotoGetir } = useSehirFotografi()
 const route = useRoute()
 const sehirId = Number(route.params.id)
 
@@ -56,7 +57,10 @@ function haritadaGoster(id: number) {
   document.getElementById('harita')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
+const foto = computed(() => fotolar.value[sehirId])
+
 onMounted(async () => {
+  fotoGetir(sehirId)
   try {
     const [s, y] = await Promise.all([
       $fetch<Sehir>(`${API_URL}/destinations/${sehirId}`),
@@ -81,7 +85,13 @@ onMounted(async () => {
 
     <template v-else-if="sehir">
       <!-- Başlık -->
-      <header class="sehir-baslik" :style="{ background: sehirGecisi(sehir.id) }">
+      <header
+        class="sehir-baslik"
+        :class="{ fotolu: foto?.url }"
+        :style="foto?.url
+          ? { backgroundImage: `linear-gradient(180deg, rgba(41,48,66,0) 30%, rgba(41,48,66,.72) 100%), url(${foto.url})` }
+          : { background: sehirGecisi(sehir.id) }"
+      >
         <div>
           <span class="v-ust-yazi">{{ sehir.country }}</span>
           <h1>{{ sehir.name }}</h1>
@@ -92,6 +102,16 @@ onMounted(async () => {
         </div>
 
         <NuxtLink to="/seyahatler/yeni" class="v-buton">✈ Seyahat planla</NuxtLink>
+
+        <a
+          v-if="foto?.page_url"
+          :href="foto.page_url"
+          target="_blank"
+          rel="noopener"
+          class="foto-kaynak"
+        >
+          Fotoğraf: Vikipedi
+        </a>
       </header>
 
       <!-- Gezilecek yerler -->
@@ -201,6 +221,34 @@ onMounted(async () => {
   min-height: 240px;
   padding: clamp(28px, 4vw, 48px);
   border-radius: 28px;
+}
+
+.sehir-baslik {
+  position: relative;
+  background-position: center;
+  background-size: cover;
+}
+
+.sehir-baslik.fotolu {
+  min-height: 380px;
+  color: white;
+}
+
+.sehir-baslik.fotolu .v-ust-yazi,
+.sehir-baslik.fotolu .ozet {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.foto-kaynak {
+  position: absolute;
+  top: 14px;
+  right: 18px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--v-muted);
+  font-size: 11px;
+  text-decoration: none;
 }
 
 .sehir-baslik h1 {
