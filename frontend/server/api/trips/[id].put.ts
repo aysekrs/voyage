@@ -52,9 +52,7 @@ export default defineEventHandler(async (event) => {
   } catch (err: any) {
     throw createError({
       statusCode: err?.statusCode || err?.status || 502,
-      message: typeof err?.data?.detail === 'string'
-        ? err.data.detail
-        : 'Seyahat güncellenemedi.'
+      message: fastapiHataMesaji(err, 'Seyahat güncellenemedi.')
     })
   }
 })

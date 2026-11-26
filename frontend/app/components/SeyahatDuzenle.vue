@@ -93,10 +93,12 @@ const response = await fetch(`/api/trips/${props.tripId}`, {
 
 
     if (!response.ok) {
+      const error = await response.json().catch(() => ({}))
       throw new Error(
         response.status === 401
           ? 'Oturum açmanız gerekiyor.'
-          : `Seyahat güncellenemedi (${response.status}).`
+          : error.message || error.statusMessage ||
+            `Seyahat güncellenemedi (${response.status}).`
       )
     }
 

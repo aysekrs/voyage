@@ -91,9 +91,9 @@ async function seyahatOlustur() {
       const error = await response.json().catch(() => ({}))
 
       throw new Error(
-        typeof error.detail === 'string'
-          ? error.detail
-          : `Seyahat oluşturulamadı (${response.status})`
+        error.message || error.statusMessage ||
+          (typeof error.detail === 'string' ? error.detail : '') ||
+          `Seyahat oluşturulamadı (${response.status})`
       )
     }
 
