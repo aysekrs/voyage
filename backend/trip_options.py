@@ -19,8 +19,8 @@ import cost_calculator as cc
 from external_api import get_exchange_rate
 from rota_servisi import get_destination_route
 
-# Rota çıkarabilmek için bir şehirde en az bu kadar uygun yer olmalı
-MIN_YER_SAYISI = 5
+# Aday sayılmak için şehirde en az bu kadar yer olmalı
+MIN_YER_SAYISI = 1
 
 # Rota hesabında günde gezilen saat
 GUNLUK_GEZI_SAATI = 5
@@ -103,8 +103,9 @@ def _seyahat_ve_tercih(db, trip_id: int, user_id: int, sadece_sahip: bool):
 
 
 def _aday_sehirler(db, origin_airport_code: str | None):
-    """En az MIN_YER_SAYISI koordinatlı ve süreli yeri olan şehirler,
-    kalkış şehri hariç. Kategori sayıları da gelir."""
+    """En az MIN_YER_SAYISI yeri olan şehirler, kalkış şehri hariç.
+    Kategori sayıları da gelir. (Koordinatı/süresi eksik yerler rotaya
+    girmez, sadece aktivite maliyetine katılmaz.)"""
     return db.execute(
         """
         SELECT s.sehir_id, s.ad, s.ulke, s.havalimani_kodu, s.para_birimi,
@@ -117,8 +118,6 @@ def _aday_sehirler(db, origin_airport_code: str | None):
                COUNT(*) FILTER (WHERE y.kategori = 'gece_hayati') AS gece_sayisi
         FROM sehirler s
         JOIN yerler y ON y.sehir_id = s.sehir_id
-                     AND y.enlem IS NOT NULL AND y.boylam IS NOT NULL
-                     AND y.ziyaret_suresi > 0
         WHERE s.havalimani_kodu IS DISTINCT FROM %s
         GROUP BY s.sehir_id
         HAVING COUNT(y.yer_id) >= %s
