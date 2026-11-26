@@ -38,6 +38,7 @@ interface RotaCevabi {
     missing_visit_duration: number;
     not_fitting_in_days: number;
   };
+  not_fitting_places?: { place_id: number; name: string; visit_minutes: number }[];
   warning: string;
 }
 
@@ -280,10 +281,6 @@ function ayarlarDegisti() {
       </div>
     </div>
 
-    <label class="mt-5 flex items-start gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-      <input v-model="adayTestModu" type="checkbox" class="mt-1" @change="ayarlarDegisti" />
-      <span><strong>Aday koordinatlarla test rotası oluştur</strong> — 11 ülkedeki şehirlerin haritasını denemek içindir. Konumlar henüz doğrulanmamıştır.</span>
-    </label>
 
     <div class="mt-6 flex flex-wrap items-center gap-3">
       <button type="button" :disabled="yukleniyor" @click="rotaGetir"
@@ -366,10 +363,22 @@ function ayarlarDegisti() {
         </ClientOnly>
       </div>
 
-      <p class="mt-5 text-sm text-amber-700">
-        Koordinatı eksik/geçersiz: {{ rota.excluded.missing_or_invalid_coordinates }} ·
-        Ziyaret süresi eksik: {{ rota.excluded.missing_visit_duration }} ·
-        Süreye sığmayan: {{ rota.excluded.not_fitting_in_days }}
+      <div v-if="rota.excluded.not_fitting_in_days > 0" class="mt-5 rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
+        <p class="font-semibold">
+          ℹ️ {{ rota.excluded.not_fitting_in_days }} yer seçtiğin sürelere sığmadı
+          ({{ rota.days }} gün × {{ rota.hours_per_day }} saat).
+        </p>
+        <p class="mt-1">Hepsini görmek istersen gün sayısını veya günlük süreyi artırıp rotayı yeniden oluştur.</p>
+        <p v-if="rota.not_fitting_places?.length" class="mt-2 text-sky-800">
+          Bu rotaya girmeyenler: {{ rota.not_fitting_places.map((y) => y.name).join(", ") }}
+        </p>
+      </div>
+      <p v-if="rota.excluded.missing_or_invalid_coordinates + rota.excluded.missing_visit_duration > 0"
+        class="mt-3 text-sm text-amber-700">
+        Verisi eksik olduğu için rotaya alınamayan:
+        <span v-if="rota.excluded.missing_or_invalid_coordinates">{{ rota.excluded.missing_or_invalid_coordinates }} yerin koordinatı yok</span>
+        <span v-if="rota.excluded.missing_or_invalid_coordinates && rota.excluded.missing_visit_duration"> · </span>
+        <span v-if="rota.excluded.missing_visit_duration">{{ rota.excluded.missing_visit_duration }} yerin ziyaret süresi yok</span>
       </p>
       <p class="mt-3 text-sm text-gray-500">{{ rota.warning }}</p>
     </div>

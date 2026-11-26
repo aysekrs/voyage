@@ -141,6 +141,10 @@ def get_destination_route(
                 'missing_visit_duration': suresiz,
                 'not_fitting_in_days': len(sigmayan_yerler)
             },
+            'not_fitting_places': [
+                {'place_id': y['id'], 'name': y['ad'], 'visit_minutes': y['ziyaret_suresi']}
+                for y in sigmayan_yerler
+            ],
             'itinerary': gunler,
             'warning': (
                 'TEST MODU: Bazi koordinatlar dogrulanmamis adaylardir. '
