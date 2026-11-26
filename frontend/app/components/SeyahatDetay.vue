@@ -56,6 +56,20 @@ async function detayGetir(id: number) {
   }
 }
 
+// Veritabanındaki durum kodunu (planning, planned...) Türkçe göster
+const DURUM_ADLARI: Record<string, string> = {
+  draft: 'Taslak',
+  planning: 'Planlanıyor',
+  planned: 'Planlandı',
+  completed: 'Tamamlandı',
+  cancelled: 'İptal edildi'
+}
+
+function durumYaz(durum: string | null | undefined) {
+  if (!durum) return '—'
+  return DURUM_ADLARI[durum] ?? durum
+}
+
 function tarihFormatla(tarih: string | null | undefined) {
   if (!tarih) return '-'
 
@@ -222,7 +236,7 @@ watch(
           <span class="fact-icon fact-pink">✓</span>
           <div>
             <span class="fact-label">Seyahat durumu</span>
-            <strong>{{ seyahat.status }}</strong>
+            <strong>{{ durumYaz(seyahat.status) }}</strong>
           </div>
         </div>
 

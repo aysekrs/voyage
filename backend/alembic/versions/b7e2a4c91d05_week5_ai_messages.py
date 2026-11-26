@@ -31,7 +31,7 @@ def upgrade() -> None:
         sa.Column(
             "trip_id",
             sa.BigInteger(),
-            sa.ForeignKey("trips.id", ondelete="SET NULL"),
+            sa.ForeignKey("trips.id", ondelete="CASCADE"),
             nullable=True,
         ),
         sa.Column("role", sa.String(20), nullable=False),
