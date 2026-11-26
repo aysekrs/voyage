@@ -31,7 +31,10 @@ interface Durum {
   kaynak: 'llm' | 'kural' | null
 }
 
+// kompakt: sağ alttaki asistan balonunun dar paneli için (sekmeli görünüm)
+const props = withDefaults(defineProps<{ kompakt?: boolean }>(), { kompakt: false })
 const emit = defineEmits<{ olusturuldu: [id: number] }>()
+const sekme = ref<'sohbet' | 'kart'>('sohbet')
 
 const ORNEKLER = [
   "İzmir'den 2 kişi 15-20 Temmuz arası 40 bin TL bütçeyle, tarih ve yemek ağırlıklı bir tatil",
@@ -192,9 +195,18 @@ async function onayla() {
 </script>
 
 <template>
-  <div class="ai-izgara">
+  <div :class="['ai-izgara', { kompakt: props.kompakt }]">
+    <div v-if="props.kompakt" class="sekmeler" role="tablist">
+      <button type="button" role="tab" :aria-selected="sekme === 'sohbet'"
+        :class="['v-cip', { aktif: sekme === 'sohbet' }]" @click="sekme = 'sohbet'">💬 Sohbet</button>
+      <button type="button" role="tab" :aria-selected="sekme === 'kart'"
+        :class="['v-cip', { aktif: sekme === 'kart' }]" @click="sekme = 'kart'">
+        📝 Bilgiler <span v-if="durum?.hazir" class="hazir-nokta" aria-label="hazır" />
+      </button>
+    </div>
+
     <!-- Sohbet -->
-    <section class="sohbet v-kart">
+    <section v-show="!props.kompakt || sekme === 'sohbet'" class="sohbet v-kart">
       <div class="sohbet-ust">
         <div>
           <p class="v-ust-yazi">AI asistan</p>
@@ -215,6 +227,10 @@ async function onayla() {
           <div v-if="seyahatMesajiMi(m)" class="ayrac"><span>Yeni sohbet</span></div>
         </template>
         <div v-if="gonderiliyor" class="balon asistan yaziyor">Düşünüyorum…</div>
+        <button v-if="props.kompakt && durum?.hazir && mesajlar.some(m => !m.trip_id)" type="button"
+          class="v-buton kart-gecis" @click="sekme = 'kart'">
+          Bilgiler hazır, kontrol et ve onayla →
+        </button>
       </div>
 
       <div v-if="!mesajlar.some(m => !m.trip_id) && !yukleniyor" class="ornekler">
@@ -237,7 +253,7 @@ async function onayla() {
     </section>
 
     <!-- Onay kartı -->
-    <aside class="kart v-kart">
+    <aside v-show="!props.kompakt || sekme === 'kart'" class="kart v-kart">
       <p class="v-ust-yazi">Anladığım bilgiler</p>
       <h2 class="v-baslik kart-baslik">Kontrol et ve onayla</h2>
       <p v-if="!kartVar" class="b-aciklama">Sen yazdıkça anladığım bilgiler burada görünecek. Yanlış olanı buradan düzeltebilirsin.</p>
@@ -309,6 +325,68 @@ async function onayla() {
 .sohbet,
 .kart {
   padding: clamp(18px, 3vw, 28px);
+}
+
+/* ---------- Kompakt (asistan balonu paneli) ---------- */
+.kompakt {
+  display: block;
+  margin-top: 0;
+}
+
+.kompakt .sekmeler {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 0;
+}
+
+.kompakt .sekmeler .v-cip {
+  padding: 8px 14px;
+  font-size: 13px;
+}
+
+.hazir-nokta {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--v-mint);
+}
+
+.kompakt .sohbet,
+.kompakt .kart {
+  padding: 12px 16px 16px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.kompakt .sohbet-ust > div,
+.kompakt .kart > .v-ust-yazi {
+  display: none;
+}
+
+.kompakt .sohbet-ust {
+  justify-content: flex-end;
+}
+
+.kompakt .mesajlar {
+  height: min(360px, calc(100dvh - 330px));
+  margin-top: 8px;
+}
+
+.kompakt .kart-baslik {
+  font-size: 18px;
+}
+
+.kompakt .alanlar {
+  margin-top: 12px;
+}
+
+.kart-gecis {
+  align-self: center;
+  margin-top: 4px;
+  padding: 10px 16px;
+  font-size: 14px;
 }
 
 .sohbet-ust {

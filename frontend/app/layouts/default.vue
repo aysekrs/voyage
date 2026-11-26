@@ -16,6 +16,11 @@ import AppHeader from '~/components/AppHeader.vue'
         <span>Şehir fotoğrafları: Vikipedi / Wikimedia Commons</span>
       </div>
     </footer>
+
+    <!-- Sağ alttaki AI asistan (Kişi B, 5. hafta) -->
+    <ClientOnly>
+      <AsistanBalonu />
+    </ClientOnly>
   </div>
 </template>
 
