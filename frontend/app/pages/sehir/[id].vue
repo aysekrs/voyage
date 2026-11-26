@@ -60,7 +60,6 @@ function haritadaGoster(id: number) {
 const foto = computed(() => fotolar.value[sehirId])
 
 onMounted(async () => {
-  fotoGetir(sehirId)
   try {
     const [s, y] = await Promise.all([
       $fetch<Sehir>(`${API_URL}/destinations/${sehirId}`),
@@ -68,6 +67,7 @@ onMounted(async () => {
     ])
     sehir.value = s
     yerler.value = y
+    fotoGetir(s.id, s.name, s.country)
   } catch {
     hata.value = 'Şehir bilgileri yüklenemedi.'
   } finally {

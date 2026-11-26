@@ -56,7 +56,7 @@ const gorunenler = computed(() =>
 )
 
 // Ekranda görünen kartların fotoğraflarını getir
-watch(gorunenler, liste => liste.forEach(s => fotoGetir(s.id)), { immediate: true })
+watch(gorunenler, liste => liste.forEach(s => fotoGetir(s.id, s.name, s.country)), { immediate: true })
 
 function baskinKategori(s: Sehir) {
   return [...kategoriler].sort((a, b) => s.categories[b.anahtar] - s.categories[a.anahtar])[0]!
