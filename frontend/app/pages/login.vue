@@ -408,7 +408,9 @@ async function cikisYap() {
 
 /* ─── Genel Sıfırlama ─────────────────────────────────────────────── */
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Genel sıfırlama Tailwind'de var; burada tekrar yazmak (katmansız olduğu için)
+   bütün sitedeki p-6, mx-auto gibi boşluk sınıflarını eziyordu. */
+.sayfa *, .sayfa *::before, .sayfa *::after { box-sizing: border-box; }
 
 /* body stilleri artık ortak temada (assets/css/main.css) */
 
