@@ -215,3 +215,16 @@ def test_varis_buyuk_kucuk_harf_duzelir():
 
 def test_varisli_baslik():
     assert baslik_uret({"origin_city": "İzmir", "destination": "Roma"}) == "İzmir → Roma seyahati"
+
+
+def test_eksiz_varis():
+    b = kural_tabanli_cikar("İzmir'den Roma 3 kişi 12-16 Aralık", BUGUN, SEHIRLER)
+    assert b["destination"] == "Roma" and b["origin_city"] == "İzmir"
+
+
+def test_eksiz_kalkis_varis_sayilmaz():
+    assert "destination" not in kural_tabanli_cikar("İzmir çıkışlı 2 kişi", BUGUN, SEHIRLER)
+
+
+def test_kucuk_harfli_kelime_sehir_sanilmaz():
+    assert "destination" not in kural_tabanli_cikar("nice yıllara, roma rakamı", BUGUN, ["Nice", "Roma"])

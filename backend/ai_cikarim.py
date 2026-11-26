@@ -107,6 +107,12 @@ def varis_bul(metin: str, sehirler: list[str]) -> str | None:
             rf"(?<!\w){s}['’]?\s+(gezisi|gezi|tatili|tatil|seyahati|turu|tur)\b", k
         ):
             return sehir
+    # Eksiz yazıldıysa ("İzmir Roma 3 kişi"): şehir adı büyük harfle ayrı bir kelime olarak geçiyorsa
+    for sehir in sorted(sehirler, key=len, reverse=True):
+        if re.search(rf"(?<!\w){re.escape(sehir)}(?![\w'’])", metin) and not re.search(
+            rf"(?<!\w){re.escape(kucult(sehir))}['’]?(den|dan|ten|tan|\s+çıkış|\s+kalkış)", k
+        ):
+            return sehir
     return None
 
 
