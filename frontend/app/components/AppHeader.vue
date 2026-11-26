@@ -58,6 +58,9 @@ watch(() => route.fullPath, () => {
         <NuxtLink to="/" class="nav-link" :class="{ aktif: route.path === '/' || route.path.startsWith('/sehir') }">
           Keşfet
         </NuxtLink>
+        <NuxtLink to="/oneriler" class="nav-link" :class="{ aktif: route.path === '/oneriler' }">
+          Bana öner
+        </NuxtLink>
         <NuxtLink to="/seyahatler" class="nav-link" :class="{ aktif: route.path.startsWith('/seyahatler') }">
           Seyahatlerim
         </NuxtLink>
@@ -94,6 +97,8 @@ watch(() => route.fullPath, () => {
                 <span>Giriş yapan</span>
                 <strong>{{ kullanici }}</strong>
               </p>
+              <NuxtLink to="/" class="menu-oge mobil" role="menuitem">Keşfet</NuxtLink>
+              <NuxtLink to="/oneriler" class="menu-oge mobil" role="menuitem">Bana öner</NuxtLink>
               <NuxtLink to="/seyahatler" class="menu-oge" role="menuitem">Seyahatlerim</NuxtLink>
               <NuxtLink to="/seyahatler/yeni" class="menu-oge" role="menuitem">Yeni seyahat</NuxtLink>
               <hr>
@@ -300,6 +305,10 @@ watch(() => route.fullPath, () => {
   background: var(--v-surface-soft);
 }
 
+.menu-oge.mobil {
+  display: none;
+}
+
 .menu-oge.cikis {
   color: var(--v-pink-deep);
 }
@@ -333,6 +342,10 @@ watch(() => route.fullPath, () => {
 
   .yeni-link {
     display: none;
+  }
+
+  .menu-oge.mobil {
+    display: block;
   }
 }
 </style>
