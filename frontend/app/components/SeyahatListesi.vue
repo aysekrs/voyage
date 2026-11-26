@@ -1,13 +1,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import SeyahatDetay from './SeyahatDetay.vue'
 import SeyahatDuzenle from './SeyahatDuzenle.vue'
 
 interface Seyahat {
   id: number
   title: string
-  destination: string
+  destination: string | null
   start_date: string
   end_date: string
   created_at: string
@@ -226,7 +225,7 @@ onMounted(seyahatleriGetir)
             <div>
               <span class="trip-location">
                 <span aria-hidden="true">⌖</span>
-                {{ seyahat.destination }}
+                {{ seyahat.destination || 'Şehir henüz seçilmedi' }}
               </span>
 
               <h3>{{ seyahat.title }}</h3>
@@ -257,23 +256,10 @@ onMounted(seyahatleriGetir)
           </div>
 
           <div class="trip-actions">
-            <button
-              type="button"
-              class="details-button"
-              @click="
-                secilenSeyahatId =
-                  secilenSeyahatId === seyahat.id
-                    ? null
-                    : seyahat.id
-              "
-            >
-              {{
-                secilenSeyahatId === seyahat.id
-                  ? 'Detayları kapat'
-                  : 'Detayları gör'
-              }}
+            <NuxtLink :to="`/seyahatler/${seyahat.id}`" class="details-button">
+              Seyahati aç
               <span aria-hidden="true">↗</span>
-            </button>
+            </NuxtLink>
 
             <template v-if="seyahat.role === 'owner'">
               <button
@@ -294,17 +280,6 @@ onMounted(seyahatleriGetir)
               </button>
             </template>
           </div>
-        </div>
-
-        <!-- Seçilen seyahatin detayları -->
-        <div
-          v-if="secilenSeyahatId === seyahat.id"
-          class="trip-expanded"
-        >
-          <SeyahatDetay
-            :trip-id="seyahat.id"
-            @kapat="secilenSeyahatId = null"
-          />
         </div>
 
         <!-- Düzenleme formu -->
@@ -666,7 +641,8 @@ onMounted(seyahatleriGetir)
   margin-top: 24px;
 }
 
-.trip-actions button {
+.trip-actions button,
+.trip-actions .details-button {
   min-height: 40px;
   padding: 9px 15px;
   border-radius: 10px;
@@ -678,6 +654,7 @@ onMounted(seyahatleriGetir)
 
 .details-button {
   display: flex;
+  text-decoration: none;
   align-items: center;
   gap: 15px;
   border: none;

@@ -103,8 +103,19 @@ const geceSayisi = computed(() => {
   return fark >= 0 ? fark : null
 })
 
-// Şehir önerilerinden biri seçilince ekranı boşaltmadan detayı tazele
+// Sekmeler: şehir seçilmemişse "Şehir seç", seçilmişse "Uçuşlar" ile açılır
+type Sekme = 'sehir' | 'ucus' | 'otel'
+const sekme = ref<Sekme | null>(null)
+
+watch(seyahat, yeni => {
+  if (yeni && sekme.value === null) {
+    sekme.value = yeni.selected_destination_id ? 'ucus' : 'sehir'
+  }
+})
+
+// Şehir önerilerinden biri seçilince detayı tazele ve uçuşlara geç
 async function secimSonrasiYenile() {
+  sekme.value = 'ucus'
   try {
     const response = await fetch(`/api/trips/${props.tripId}`, {
       credentials: 'include'
@@ -124,21 +135,6 @@ watch(
 
 <template>
   <section class="trip-detail">
-    <div class="detail-topbar">
-      <div class="topbar-title">
-        <span class="topbar-dot"></span>
-        Seyahat detayları
-      </div>
-
-      <button
-        type="button"
-        class="close-button"
-        @click="emit('kapat')"
-      >
-        <span aria-hidden="true">×</span>
-        Kapat
-      </button>
-    </div>
 
     <div v-if="yukleniyor" class="detail-state">
       Seyahat bilgileri yükleniyor...
@@ -250,8 +246,39 @@ watch(
         </span>
       </div>
 
+      <!-- Sekmeler -->
+      <nav class="sekmeler" aria-label="Seyahat adımları">
+        <button
+          type="button"
+          class="sekme"
+          :class="{ aktif: sekme === 'sehir' }"
+          @click="sekme = 'sehir'"
+        >
+          <span class="sekme-no">1</span>
+          {{ seyahat.selected_destination_id ? 'Şehri değiştir' : 'Şehir seç' }}
+        </button>
+        <button
+          type="button"
+          class="sekme"
+          :class="{ aktif: sekme === 'ucus' }"
+          @click="sekme = 'ucus'"
+        >
+          <span class="sekme-no">2</span>
+          Uçuşlar
+        </button>
+        <button
+          type="button"
+          class="sekme"
+          :class="{ aktif: sekme === 'otel' }"
+          @click="sekme = 'otel'"
+        >
+          <span class="sekme-no">3</span>
+          Konaklama
+        </button>
+      </nav>
+
       <!-- 5. Hafta: Şehir önerileri -->
-      <div class="detail-service">
+      <div v-if="sekme === 'sehir'" class="detail-service">
         <div class="service-heading">
           <div>
             <span class="service-eyebrow">ÖNERİLER</span>
@@ -274,8 +301,17 @@ watch(
         </div>
       </div>
 
+      <!-- Şehir seçilmeden uçuş/otel aranamaz -->
+      <div
+        v-if="(sekme === 'ucus' || sekme === 'otel') && !seyahat.selected_destination_id"
+        class="sekme-uyari"
+      >
+        <p>Uçuş ve otel aramak için önce bir şehir seçmelisin.</p>
+        <button type="button" class="v-buton" @click="sekme = 'sehir'">Şehir seç</button>
+      </div>
+
       <!-- Uçuşlar -->
-      <div class="detail-service">
+      <div v-if="sekme === 'ucus' && seyahat.selected_destination_id" class="detail-service">
         <div class="service-heading">
           <div>
             <span class="service-eyebrow">YOLCULUK</span>
@@ -301,7 +337,7 @@ watch(
       </div>
 
       <!-- Oteller -->
-      <div class="detail-service">
+      <div v-if="sekme === 'otel' && seyahat.selected_destination_id" class="detail-service">
         <div class="service-heading hotel-heading">
           <div>
             <span class="service-eyebrow">KONAKLAMA</span>
@@ -726,5 +762,78 @@ watch(
   .service-content {
     padding: 0;
   }
+}
+
+/* ---------- Sekmeler ---------- */
+.sekmeler {
+  display: flex;
+  gap: 6px;
+  margin: 26px 0 18px;
+  padding: 6px;
+  overflow-x: auto;
+  border: 1px solid #eeecf4;
+  border-radius: 18px;
+  background: white;
+}
+
+.sekme {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 13px;
+  background: transparent;
+  color: var(--v-muted);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.sekme:hover {
+  background: var(--v-surface-soft);
+  color: var(--v-ink);
+}
+
+.sekme.aktif {
+  background: var(--v-gradient-button);
+  box-shadow: 0 8px 18px rgba(133, 114, 183, 0.22);
+  color: white;
+}
+
+.sekme-no {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(133, 114, 183, 0.15);
+  font-size: 12px;
+}
+
+.sekme.aktif .sekme-no {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.sekme-uyari {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 22px 24px;
+  border: 1px dashed #d9d1ee;
+  border-radius: 20px;
+  background: #faf8fe;
+}
+
+.sekme-uyari p {
+  margin: 0;
+  color: var(--v-muted);
 }
 </style>

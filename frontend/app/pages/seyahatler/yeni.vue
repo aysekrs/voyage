@@ -14,7 +14,7 @@ onMounted(async () => {
 
 <template>
   <div class="kap sayfa-ic">
-    <SeyahatOlustur v-if="kullanici" @olusturuldu="navigateTo('/seyahatler')" />
+    <SeyahatOlustur v-if="kullanici" @olusturuldu="id => navigateTo(`/seyahatler/${id}`)" />
   </div>
 </template>
 

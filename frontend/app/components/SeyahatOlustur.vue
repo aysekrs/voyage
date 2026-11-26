@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 
-const emit = defineEmits<{ (e: 'olusturuldu'): void }>()
+const emit = defineEmits<{ (e: 'olusturuldu', id: number): void }>()
 const route = useRoute()
 
 // havalimanlari: app/utils/havalimanlari.ts (ortak)
@@ -102,9 +102,10 @@ async function seyahatOlustur() {
       )
     }
 
+    const yeniSeyahat = await response.json()
     basarili.value = true
     mesaj.value = 'Seyahatin başarıyla oluşturuldu!'
-    emit('olusturuldu')
+    emit('olusturuldu', yeniSeyahat.id)
   } catch (error) {
     mesaj.value = error instanceof Error
       ? error.message
