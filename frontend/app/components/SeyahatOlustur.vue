@@ -54,6 +54,7 @@ onMounted(() => {
     form.origin_city = metin(q.origin_city)
     sehirDegisti()
   }
+  if (metin(q.destination)) form.destination = metin(q.destination)
   if (metin(q.start_date)) form.start_date = metin(q.start_date)
   if (metin(q.end_date)) form.end_date = metin(q.end_date)
   if (Number(q.people_count) > 0) form.people_count = Number(q.people_count)
@@ -157,14 +158,11 @@ async function seyahatOlustur() {
 
         <div class="destination-strip">
           <div class="field">
-            <label for="trip-destination">Nereye gidiyorsun?</label>
-            <input
-              id="trip-destination"
-              v-model="form.destination"
-              required
-              maxlength="150"
-              placeholder="Gitmek istediğin şehir"
-            />
+            <span class="strip-baslik">Nereye gidiyorsun?</span>
+            <SehirSecici v-model="form.destination" id-on-eki="yeni-seyahat" />
+            <span class="strip-not">
+              Karar vermediysen boş bırak; sana uygun şehirleri biz önerelim.
+            </span>
           </div>
 
           <div class="destination-mark" aria-hidden="true">
@@ -553,15 +551,27 @@ async function seyahatOlustur() {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 10px 18px;
+  padding: 16px 18px;
   margin-bottom: 22px;
-  border: 1px solid #cfdcf3;
+  border: 1px solid #e4def3;
   border-radius: 17px;
-  background: #edf3ff;
+  background: #f6f2fc;
 }
 
 .destination-strip .field {
   flex: 1;
+  gap: 10px;
+}
+
+.strip-baslik {
+  color: #4c5870;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.strip-not {
+  color: #737d90;
+  font-size: 12px;
 }
 
 .destination-strip input {
@@ -583,8 +593,9 @@ async function seyahatOlustur() {
   width: 43px;
   height: 43px;
   border-radius: 50%;
-  background: #d6e3fa;
-  color: #6583c2;
+  flex: none;
+  background: #e7defa;
+  color: #8572b7;
   font-size: 23px;
 }
 

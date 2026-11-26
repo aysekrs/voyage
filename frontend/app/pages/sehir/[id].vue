@@ -101,7 +101,7 @@ onMounted(async () => {
           </div>
         </div>
 
-        <NuxtLink to="/seyahatler/yeni" class="v-buton">✈ Seyahat planla</NuxtLink>
+        <NuxtLink :to="{ path: '/seyahatler/yeni', query: { destination: sehir.name } }" class="v-buton">✈ Bu şehre seyahat planla</NuxtLink>
 
         <a
           v-if="foto?.page_url"
