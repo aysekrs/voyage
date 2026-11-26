@@ -67,106 +67,52 @@ watch(
 </script>
 
 <template>
-  <section class="mt-10 rounded-2xl bg-white p-6 shadow">
+  <section class="b-bolum">
+    <p class="v-ust-yazi">Hızlı plan</p>
+    <h2 class="v-baslik">Günlük gezi planı</h2>
+    <p class="b-aciklama">{{ cityName }} şehrinde gezmeye kaç saat ayıracaksın?</p>
 
-    <h2 class="text-2xl font-bold text-slate-800">
-      🧳 Günlük Gezi Planı
-    </h2>
-
-    <p class="mt-2 text-gray-600">
-      {{ cityName }} şehrinde gezmeye kaç saat ayıracaksın?
-    </p>
-
-    <div class="mt-6 max-w-lg">
-      <div class="mb-3 flex justify-between">
-        <label for="gezi-saati" class="font-semibold">
-          Gezi süresi
-        </label>
-
-        <span class="font-bold text-blue-700">
-          {{ saat }} saat
-        </span>
+    <div class="b-alanlar">
+      <div>
+        <label for="gezi-saati" class="b-etiket">Gezi süresi <strong>{{ saat }} saat</strong></label>
+        <input id="gezi-saati" v-model.number="saat" type="range" min="1" max="12" step="1"
+          class="b-kaydirici" @input="planOlusturuldu = false" />
       </div>
-
-      <input
-        id="gezi-saati"
-        v-model.number="saat"
-        type="range"
-        min="1"
-        max="12"
-        step="1"
-        class="w-full accent-blue-600"
-        @input="planOlusturuldu = false"
-      />
     </div>
 
-    <button
-      type="button"
-      @click="planOlusturuldu = true"
-      class="mt-6 rounded-xl bg-blue-600 px-6 py-3
-             font-semibold text-white hover:bg-blue-700"
-    >
-      ✨ Gezi Planı Oluştur
-    </button>
+    <div class="b-butonlar">
+      <button type="button" class="v-buton" @click="planOlusturuldu = true">Gezi planı oluştur</button>
+    </div>
 
-    <div v-if="planOlusturuldu" class="mt-8">
+    <div v-if="planOlusturuldu">
+      <p v-if="plan.length === 0" class="b-not">Seçilen süreye uygun gezilecek yer bulunamadı.</p>
 
-      <h3 class="mb-4 text-xl font-bold">
-        {{ cityName }} için gezi planın
-      </h3>
-
-      <p v-if="plan.length === 0" class="text-gray-600">
-        Seçilen süreye uygun gezilecek yer bulunamadı.
-      </p>
-
-      <div v-else class="space-y-3">
-        <div
-          v-for="(yer, index) in plan"
-          :key="yer.id"
-          class="flex items-center justify-between
-                 rounded-xl border border-gray-200 p-4"
-        >
+      <template v-else>
+        <div v-for="(yer, index) in plan" :key="yer.id" class="b-durak">
+          <span class="b-durak-no">{{ index + 1 }}</span>
           <div>
-            <p class="font-semibold">
-              {{ index + 1 }}. {{ yer.name }}
-            </p>
-
-            <p class="mt-1 text-sm text-gray-500">
-              {{ yer.category ?? "Kategori belirtilmemiş" }}
-            </p>
+            <p class="b-durak-ad">{{ yer.name }}</p>
+            <p class="b-durak-alt">{{ yer.category ?? "Kategori belirtilmemiş" }}</p>
           </div>
-
-          <span class="font-semibold text-blue-700">
-            {{ sureyiYazdir(yer.visit_duration ?? 0) }}
-          </span>
+          <span class="b-durak-sure">{{ sureyiYazdir(yer.visit_duration ?? 0) }}</span>
         </div>
-      </div>
 
-      <div
-        v-if="plan.length > 0"
-        class="mt-6 rounded-xl bg-blue-50 p-5"
-      >
-        <p class="text-sm text-gray-600">
-          Toplam tahmini ziyaret süresi
-        </p>
+        <div class="b-ozet" style="grid-template-columns: repeat(2, minmax(0, 1fr))">
+          <div class="b-ozet-kart">
+            <span>Toplam ziyaret süresi</span>
+            <strong>{{ sureyiYazdir(toplamSure) }}</strong>
+          </div>
+          <div class="b-ozet-kart">
+            <span>Kalan süre</span>
+            <strong>{{ sureyiYazdir(sureLimiti - toplamSure) }}</strong>
+          </div>
+        </div>
+      </template>
 
-        <p class="mt-2 text-2xl font-bold text-blue-700">
-          {{ sureyiYazdir(toplamSure) }}
-        </p>
-
-        <p class="mt-2 text-sm text-gray-600">
-          Kalan süre:
-          {{ sureyiYazdir(sureLimiti - toplamSure) }}
-        </p>
-      </div>
-
-      <p class="mt-4 text-sm text-gray-500">
-        Bu plan mevcut gezilecek yer listesinin sırasına göre
-        hazırlanır. Ulaşım, sıra bekleme ve molalar henüz
-        hesaba katılmamıştır. Ziyaret süreleri tahminidir.
+      <p class="b-not">
+        Bu hızlı plan yer listesinin sırasına göre hazırlanır; yol süresi dahil değildir.
+        Yakın yerleri gruplayan ve yol süresini hesaplayan plan için aşağıdaki rota planlayıcıyı kullan.
       </p>
-
     </div>
-
   </section>
 </template>

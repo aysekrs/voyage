@@ -1,6 +1,6 @@
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
 interface Ucus {
   price: string
@@ -40,6 +40,31 @@ const props = defineProps<{
 
 const kalkis = ref(props.originAirport || '')
 const varis = ref('')
+const varisNotu = ref('')
+
+// Varış havalimanını seçilen şehirden otomatik doldur.
+// Şehrin havalimanı yoksa (Versay, Brugge, Zermatt...) backend en yakın havalimanını verir.
+onMounted(async () => {
+  if (!props.destinationId || varis.value) return
+  try {
+    const sehir = await $fetch<{
+      name: string
+      airport_code: string | null
+      airport_city: string | null
+      airport_distance_km: number | null
+    }>(`http://localhost:8000/destinations/${props.destinationId}`)
+    if (!sehir.airport_code) {
+      varisNotu.value = `${sehir.name} için havalimanı bulunamadı, kodu elle gir.`
+      return
+    }
+    varis.value = sehir.airport_code
+    if (sehir.airport_city && sehir.airport_city !== sehir.name) {
+      varisNotu.value = `${sehir.name} şehrinde havalimanı yok; en yakın: ${sehir.airport_city} (${sehir.airport_code}, ~${sehir.airport_distance_km} km)`
+    }
+  } catch {
+    // Şehir bilgisi alınamazsa kullanıcı kodu elle girebilir.
+  }
+})
 const tarih = ref(props.startDate?.slice(0, 10) || '')
 const donusTarihi = ref(props.endDate?.slice(0, 10) || '')
 const yolculukTipi = ref<'tek' | 'gidisDonus'>('gidisDonus')
@@ -444,6 +469,7 @@ async function ucusuKaydet(
             maxlength="3"
             placeholder="Örn. AYT"
           />
+          <small v-if="varisNotu" class="field-note">{{ varisNotu }}</small>
         </label>
 
         <label class="field">
@@ -1147,5 +1173,11 @@ async function ucusuKaydet(
   .flight-price button {
     width: 100%;
   }
+}
+.field-note {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted, #64748b);
 }
 </style>

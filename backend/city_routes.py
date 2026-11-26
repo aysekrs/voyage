@@ -56,6 +56,30 @@ def get_destinations(db: Session = Depends(get_db)):
     ]
 
 
+def en_yakin_havalimani(db: Session, sehir) -> dict:
+    """Sehrin havalimani kodu; yoksa (Versay, Brugge, Zermatt...) en yakin
+    havalimanli sehrinkini verir. Sehir merkezi = gezilecek yerlerin ortalamasi."""
+    if sehir.havalimani_kodu:
+        return {"code": sehir.havalimani_kodu, "city": sehir.ad, "distance_km": 0}
+
+    merkezler = db.execute(text("""
+        SELECT s.sehir_id, s.ad, s.havalimani_kodu,
+               AVG(y.enlem) AS lat, AVG(y.boylam) AS lon
+        FROM sehirler s JOIN yerler y ON y.sehir_id = s.sehir_id
+        WHERE y.enlem IS NOT NULL AND y.boylam IS NOT NULL
+        GROUP BY s.sehir_id, s.ad, s.havalimani_kodu
+    """)).mappings().all()
+    bu = next((m for m in merkezler if m["sehir_id"] == sehir.sehir_id), None)
+    adaylar = [m for m in merkezler if m["havalimani_kodu"]]
+    if bu is None or not adaylar:
+        return {"code": None, "city": None, "distance_km": None}
+
+    from rota_algoritmasi import haversine
+    en_yakin = min(adaylar, key=lambda m: haversine(bu["lat"], bu["lon"], m["lat"], m["lon"]))
+    km = haversine(bu["lat"], bu["lon"], en_yakin["lat"], en_yakin["lon"])
+    return {"code": en_yakin["havalimani_kodu"], "city": en_yakin["ad"], "distance_km": round(km)}
+
+
 # Belirli bir ┼şehrin detaylar─▒n─▒ getir
 @router.get("/destinations/{destination_id}")
 def get_destination(
@@ -72,10 +96,15 @@ def get_destination(
             detail="Sehir bulunamadi"
         )
 
+    havalimani = en_yakin_havalimani(db, sehir)
+
     return {
         "id": sehir.sehir_id,
         "name": sehir.ad,
         "country": sehir.ulke,
+        "airport_code": havalimani["code"],
+        "airport_city": havalimani["city"],
+        "airport_distance_km": havalimani["distance_km"],
         "currency": sehir.para_birimi,
         "nature_score": sehir.doga_puani,
         "food_score": sehir.yemek_puani,

@@ -55,7 +55,7 @@ function rotayiCiz() {
           align-items:center;
           justify-content:center;
           border-radius:50%;
-          background:#2563eb;
+          background:linear-gradient(110deg,#789bd6 0%,#b6a4da 100%);
           border:3px solid white;
           color:white;
           font-weight:bold;
@@ -82,7 +82,7 @@ function rotayiCiz() {
 
   if (koordinatlar.length >= 2) {
     L.polyline(koordinatlar, {
-      color: "#2563eb",
+      color: "#8572b7",
       weight: 4,
       opacity: 0.85
     }).addTo(rotaKatmani);
@@ -129,19 +129,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="mt-6">
-    <h4 class="mb-3 text-lg font-bold text-slate-800">
-      🗺️ Günlük Rota Haritası
-    </h4>
-
-    <p class="mb-3 text-sm text-gray-500">
-      Mavi numaralar ziyaret sırasını gösterir.
-      Çizgiler kuş uçuşudur; gerçek yol tarifi değildir.
-    </p>
-
-    <div
-      ref="haritaAlani"
-      class="h-[400px] w-full rounded-xl border border-gray-200"
-    />
+  <div>
+    <div ref="haritaAlani" class="b-harita" />
+    <p class="b-not">Numaralar ziyaret sırasını gösterir. Çizgiler kuş uçuşudur; gerçek yol tarifi değildir.</p>
   </div>
 </template>

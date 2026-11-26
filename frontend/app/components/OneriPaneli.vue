@@ -80,175 +80,101 @@ async function onerileriGetir() {
 </script>
 
 <template>
-  <section class="mt-10 rounded-2xl bg-white p-6 shadow">
-    <h2 class="text-2xl font-bold text-slate-800">
-      ✨ Sana Uygun Şehirleri Bul
-    </h2>
+  <section class="b-bolum">
+    <p class="v-ust-yazi">Tercihlerin</p>
+    <h2 class="v-baslik">Sana uygun şehirleri bul</h2>
+    <p class="b-aciklama">Seyahatinde nelere önem verdiğini belirle, VoyageAI tercihlerine uygun şehirleri önersin.</p>
 
-    <p class="mt-2 text-gray-600">
-      Seyahatinde nelere önem verdiğini belirle.
-      VoyageAI tercihlerine uygun şehirleri önersin!
-    </p>
-
-    <div class="mt-8 grid gap-6 md:grid-cols-2">
-
+    <div class="b-alanlar">
       <div>
-        <div class="mb-2 flex justify-between">
-          <label for="doga">🌿 Doğa</label>
-          <span class="font-bold text-green-700">
-            {{ doga }}
-          </span>
-        </div>
-
-        <input
-          id="doga"
-          v-model.number="doga"
-          type="range"
-          min="0"
-          max="100"
-          step="5"
-          class="w-full accent-green-600"
-        />
+        <label for="doga" class="b-etiket">🌿 Doğa <strong>{{ doga }}</strong></label>
+        <input id="doga" v-model.number="doga" type="range" min="0" max="100" step="5" class="b-kaydirici" />
       </div>
-
       <div>
-        <div class="mb-2 flex justify-between">
-          <label for="yemek">🍽️ Yemek</label>
-          <span class="font-bold text-orange-600">
-            {{ yemek }}
-          </span>
-        </div>
-
-        <input
-          id="yemek"
-          v-model.number="yemek"
-          type="range"
-          min="0"
-          max="100"
-          step="5"
-          class="w-full accent-orange-500"
-        />
+        <label for="yemek" class="b-etiket">🍽️ Yemek <strong>{{ yemek }}</strong></label>
+        <input id="yemek" v-model.number="yemek" type="range" min="0" max="100" step="5" class="b-kaydirici" />
       </div>
-
       <div>
-        <div class="mb-2 flex justify-between">
-          <label for="tarih">🏛️ Tarih</label>
-          <span class="font-bold text-blue-700">
-            {{ tarih }}
-          </span>
-        </div>
-
-        <input
-          id="tarih"
-          v-model.number="tarih"
-          type="range"
-          min="0"
-          max="100"
-          step="5"
-          class="w-full accent-blue-600"
-        />
+        <label for="tarih" class="b-etiket">🏛️ Tarih <strong>{{ tarih }}</strong></label>
+        <input id="tarih" v-model.number="tarih" type="range" min="0" max="100" step="5" class="b-kaydirici" />
       </div>
-
       <div>
-        <div class="mb-2 flex justify-between">
-          <label for="gece">🌙 Gece hayatı</label>
-          <span class="font-bold text-purple-700">
-            {{ gece }}
-          </span>
-        </div>
-
-        <input
-          id="gece"
-          v-model.number="gece"
-          type="range"
-          min="0"
-          max="100"
-          step="5"
-          class="w-full accent-purple-600"
-        />
+        <label for="gece" class="b-etiket">🌙 Gece hayatı <strong>{{ gece }}</strong></label>
+        <input id="gece" v-model.number="gece" type="range" min="0" max="100" step="5" class="b-kaydirici" />
       </div>
-
     </div>
 
-    <button
-      type="button"
-      @click="onerileriGetir"
-      :disabled="yukleniyor"
-      class="mt-8 rounded-xl bg-blue-600 px-6 py-3
-             font-semibold text-white
-             hover:bg-blue-700
-             disabled:cursor-not-allowed
-             disabled:opacity-50"
-    >
-      {{ yukleniyor ? "Öneriler hazırlanıyor..." : "Şehir Öner!" }}
-    </button>
+    <div class="b-butonlar">
+      <button type="button" class="v-buton" :disabled="yukleniyor" @click="onerileriGetir">
+        {{ yukleniyor ? "Öneriler hazırlanıyor..." : "Şehir öner" }}
+      </button>
+    </div>
 
-    <p
-      v-if="hata"
-      class="mt-4 text-red-600"
-      role="alert"
-    >
-      {{ hata }}
-    </p>
+    <p v-if="hata" class="b-hata" role="alert">{{ hata }}</p>
 
-    <div v-if="sonucGoster" class="mt-10">
-      <h3 class="mb-5 text-xl font-bold">
-        🌍 Sana Önerilen Şehirler
-      </h3>
+    <div v-if="sonucGoster" style="margin-top: 28px">
+      <p class="v-ust-yazi">Sonuçlar</p>
+      <h3 class="v-baslik" style="font-size: 22px">Sana önerilen şehirler</h3>
 
-      <p
-        v-if="oneriler.length === 0"
-        class="text-gray-600"
-      >
+      <p v-if="oneriler.length === 0" class="b-not">
         Bu tercihlere uygun, yeterli kayıt içeren şehir bulunamadı.
       </p>
 
-      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <article
-          v-for="(oneri, index) in oneriler"
-          :key="`${oneri.ulke}-${oneri.sehir}`"
-          class="rounded-xl border border-gray-200 p-5"
-        >
-          <p class="text-sm font-semibold text-blue-600">
-            {{ index + 1 }}. Öneri
-          </p>
-
-          <h4 class="mt-2 text-xl font-bold">
-            {{ oneri.sehir }}
-          </h4>
-
-          <p class="mt-1 text-gray-600">
-            {{ oneri.ulke }}
-          </p>
-
-          <p class="mt-4 text-2xl font-bold text-green-700">
-            {{ oneri.puan.toFixed(2) }}
-          </p>
-
-          <p class="text-sm text-gray-500">
-            Kategori uyum puanı
-          </p>
-
-          <p class="mt-3 text-sm text-gray-600">
-            Kayıtlı gezilecek yer: {{ oneri.toplam_yer }}
-          </p>
-          <button
-  type="button"
-  @click="sehriKesfet(oneri)"
-  class="mt-5 w-full rounded-lg bg-blue-600 px-4 py-3
-         font-semibold text-white transition hover:bg-blue-700"
->
-  📍 Bu Şehri Keşfet
-</button>
+      <div class="oneri-izgara">
+        <article v-for="(oneri, index) in oneriler" :key="`${oneri.ulke}-${oneri.sehir}`" class="oneri-kart v-kart">
+          <p class="v-ust-yazi">{{ index + 1 }}. öneri</p>
+          <h4>{{ oneri.sehir }}</h4>
+          <p class="b-durak-alt">{{ oneri.ulke }}</p>
+          <p class="oneri-puan">{{ oneri.puan.toFixed(2) }}</p>
+          <p class="b-durak-alt">Kategori uyum puanı · {{ oneri.toplam_yer }} gezilecek yer</p>
+          <button type="button" class="v-buton oneri-buton" @click="sehriKesfet(oneri)">Bu şehri keşfet</button>
         </article>
       </div>
 
-      <p class="mt-5 text-sm text-gray-500">
-        Not: Bu sonuçlar kayıtlı gezilecek yerlerin
-        kategori dağılımına dayalı prototip önerilerdir.
-        Şehirlerin gerçek kalitesini ölçmez.
+      <p class="b-not">
+        Not: Bu sonuçlar kayıtlı gezilecek yerlerin kategori dağılımına dayalı prototip önerilerdir;
+        şehirlerin gerçek kalitesini ölçmez.
       </p>
     </div>
   </section>
 </template>
+
+<style scoped>
+.oneri-izgara {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+@media (min-width: 768px) {
+  .oneri-izgara { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (min-width: 1024px) {
+  .oneri-izgara { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.oneri-kart {
+  padding: 20px;
+}
+
+.oneri-kart h4 {
+  margin: 6px 0 0;
+  color: var(--v-ink);
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.oneri-puan {
+  margin: 14px 0 0;
+  color: var(--v-lilac-deep);
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.oneri-buton {
+  width: 100%;
+  margin-top: 16px;
+}
+</style>
 

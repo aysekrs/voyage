@@ -1,1 +1,291 @@
-/* Kişi B stilleri: Tailwind ana dosyada yüklenir. */
+/* ======================================================================
+   Kişi B bileşenleri (harita, günlük plan, rota paneli)
+   A'nın ortak temasını (main.css :root değişkenleri, v-* sınıfları)
+   kullanır; burada sadece B'ye özgü parçalar var.
+   ====================================================================== */
+
+.b-bolum + .b-bolum {
+  margin-top: 0;
+}
+
+.b-aciklama {
+  margin: 8px 0 0;
+  color: var(--v-muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.b-alanlar {
+  display: grid;
+  gap: 22px;
+  margin-top: 22px;
+}
+
+@media (min-width: 768px) {
+  .b-alanlar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.b-etiket {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  color: var(--v-ink);
+  font-weight: 700;
+}
+
+.b-etiket strong {
+  color: var(--v-lilac-deep);
+  font-weight: 800;
+}
+
+.b-kaydirici {
+  width: 100%;
+  margin-top: 12px;
+  accent-color: var(--v-lilac-deep);
+}
+
+.b-butonlar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.b-girdi {
+  width: 9rem;
+  padding: 11px 14px;
+  border: 1px solid #e3e1ec;
+  border-radius: 14px;
+  background: white;
+  color: var(--v-ink);
+  font: inherit;
+}
+
+.b-kayit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--v-surface-soft);
+}
+
+.b-kayit label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--v-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Özet kutucukları */
+.b-ozet {
+  display: grid;
+  gap: 12px;
+  margin-top: 26px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .b-ozet {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.b-ozet-kart {
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--v-gradient-soft);
+}
+
+.b-ozet-kart span {
+  display: block;
+  color: var(--v-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.b-ozet-kart strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--v-ink);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+
+/* Gün sekmeleri */
+.b-sekmeler {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.b-gun {
+  margin-top: 18px;
+  padding: 20px;
+  border: 1px solid #eeecf4;
+  border-radius: 22px;
+}
+
+.b-gun h3 {
+  margin: 0;
+  color: var(--v-ink);
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.b-gun-ozet {
+  margin: 6px 0 0;
+  color: var(--v-muted);
+  font-size: 14px;
+}
+
+.b-gun-ozet strong {
+  color: var(--v-ink);
+}
+
+/* Durak / plan satırı */
+.b-durak {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border: 1px solid #eeecf4;
+  border-radius: 18px;
+  background: white;
+}
+
+.b-durak-no {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--v-gradient-button);
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.b-durak-ad {
+  margin: 0;
+  color: var(--v-ink);
+  font-weight: 800;
+}
+
+.b-durak-alt {
+  margin: 3px 0 0;
+  color: var(--v-muted);
+  font-size: 13px;
+}
+
+.b-durak-yol {
+  margin: 4px 0 0;
+  color: var(--v-blue-deep);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.b-durak-sure {
+  margin-left: auto;
+  color: var(--v-lilac-deep);
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Bilgi / uyarı kutuları */
+.b-bilgi {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: var(--v-gradient-soft);
+  color: var(--v-ink);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.b-bilgi p {
+  margin: 0;
+}
+
+.b-bilgi p + p {
+  margin-top: 6px;
+}
+
+.b-uyari {
+  margin-top: 14px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #fff1f4;
+  color: var(--v-pink-deep);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.b-basari {
+  margin-top: 14px;
+  color: var(--v-mint);
+  font-weight: 700;
+}
+
+.b-hata {
+  margin-top: 14px;
+  color: var(--v-pink-deep);
+  font-weight: 700;
+}
+
+.b-not {
+  margin-top: 14px;
+  color: var(--v-soft);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Harita kutusu */
+.b-harita {
+  width: 100%;
+  height: 440px;
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid var(--v-line);
+  border-radius: 20px;
+}
+
+.b-lejant {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.b-lejant span::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Leaflet açılır kutusu temaya uysun */
+.leaflet-container {
+  font-family: var(--v-font);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 14px;
+  box-shadow: var(--v-shadow);
+}

@@ -167,7 +167,6 @@ onMounted(async () => {
 
       <!-- B'nin bileşenleri -->
       <section id="harita" class="bolum bilesen v-kart">
-        <h2 class="v-baslik">Haritada</h2>
         <SehirHaritasi
           :city-id="sehir.id"
           :selected-place-id="secilenYerId"

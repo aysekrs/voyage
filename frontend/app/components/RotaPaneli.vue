@@ -264,123 +264,121 @@ function ayarlarDegisti() {
 </script>
 
 <template>
-  <section class="mt-10 rounded-2xl bg-white p-6 shadow">
-    <h2 class="text-2xl font-bold text-slate-800">🧭 Akıllı Rota Planlayıcı</h2>
-    <p class="mt-2 text-gray-600">Gün sayısını ve günlük gezi süresini belirle. VoyageAI ziyaret sırasını hesaplasın.</p>
+  <section class="b-bolum">
+    <p class="v-ust-yazi">Rota</p>
+    <h2 class="v-baslik">Akıllı rota planlayıcı</h2>
+    <p class="b-aciklama">Gün sayısını ve günlük gezi süresini seç. VoyageAI yakın yerleri aynı güne toplayıp ziyaret sırasını hesaplar.</p>
 
-    <div class="mt-6 grid gap-6 md:grid-cols-2">
+    <div class="b-alanlar">
       <div>
-        <label for="rota-gun" class="font-semibold">Gün sayısı: {{ gunSayisi }}</label>
+        <label for="rota-gun" class="b-etiket">Gün sayısı <strong>{{ gunSayisi }} gün</strong></label>
         <input id="rota-gun" v-model.number="gunSayisi" type="range" min="1" max="7"
-          class="mt-3 w-full accent-blue-600" @input="ayarlarDegisti" />
+          class="b-kaydirici" @input="ayarlarDegisti" />
       </div>
       <div>
-        <label for="rota-saat" class="font-semibold">Günlük süre: {{ gunlukSaat }} saat</label>
+        <label for="rota-saat" class="b-etiket">Günlük süre <strong>{{ gunlukSaat }} saat</strong></label>
         <input id="rota-saat" v-model.number="gunlukSaat" type="range" min="1" max="12"
-          class="mt-3 w-full accent-blue-600" @input="ayarlarDegisti" />
+          class="b-kaydirici" @input="ayarlarDegisti" />
       </div>
     </div>
 
-
-    <div class="mt-6 flex flex-wrap items-center gap-3">
-      <button type="button" :disabled="yukleniyor" @click="rotaGetir"
-        class="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50">
-        {{ yukleniyor ? "Hesaplanıyor..." : "🧭 Rotayı Oluştur" }}
+    <div class="b-butonlar">
+      <button type="button" class="v-buton" :disabled="yukleniyor" @click="rotaGetir">
+        {{ yukleniyor ? "Hesaplanıyor..." : "Rotayı oluştur" }}
       </button>
-      <button type="button" :disabled="!rota || durakSayisi === 0 || kaydediliyor || kayitAciliyor || aktifRotaTest"
-        @click="rotaKaydet"
-        class="rounded-xl bg-emerald-600 px-6 py-3 font-semibold text-white hover:bg-emerald-700 disabled:opacity-50">
-        {{ kaydediliyor ? "Kaydediliyor..." : "💾 Rotayı Kaydet" }}
+      <button type="button" class="v-buton-ikincil"
+        :disabled="!rota || durakSayisi === 0 || kaydediliyor || kayitAciliyor || aktifRotaTest"
+        @click="rotaKaydet">
+        {{ kaydediliyor ? "Kaydediliyor..." : "Rotayı kaydet" }}
       </button>
     </div>
 
-    <div class="mt-5 flex flex-wrap items-end gap-3 rounded-xl bg-slate-50 p-4">
+    <div class="b-kayit">
       <div>
-        <label for="kayit-numarasi" class="block text-sm font-semibold text-slate-700">Kayıt numarası</label>
+        <label for="kayit-numarasi">Kayıt numarası</label>
         <input id="kayit-numarasi" v-model.number="acilacakKayitNo" type="number" min="1"
-          class="mt-1 w-36 rounded-lg border border-slate-300 px-3 py-2" placeholder="Örn. 1" />
+          class="b-girdi" placeholder="Örn. 1" />
       </div>
-      <button type="button" :disabled="kayitAciliyor" @click="kayitliRotaAc"
-        class="rounded-xl bg-slate-800 px-5 py-2.5 font-semibold text-white hover:bg-slate-900 disabled:opacity-50">
-        {{ kayitAciliyor ? "Açılıyor..." : "📂 Kayıtlı Rotayı Aç" }}
+      <button type="button" class="v-buton-ikincil" :disabled="kayitAciliyor" @click="kayitliRotaAc">
+        {{ kayitAciliyor ? "Açılıyor..." : "Kayıtlı rotayı aç" }}
       </button>
     </div>
 
-    <p v-if="aktifRotaTest" class="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm font-semibold text-amber-900" role="status">
-      TEST ROTASI: Aday koordinatlar doğrulanmamıştır. Bu rota gerçek yol tarifi değildir; veritabanına kaydetme kapalıdır.
+    <p v-if="aktifRotaTest" class="b-uyari" role="status">
+      Test rotası: aday koordinatlar doğrulanmamıştır, kaydetme kapalıdır.
     </p>
-    <p v-if="bildirim" class="mt-4 text-green-700" role="status">{{ bildirim }}</p>
-    <p v-if="hata" class="mt-4 text-red-600" role="alert">{{ hata }}</p>
+    <p v-if="bildirim" class="b-basari" role="status">{{ bildirim }}</p>
+    <p v-if="hata" class="b-hata" role="alert">{{ hata }}</p>
 
-    <div v-if="rota" class="mt-8">
-      <div class="grid gap-3 md:grid-cols-4">
-        <div class="rounded-xl bg-blue-50 p-4">
-          <p class="text-sm text-gray-600">Kuş uçuşu mesafe</p>
-          <p class="text-2xl font-bold text-purple-700">{{ rota.total_distance_km.toFixed(2) }} km</p>
+    <div v-if="rota">
+      <div class="b-ozet">
+        <div class="b-ozet-kart">
+          <span>Kuş uçuşu mesafe</span>
+          <strong>{{ rota.total_distance_km.toFixed(1) }} km</strong>
         </div>
-        <div class="rounded-xl bg-blue-50 p-4">
-          <p class="text-sm text-gray-600">Tahmini yol süresi</p>
-          <p class="text-2xl font-bold text-purple-700">{{ sureYaz(rota.total_travel_minutes) }}</p>
+        <div class="b-ozet-kart">
+          <span>Tahmini yol süresi</span>
+          <strong>{{ sureYaz(rota.total_travel_minutes) }}</strong>
         </div>
-        <div class="rounded-xl bg-blue-50 p-4">
-          <p class="text-sm text-gray-600">Durak sayısı</p>
-          <p class="text-2xl font-bold text-blue-700">{{ durakSayisi }}</p>
+        <div class="b-ozet-kart">
+          <span>Durak sayısı</span>
+          <strong>{{ durakSayisi }}</strong>
         </div>
-        <div class="rounded-xl bg-blue-50 p-4">
-          <p class="text-sm text-gray-600">Planlanan gün</p>
-          <p class="text-2xl font-bold text-blue-700">{{ rota.days }}</p>
+        <div class="b-ozet-kart">
+          <span>Planlanan gün</span>
+          <strong>{{ rota.days }}</strong>
         </div>
       </div>
 
-      <div class="mt-6 flex flex-wrap gap-2">
+      <div class="b-sekmeler">
         <button v-for="(gun, index) in rota.itinerary" :key="gun.day" type="button"
-          @click="aktifGun = index"
-          :class="['rounded-lg px-4 py-2 font-semibold', aktifGun === index ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700']">
+          :class="['v-cip', { aktif: aktifGun === index }]" @click="aktifGun = index">
           Gün {{ gun.day }}
         </button>
       </div>
 
-      <div v-if="seciliGun" class="mt-5 rounded-xl border p-5">
-        <h3 class="text-xl font-bold">{{ seciliGun.day }}. Gün Rotası</h3>
-        <p class="mt-2 text-sm text-gray-600">
-          Ziyaret: {{ sureYaz(seciliGun.visit_minutes) }} · Yol: ~{{ sureYaz(seciliGun.travel_minutes) }} ·
-          <strong>Toplam: {{ sureYaz(seciliGun.total_minutes) }}</strong> · Mesafe: {{ seciliGun.distance_km.toFixed(2) }} km
+      <div v-if="seciliGun" class="b-gun">
+        <h3>{{ seciliGun.day }}. gün</h3>
+        <p class="b-gun-ozet">
+          Ziyaret {{ sureYaz(seciliGun.visit_minutes) }} · Yol ~{{ sureYaz(seciliGun.travel_minutes) }} ·
+          <strong>Toplam {{ sureYaz(seciliGun.total_minutes) }}</strong> · {{ seciliGun.distance_km.toFixed(1) }} km
         </p>
-        <p v-if="seciliGun.places.length === 0" class="mt-5 text-gray-500">
-          Bu gün için koordinatı ve ziyaret süresi uygun yer bulunamadı.
+        <p v-if="seciliGun.places.length === 0" class="b-not">
+          Bu güne yer kalmadı. Günlük süreyi azaltabilir ya da gün sayısını düşürebilirsin.
         </p>
-        <div v-for="yer in seciliGun.places" :key="yer.place_id" class="mt-4 rounded-lg bg-slate-50 p-4">
-          <p class="font-semibold">{{ yer.order }}. {{ yer.name }}</p>
-          <p class="mt-1 text-sm text-gray-600">{{ yer.category ?? "Kategori belirtilmedi" }} · {{ yer.visit_minutes }} dakika</p>
-          <p v-if="yer.order > 1" class="mt-1 text-sm text-blue-700">
-            Önceki duraktan: {{ yer.distance_from_previous_km }} km · ~{{ yer.travel_minutes }} dk
-            {{ yer.distance_from_previous_km <= 1.5 ? "🚶 yürüyüş" : "🚇 toplu taşıma" }}
-          </p>
-          <p v-else class="mt-1 text-sm text-blue-700">Günün başlangıç noktası</p>
+        <div v-for="yer in seciliGun.places" :key="yer.place_id" class="b-durak">
+          <span class="b-durak-no">{{ yer.order }}</span>
+          <div>
+            <p class="b-durak-ad">{{ yer.name }}</p>
+            <p class="b-durak-alt">{{ yer.category ?? "Kategori belirtilmedi" }}</p>
+            <p v-if="yer.order > 1" class="b-durak-yol">
+              {{ yer.distance_from_previous_km <= 1.5 ? "🚶" : "🚇" }}
+              Önceki duraktan {{ yer.distance_from_previous_km }} km · ~{{ yer.travel_minutes }} dk
+            </p>
+            <p v-else class="b-durak-yol">Günün başlangıç noktası</p>
+          </div>
+          <span class="b-durak-sure">{{ sureYaz(yer.visit_minutes) }}</span>
         </div>
         <ClientOnly>
           <RotaHaritasi v-if="seciliGun.places.length > 0" :key="`${cityId}-${seciliGun.day}-${kayitNo ?? 'yeni'}`" :places="seciliGun.places" />
         </ClientOnly>
       </div>
 
-      <div v-if="rota.excluded.not_fitting_in_days > 0" class="mt-5 rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
-        <p class="font-semibold">
-          ℹ️ {{ rota.excluded.not_fitting_in_days }} yer seçtiğin sürelere sığmadı
-          ({{ rota.days }} gün × {{ rota.hours_per_day }} saat).
-        </p>
-        <p class="mt-1">Hepsini görmek istersen gün sayısını veya günlük süreyi artırıp rotayı yeniden oluştur.</p>
-        <p v-if="rota.not_fitting_places?.length" class="mt-2 text-sky-800">
+      <div v-if="rota.excluded.not_fitting_in_days > 0" class="b-bilgi">
+        <p><strong>{{ rota.excluded.not_fitting_in_days }} yer seçtiğin süreye sığmadı</strong>
+          ({{ rota.days }} gün × {{ rota.hours_per_day }} saat).</p>
+        <p>Hepsini görmek için gün sayısını veya günlük süreyi artırıp rotayı yeniden oluştur.</p>
+        <p v-if="rota.not_fitting_places?.length">
           Bu rotaya girmeyenler: {{ rota.not_fitting_places.map((y) => y.name).join(", ") }}
         </p>
       </div>
-      <p v-if="rota.excluded.missing_or_invalid_coordinates + rota.excluded.missing_visit_duration > 0"
-        class="mt-3 text-sm text-amber-700">
+      <p v-if="rota.excluded.missing_or_invalid_coordinates + rota.excluded.missing_visit_duration > 0" class="b-uyari">
         Verisi eksik olduğu için rotaya alınamayan:
         <span v-if="rota.excluded.missing_or_invalid_coordinates">{{ rota.excluded.missing_or_invalid_coordinates }} yerin koordinatı yok</span>
         <span v-if="rota.excluded.missing_or_invalid_coordinates && rota.excluded.missing_visit_duration"> · </span>
         <span v-if="rota.excluded.missing_visit_duration">{{ rota.excluded.missing_visit_duration }} yerin ziyaret süresi yok</span>
       </p>
-      <p class="mt-3 text-sm text-gray-500">{{ rota.warning }}</p>
+      <p class="b-not">{{ rota.warning }}</p>
     </div>
   </section>
 </template>

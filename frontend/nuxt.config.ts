@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   pages: true,
 
-  css: ['~/assets/css/main.css', 'leaflet/dist/leaflet.css'],
+  css: ['~/assets/css/main.css', 'leaflet/dist/leaflet.css', '~/assets/css/kisi-b.css'],
 
   app: {
     head: {

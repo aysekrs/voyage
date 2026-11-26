@@ -118,13 +118,13 @@ noktalar.push(konum);
 
     yerleriEkle(
       veri.verified,
-      "#16a34a",
+      "#5f74b3",
       "Veritabanında kayıtlı konum"
     );
 
     yerleriEkle(
       veri.candidates,
-      "#f97316",
+      "#b45f7b",
       "Geoapify adayı - henüz doğrulanmadı"
     );
 
@@ -229,44 +229,21 @@ watch(
 </script>
 
 <template>
-  <section class="mt-10 rounded-2xl bg-white p-6 shadow">
-    <h2 class="text-2xl font-bold text-slate-800">
-      🗺️ Gezilecek Yerler Haritası
-    </h2>
+  <section class="b-bolum">
+    <p class="v-ust-yazi">Harita</p>
+    <h2 class="v-baslik">Gezilecek yerler haritası</h2>
+    <p class="b-aciklama">Bir noktaya tıklayınca yerin adını görürsün. Listedeki "Haritada gör" bağlantısı seni o noktaya götürür.</p>
 
-    <p class="mt-2 text-gray-600">
-      Yeşil noktalar kayıtlı koordinatları, turuncu noktalar
-      henüz doğrulanmamış Geoapify adaylarını gösterir.
-    </p>
-
-    <div class="mt-4 flex flex-wrap gap-4 text-sm">
-      <span class="font-medium text-green-700">
-        ● Kayıtlı: {{ onayliSayisi }}
-      </span>
-
-      <span class="font-medium text-orange-600">
-        ● Aday: {{ adaySayisi }}
-      </span>
+    <div class="b-lejant">
+      <span style="color: var(--v-blue-deep)">Kayıtlı konum: {{ onayliSayisi }}</span>
+      <span v-if="adaySayisi > 0" style="color: var(--v-pink-deep)">Doğrulanmamış aday: {{ adaySayisi }}</span>
     </div>
 
-    <p v-if="yukleniyor" class="mt-3 text-blue-600">
-      Konumlar yükleniyor...
-    </p>
-
-    <p v-if="hata" class="mt-3 text-red-600">
-      {{ hata }}
-    </p>
+    <p v-if="yukleniyor" class="b-not">Konumlar yükleniyor...</p>
+    <p v-if="hata" class="b-hata">{{ hata }}</p>
 
     <ClientOnly>
-      <div
-        ref="haritaAlani"
-        class="mt-5 h-[440px] w-full rounded-xl border border-gray-200"
-      />
+      <div ref="haritaAlani" class="b-harita" />
     </ClientOnly>
-
-    <p class="mt-4 text-xs text-gray-500">
-      Bu harita bir prototiptir. Turuncu noktalar doğrulanmış
-      ziyaret veya rota başlangıç noktaları değildir.
-    </p>
   </section>
 </template>
