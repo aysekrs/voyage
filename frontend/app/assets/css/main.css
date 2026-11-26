@@ -1,1 +1,122 @@
 @import "tailwindcss";
+
+/* ======================================================================
+   VoyageAI ortak tema
+   Giriş sonrası ekranlardaki pastel mavi / lila / pembe tema bütün siteye
+   uygulanır. Renkler tek yerde: aşağıdaki :root değişkenleri.
+
+   Tailwind renkleri de bu temaya bağlandı; böylece Tailwind sınıfıyla
+   yazılmış ekranlar (ör. bg-blue-600, text-gray-600) dosyalarına
+   dokunmadan aynı görünür.
+   ====================================================================== */
+
+:root {
+  --v-ink: #293042;
+  --v-muted: #737d90;
+  --v-soft: #9aa2b4;
+
+  --v-blue: #789bd6;
+  --v-blue-deep: #5f74b3;
+  --v-lilac: #b6a4da;
+  --v-lilac-deep: #8572b7;
+  --v-pink: #e8b8ca;
+  --v-pink-deep: #b45f7b;
+  --v-mint: #4f9583;
+
+  --v-line: #e5e7f0;
+  --v-surface: #ffffff;
+  --v-surface-soft: #f6f4fb;
+  --v-page: #f7f6fb;
+
+  --v-gradient-soft: linear-gradient(110deg, #e1eafb 0%, #eee5f7 54%, #f9dfe9 100%);
+  --v-gradient-button: linear-gradient(110deg, #789bd6 0%, #b6a4da 100%);
+  --v-shadow: 0 18px 50px rgba(77, 86, 140, 0.1);
+
+  --v-font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --v-font-accent: Georgia, "Times New Roman", serif;
+
+  /* Eski bileşenlerin beklediği değişkenler (ör. kullanıcı paneli) */
+  --text-main: var(--v-ink);
+  --text-muted: var(--v-muted);
+  --card-bg: var(--v-surface);
+  --card-border: var(--v-line);
+  --ink: var(--v-ink);
+  --muted: var(--v-muted);
+}
+
+@theme {
+  --font-sans: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+
+  --color-blue-50: #eef3fc;
+  --color-blue-100: #e1eafb;
+  --color-blue-200: #c9d8f4;
+  --color-blue-500: #8aa4dc;
+  --color-blue-600: #7f93d2;
+  --color-blue-700: #6a78bd;
+
+  --color-indigo-600: #8e89c4;
+  --color-indigo-700: #7a74b5;
+
+  --color-purple-50: #f3eefb;
+  --color-purple-700: #8572b7;
+
+  --color-green-50: #eaf6f2;
+  --color-green-600: #5ea996;
+  --color-green-700: #4f9583;
+
+  --color-red-50: #fff1f4;
+  --color-red-600: #b45f7b;
+  --color-red-700: #9d4c68;
+
+  --color-amber-700: #b7864a;
+
+  --color-slate-50: #faf9fd;
+  --color-slate-100: #f7f6fb;
+  --color-slate-800: #293042;
+  --color-slate-900: #293042;
+
+  --color-gray-100: #f3f2f8;
+  --color-gray-200: #e5e7f0;
+  --color-gray-300: #dfdcea;
+  --color-gray-400: #a7aebd;
+  --color-gray-500: #8a93a6;
+  --color-gray-600: #737d90;
+  --color-gray-700: #5b6478;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  overflow-x: clip;
+}
+
+body {
+  background:
+    radial-gradient(ellipse 60% 45% at 0% 0%, rgba(225, 234, 251, 0.9), transparent 70%),
+    radial-gradient(ellipse 55% 40% at 100% 10%, rgba(249, 223, 233, 0.7), transparent 70%),
+    var(--v-page);
+  background-attachment: fixed;
+  color: var(--v-ink);
+  font-family: var(--v-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #e4dcf5;
+  color: var(--v-ink);
+}
+
+:focus-visible {
+  outline: 3px solid #c9bdea;
+  outline-offset: 2px;
+}
+
+/* Tailwind ile yazılmış form alanlarının odak rengi */
+select:focus,
+input:focus,
+textarea:focus {
+  border-color: var(--v-lilac);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(182, 164, 218, 0.25);
+}

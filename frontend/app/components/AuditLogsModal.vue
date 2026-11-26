@@ -180,7 +180,7 @@ function tarihFormat(tStr: string): string {
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
-  background: rgba(10, 14, 26, 0.82);
+  background: rgba(41, 48, 66, 0.35);
   backdrop-filter: blur(10px);
   display: flex;
   align-items: center;
@@ -193,13 +193,13 @@ function tarihFormat(tStr: string): string {
   width: 100%;
   max-width: 540px;
   max-height: 85vh;
-  background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px solid #e5e7f0;
   border-radius: 18px;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 25px 50px -12px rgba(77, 86, 140, 0.16), 0 0 0 1px rgba(142, 137, 196, 0.2);
   color: #e5e7eb;
 }
 
@@ -208,7 +208,7 @@ function tarihFormat(tStr: string): string {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #e5e7f0;
 }
 
 .baslik-sol {
@@ -224,11 +224,11 @@ function tarihFormat(tStr: string): string {
 .modal-baslik {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #fff;
+  color: #293042;
 }
 
 .modal-alt {
-  color: rgba(255, 255, 255, 0.45);
+  color: #737d90;
   font-size: 0.78rem;
 }
 
@@ -244,14 +244,14 @@ function tarihFormat(tStr: string): string {
 }
 
 .modal-kapat-btn:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  color: #8572b7;
+  background: #efecf7;
 }
 
 .log-hata {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  color: #fca5a5;
+  background: rgba(180, 95, 123, 0.15);
+  border: 1px solid rgba(180, 95, 123, 0.3);
+  color: #b45f7b;
   font-size: 0.84rem;
   padding: 10px 14px;
   border-radius: 8px;
@@ -264,14 +264,14 @@ function tarihFormat(tStr: string): string {
   justify-content: center;
   gap: 12px;
   padding: 32px;
-  color: rgba(255, 255, 255, 0.5);
+  color: #737d90;
   font-size: 0.88rem;
 }
 
 .spinner-kucuk {
   width: 20px; height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  border-top-color: #6366f1;
+  border: 2px solid #e5e7f0;
+  border-top-color: #8e89c4;
   border-radius: 50%;
   animation: don 0.7s linear infinite;
 }
@@ -289,7 +289,7 @@ function tarihFormat(tStr: string): string {
 
 .bos-log {
   text-align: center;
-  color: rgba(255, 255, 255, 0.4);
+  color: #737d90;
   padding: 24px;
   font-size: 0.88rem;
 }
@@ -298,8 +298,8 @@ function tarihFormat(tStr: string): string {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: #f6f4fb;
+  border: 1px solid #e5e7f0;
   border-radius: 12px;
   padding: 12px 14px;
 }
@@ -315,18 +315,18 @@ function tarihFormat(tStr: string): string {
 }
 
 .sinif-basari {
-  background: rgba(16, 185, 129, 0.15);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(94, 169, 150, 0.15);
+  border: 1px solid rgba(94, 169, 150, 0.3);
 }
 
 .sinif-hata {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(180, 95, 123, 0.15);
+  border: 1px solid rgba(180, 95, 123, 0.3);
 }
 
 .sinif-bilgi {
-  background: rgba(99, 102, 241, 0.15);
-  border: 1px solid rgba(99, 102, 241, 0.3);
+  background: rgba(142, 137, 196, 0.15);
+  border: 1px solid rgba(142, 137, 196, 0.3);
 }
 
 .log-detay {
@@ -345,31 +345,31 @@ function tarihFormat(tStr: string): string {
 .islem-baslik {
   font-weight: 600;
   font-size: 0.86rem;
-  color: #fff;
+  color: #293042;
 }
 
 .log-tarih {
   font-size: 0.72rem;
-  color: rgba(255, 255, 255, 0.4);
+  color: #737d90;
 }
 
 .log-alt {
   display: flex;
   gap: 10px;
   font-size: 0.76rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: #737d90;
 }
 
-.ip-etiket { font-family: monospace; color: #a5b4fc; }
-.detay-metin { color: rgba(255, 255, 255, 0.5); }
+.ip-etiket { font-family: monospace; color: #8572b7; }
+.detay-metin { color: #737d90; }
 
 .modal-alt-alan {
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid #e5e7f0;
 }
 
 .btn-kapat-birincil {
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  background: linear-gradient(135deg, #8e89c4, #b6a4da);
   color: #fff;
   font-weight: 700;
   width: 100%;
@@ -377,7 +377,7 @@ function tarihFormat(tStr: string): string {
   border-radius: 10px;
   border: none;
   cursor: pointer;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 20px rgba(142, 137, 196, 0.3);
 }
 
 .modal-fade-enter-active, .modal-fade-leave-active {

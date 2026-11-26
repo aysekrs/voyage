@@ -6,6 +6,7 @@ import SeyahatListesi from '~/components/SeyahatListesi.vue'
 
 const route = useRoute()
 const seyahatFormuAcik = ref(false)
+const girisYapildi = ref(false)
 const oturumKontrolEdiliyor = ref(false)
 
 async function seyahatOlusturAc() {
@@ -27,6 +28,10 @@ async function seyahatOlusturAc() {
 }
 
 onMounted(() => {
+  $fetch('/api/ben')
+    .then(() => { girisYapildi.value = true })
+    .catch(() => { girisYapildi.value = false })
+
   if (route.query.seyahatOlustur === '1') {
     seyahatOlusturAc()
   }
@@ -62,7 +67,7 @@ const haritadaOlanYerler = ref<number[]>([]);
 const kategoriler = [
   { deger: "hepsi", ad: "Tümü" },
   { deger: "tarih", ad: "🏛️ Tarih" },
-  { deger: "doğa", ad: "???� Do�?a" },
+  { deger: "doğa", ad: "🌿 Doğa" },
   { deger: "yemek", ad: "🍽️ Yemek" },
   { deger: "gece_hayati", ad: "🌙 Gece Hayatı" }
 ];
@@ -198,29 +203,49 @@ async function onerilenSehriAc(ulke: string, sehirAdi: string) {
 </script>
 
 <template>
-<main class="min-h-screen bg-slate-100 p-6 text-slate-900">
+<main class="min-h-screen p-4 text-slate-900 md:p-6">
   <div class="mx-auto max-w-6xl">
 
-      <header class="mb-10">
-  <h1 class="text-4xl font-bold text-blue-700">
-    🌍 VoyageAI
-  </h1>
+  <!-- Üst bar -->
+  <nav class="ana-nav">
+    <NuxtLink to="/" class="ana-marka">
+      <span class="marka-yildiz" aria-hidden="true">✦</span>
+      Voyage<em>AI</em>
+    </NuxtLink>
 
-  <p class="mt-3 text-gray-600">
-    Dünyayı keşfet, seyahatini planla!
-  </p>
-</header>
-      
-<div class="mb-8">
-  <button
-    type="button"
-    :disabled="oturumKontrolEdiliyor"
-    @click="seyahatOlusturAc"
-    class="rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-  >
-    {{ oturumKontrolEdiliyor ? 'Kontrol ediliyor...' : '✈️ Seyahat Oluştur' }}
-  </button>
-</div>
+    <NuxtLink to="/login" class="nav-buton">
+      {{ girisYapildi ? 'Hesabım' : 'Giriş yap' }}
+    </NuxtLink>
+  </nav>
+
+  <!-- Karşılama alanı -->
+  <header class="ana-banner">
+    <div class="banner-yazi">
+      <span class="banner-etiket">VOYAGEAI / SEYAHAT PLANLAYICI</span>
+      <h1>Dünyayı keşfet, <em>seyahatini planla.</em></h1>
+      <p>
+        Bütçeni ve ilgi alanlarını söyle; sana uygun şehirleri, uçuşları,
+        otelleri ve gün gün rotanı birlikte çıkaralım.
+      </p>
+
+      <button
+        type="button"
+        :disabled="oturumKontrolEdiliyor"
+        class="banner-buton"
+        @click="seyahatOlusturAc"
+      >
+        {{ oturumKontrolEdiliyor ? 'Kontrol ediliyor…' : '✈  Seyahat oluştur' }}
+      </button>
+    </div>
+
+    <div class="banner-sanat" aria-hidden="true">
+      <span class="sanat-gunes"></span>
+      <span class="sanat-ucak">✈</span>
+      <span class="sanat-yol"></span>
+      <span class="sanat-tepe tepe-arka"></span>
+      <span class="sanat-tepe tepe-on"></span>
+    </div>
+  </header>
 
 <div
   v-if="seyahatFormuAcik"
@@ -234,7 +259,7 @@ async function onerilenSehriAc(ulke: string, sehirAdi: string) {
   <SeyahatListesi />
 </div>
 
-      <section class="rounded-2xl bg-white p-6 shadow">
+      <section class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
         <h2 class="mb-6 text-2xl font-semibold">
           Nereye gitmek istersin?
         </h2>
@@ -425,7 +450,7 @@ async function onerilenSehriAc(ulke: string, sehirAdi: string) {
   v-if="!haritadaOlanYerler.includes(yer.id)"
   class="mt-5 text-sm text-gray-400"
 >
-  📍 Konum bilgisi henüz mevcut de�?il.
+  📍 Konum bilgisi henüz mevcut değil.
 </p>
           </article>
         </div>
@@ -452,6 +477,193 @@ async function onerilenSehriAc(ulke: string, sehirAdi: string) {
   </main>
 </template>
 
+<style scoped>
+.ana-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 6px 4px;
+}
 
+.ana-marka {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--v-ink);
+  font-family: var(--v-font-accent);
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  text-decoration: none;
+}
 
+.ana-marka em {
+  color: var(--v-lilac-deep);
+  font-style: italic;
+  font-weight: 400;
+}
 
+.marka-yildiz {
+  color: var(--v-lilac);
+  font-family: var(--v-font);
+  font-size: 18px;
+}
+
+.nav-buton {
+  padding: 9px 18px;
+  border: 1px solid var(--v-line);
+  border-radius: 12px;
+  background: white;
+  color: var(--v-muted);
+  font-size: 14px;
+  font-weight: 750;
+  text-decoration: none;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.nav-buton:hover {
+  border-color: var(--v-lilac);
+  color: var(--v-lilac-deep);
+}
+
+.ana-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 300px;
+  margin-bottom: 32px;
+  padding: 48px clamp(24px, 5vw, 72px);
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--v-gradient-soft);
+}
+
+.banner-yazi {
+  position: relative;
+  z-index: 2;
+  max-width: 620px;
+}
+
+.banner-etiket {
+  color: #677fae;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.banner-yazi h1 {
+  margin: 16px 0 14px;
+  color: var(--v-ink);
+  font-size: clamp(32px, 4.4vw, 54px);
+  font-weight: 750;
+  letter-spacing: -1.6px;
+  line-height: 1.1;
+}
+
+.banner-yazi h1 em {
+  color: var(--v-lilac-deep);
+  font-family: var(--v-font-accent);
+  font-weight: 400;
+}
+
+.banner-yazi p {
+  max-width: 520px;
+  margin: 0 0 26px;
+  color: #63708a;
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+.banner-buton {
+  padding: 14px 26px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--v-gradient-button);
+  box-shadow: 0 12px 28px rgba(133, 114, 183, 0.25);
+  color: white;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.banner-buton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(133, 114, 183, 0.32);
+}
+
+.banner-buton:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+.banner-sanat {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 40%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sanat-gunes {
+  position: absolute;
+  top: 40px;
+  right: 24%;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: #f9cfdb;
+}
+
+.sanat-ucak {
+  position: absolute;
+  top: 58px;
+  right: 40%;
+  color: #7c86bb;
+  font-size: 54px;
+  transform: rotate(-18deg);
+}
+
+.sanat-yol {
+  position: absolute;
+  top: 135px;
+  right: 48%;
+  width: 110px;
+  height: 64px;
+  border-bottom: 2px dashed #a9a1d4;
+  border-radius: 50%;
+  transform: rotate(20deg);
+}
+
+.sanat-tepe {
+  position: absolute;
+  width: 120%;
+  height: 180px;
+  border-radius: 50% 50% 0 0;
+}
+
+.tepe-arka {
+  right: -20%;
+  bottom: -95px;
+  transform: rotate(-12deg);
+  background: #c3b7e7;
+}
+
+.tepe-on {
+  right: -35%;
+  bottom: -115px;
+  transform: rotate(12deg);
+  background: #a8bee8;
+}
+
+@media (max-width: 760px) {
+  .banner-sanat {
+    opacity: 0.35;
+    width: 70%;
+  }
+}
+</style>

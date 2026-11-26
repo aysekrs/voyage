@@ -1,14 +1,6 @@
 <template>
 
-  <div :class="['sayfa', tema === 'light' ? 'theme-light' : 'theme-dark']">
-
-    <!-- Tema Değiştirici Buton (Sağ Üst Sabit) -->
-
-    <div class="tema-buton-konum">
-
-      <ThemeToggle v-model="tema" />
-
-    </div>
+  <div class="sayfa theme-light">
 
     <!-- ─── Yükleniyor ──────────────────────────────────────────── -->
 
@@ -260,60 +252,14 @@ const profilModalAcik           = ref(false)   // profil ayarları modali açık
 
 const hataliGirisSayaci         = ref(0)       // 3'e ulaşınca şifre sıfırlama uyarısı gösterilir
 
-const tema                      = ref<'dark' | 'light'>('dark')
-
-function temaUygula(yeniTema: 'dark' | 'light') {
-
-  if (!process.client) return
-
-  localStorage.setItem('theme', yeniTema)
-
-  if (yeniTema === 'light') {
-
-    document.documentElement.classList.add('theme-light')
-
-    document.documentElement.classList.remove('theme-dark')
-
-    document.body.classList.add('theme-light')
-
-    document.body.classList.remove('theme-dark')
-
-  } else {
-
-    document.documentElement.classList.add('theme-dark')
-
-    document.documentElement.classList.remove('theme-light')
-
-    document.body.classList.add('theme-dark')
-
-    document.body.classList.remove('theme-light')
-
-  }
-
-}
-
+// Site tek (pastel) temayı kullanır. Eski koyu tema seçiminden kalan
+// sınıflar diğer sayfalara sızmasın diye temizlenir.
 onMounted(() => {
-
-  if (process.client) {
-
-    const saklananTema = localStorage.getItem('theme') as 'dark' | 'light' | null
-
-    if (saklananTema === 'light' || saklananTema === 'dark') {
-
-      tema.value = saklananTema
-
-    }
-
-    temaUygula(tema.value)
-
+  if (!process.client) return
+  localStorage.removeItem('theme')
+  for (const el of [document.documentElement, document.body]) {
+    el.classList.remove('theme-dark', 'theme-light')
   }
-
-})
-
-watch(tema, (yeniTema) => {
-
-  temaUygula(yeniTema)
-
 })
 
 let mesajZamanlayici: ReturnType<typeof setTimeout> | null = null
@@ -464,21 +410,7 @@ async function cikisYap() {
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-
-  font-family: 'Inter', system-ui, sans-serif;
-
-  background: #0a0e1a;
-
-  min-height: 100vh;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-}
+/* body stilleri artık ortak temada (assets/css/main.css) */
 
 /* ─── Arka Plan ───────────────────────────────────────────────────── */
 
@@ -508,11 +440,11 @@ body {
 
   background:
 
-    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99, 102, 241, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(142, 137, 196, 0.18) 0%, transparent 60%),
 
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(16, 185, 129, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(94, 169, 150, 0.12) 0%, transparent 60%),
 
-    #0a0e1a;
+    #ffffff;
 
   padding: 24px;
 
@@ -526,9 +458,9 @@ body {
 
   max-width: 420px;
 
-  background: rgba(255, 255, 255, 0.04);
+  background: #f6f4fb;
 
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  border: 1px solid #e5e7f0;
 
   border-radius: 20px;
 
@@ -538,11 +470,11 @@ body {
 
   box-shadow:
 
-    0 0 0 1px rgba(99, 102, 241, 0.08),
+    0 0 0 1px rgba(142, 137, 196, 0.08),
 
-    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 20px 60px rgba(77, 86, 140, 0.16),
 
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 
   animation: giris 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 
@@ -576,9 +508,9 @@ body {
 
   width: 40px; height: 40px;
 
-  border: 3px solid rgba(255,255,255,0.08);
+  border: 3px solid #e5e7f0;
 
-  border-top-color: #6366f1;
+  border-top-color: #8e89c4;
 
   border-radius: 50%;
 
@@ -588,7 +520,7 @@ body {
 
 @keyframes don { to { transform: rotate(360deg); } }
 
-.yukle-yazi { color: rgba(255,255,255,0.4); font-size: 0.9rem; }
+.yukle-yazi { color: #737d90; font-size: 0.9rem; }
 
 /* ─── İçeri Kartı ────────────────────────────────────────────────── */
 
@@ -612,7 +544,7 @@ body {
 
   border-radius: 50%;
 
-  background: linear-gradient(135deg, #6366f1, #10b981);
+  background: linear-gradient(135deg, #8e89c4, #5ea996);
 
   font-size: 2rem; font-weight: 700;
 
@@ -620,7 +552,7 @@ body {
 
   color: #fff;
 
-  box-shadow: 0 0 30px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 0 30px rgba(142, 137, 196, 0.35);
 
 }
 
@@ -630,13 +562,13 @@ body {
 
   font-weight: 700;
 
-  color: #fff;
+  color: #293042;
 
 }
 
 .kullanici-adi {
 
-  color: #6366f1;
+  color: #8e89c4;
 
   font-size: 1rem;
 
@@ -652,9 +584,9 @@ body {
 
   gap: 12px;
 
-  background: rgba(16, 185, 129, 0.08);
+  background: rgba(94, 169, 150, 0.08);
 
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  border: 1px solid rgba(94, 169, 150, 0.2);
 
   border-radius: 12px;
 
@@ -680,13 +612,13 @@ body {
 
 }
 
-.bilet-bilgi strong { color: #10b981; font-size: 0.9rem; }
+.bilet-bilgi strong { color: #5ea996; font-size: 0.9rem; }
 
-.bilet-bilgi small  { color: rgba(255,255,255,0.4); font-size: 0.75rem; }
+.bilet-bilgi small  { color: #737d90; font-size: 0.75rem; }
 
 .bilet-ok {
 
-  color: #10b981;
+  color: #5ea996;
 
   font-size: 1.2rem;
 
@@ -696,7 +628,7 @@ body {
 
 .aciklama {
 
-  color: rgba(255,255,255,0.35);
+  color: #737d90;
 
   font-size: 0.82rem;
 
@@ -714,7 +646,7 @@ body {
 
   margin-bottom: 4px;
 
-  filter: drop-shadow(0 0 12px rgba(99,102,241,0.5));
+  filter: drop-shadow(0 0 12px rgba(142, 137, 196,0.5));
 
 }
 
@@ -726,7 +658,7 @@ body {
 
   font-weight: 800;
 
-  color: #fff;
+  color: #293042;
 
   margin-bottom: 4px;
 
@@ -736,7 +668,7 @@ body {
 
   text-align: center;
 
-  color: rgba(255,255,255,0.35);
+  color: #737d90;
 
   font-size: 0.85rem;
 
@@ -752,7 +684,7 @@ body {
 
   display: flex;
 
-  background: rgba(255,255,255,0.04);
+  background: #f6f4fb;
 
   border-radius: 10px;
 
@@ -770,7 +702,7 @@ body {
 
   background: transparent;
 
-  color: rgba(255,255,255,0.4);
+  color: #737d90;
 
   font-size: 0.88rem;
 
@@ -802,9 +734,9 @@ body {
 
   height: calc(100% - 8px);
 
-  background: rgba(99, 102, 241, 0.25);
+  background: rgba(142, 137, 196, 0.25);
 
-  border: 1px solid rgba(99, 102, 241, 0.35);
+  border: 1px solid rgba(142, 137, 196, 0.35);
 
   border-radius: 8px;
 
@@ -826,7 +758,7 @@ body {
 
   font-weight: 600;
 
-  color: rgba(255,255,255,0.5);
+  color: #737d90;
 
   text-transform: uppercase;
 
@@ -836,15 +768,15 @@ body {
 
 .alan input {
 
-  background: rgba(255,255,255,0.05);
+  background: #f6f4fb;
 
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid #e5e7f0;
 
   border-radius: 10px;
 
   padding: 12px 14px;
 
-  color: #fff;
+  color: #293042;
 
   font-size: 0.95rem;
 
@@ -856,13 +788,13 @@ body {
 
 }
 
-.alan input::placeholder { color: rgba(255,255,255,0.2); }
+.alan input::placeholder { color: #737d90; }
 
 .alan input:focus {
 
-  border-color: rgba(99, 102, 241, 0.6);
+  border-color: rgba(142, 137, 196, 0.6);
 
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  box-shadow: 0 0 0 3px rgba(142, 137, 196, 0.12);
 
 }
 
@@ -926,7 +858,7 @@ body {
 
   color: rgba(255, 255, 255, 0.7);
 
-  background: rgba(255, 255, 255, 0.06);
+  background: #f6f4fb;
 
 }
 
@@ -966,11 +898,11 @@ body {
 
 .btn-birincil {
 
-  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  background: linear-gradient(135deg, #8e89c4, #b6a4da);
 
   color: #fff;
 
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 4px 20px rgba(142, 137, 196, 0.3);
 
   margin-top: 4px;
 
@@ -980,7 +912,7 @@ body {
 
   transform: translateY(-1px);
 
-  box-shadow: 0 6px 25px rgba(99, 102, 241, 0.45);
+  box-shadow: 0 6px 25px rgba(142, 137, 196, 0.45);
 
 }
 
@@ -1006,17 +938,17 @@ body {
 
 .btn-oturumlar {
 
-  background: rgba(99, 102, 241, 0.12);
+  background: rgba(142, 137, 196, 0.12);
 
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  border: 1px solid rgba(142, 137, 196, 0.25);
 
-  color: #a5b4fc;
+  color: #8572b7;
 
 }
 
 .btn-oturumlar:not(:disabled):hover {
 
-  background: rgba(99, 102, 241, 0.22);
+  background: rgba(142, 137, 196, 0.22);
 
   color: #fff;
 
@@ -1024,17 +956,17 @@ body {
 
 .btn-loglar {
 
-  background: rgba(16, 185, 129, 0.12);
+  background: rgba(94, 169, 150, 0.12);
 
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  border: 1px solid rgba(94, 169, 150, 0.25);
 
-  color: #6ee7b7;
+  color: #4f9583;
 
 }
 
 .btn-loglar:not(:disabled):hover {
 
-  background: rgba(16, 185, 129, 0.22);
+  background: rgba(94, 169, 150, 0.22);
 
   color: #fff;
 
@@ -1042,17 +974,17 @@ body {
 
 .btn-cikis {
 
-  background: rgba(239, 68, 68, 0.12);
+  background: rgba(180, 95, 123, 0.12);
 
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(180, 95, 123, 0.25);
 
-  color: #ef4444;
+  color: #c26a86;
 
 }
 
 .btn-cikis:not(:disabled):hover {
 
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(180, 95, 123, 0.2);
 
 }
 
@@ -1094,37 +1026,37 @@ body {
 
 .hata {
 
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(180, 95, 123, 0.1);
 
-  border: 1px solid rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(180, 95, 123, 0.25);
 
-  color: #fca5a5;
+  color: #b45f7b;
 
 }
 
 .hata .mesaj-ikon {
 
-  background: rgba(239, 68, 68, 0.2);
+  background: rgba(180, 95, 123, 0.2);
 
-  color: #ef4444;
+  color: #c26a86;
 
 }
 
 .basari {
 
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(94, 169, 150, 0.1);
 
-  border: 1px solid rgba(16, 185, 129, 0.25);
+  border: 1px solid rgba(94, 169, 150, 0.25);
 
-  color: #6ee7b7;
+  color: #4f9583;
 
 }
 
 .basari .mesaj-ikon {
 
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(94, 169, 150, 0.2);
 
-  color: #10b981;
+  color: #5ea996;
 
 }
 
@@ -1150,9 +1082,9 @@ body {
 
   gap: 12px;
 
-  background: rgba(99, 102, 241, 0.08);
+  background: rgba(142, 137, 196, 0.08);
 
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(142, 137, 196, 0.2);
 
   border-radius: 12px;
 
@@ -1172,7 +1104,7 @@ body {
 
 .dogrulama-bilgi p {
 
-  color: rgba(255, 255, 255, 0.55);
+  color: #737d90;
 
   font-size: 0.85rem;
 
@@ -1182,7 +1114,7 @@ body {
 
 .dogrulama-bilgi strong {
 
-  color: #a5b4fc;
+  color: #8572b7;
 
   font-weight: 600;
 
@@ -1218,7 +1150,7 @@ body {
 
   background: transparent;
 
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid #e5e7f0;
 
   color: rgba(255, 255, 255, 0.4);
 
@@ -1234,7 +1166,7 @@ body {
 
 .btn-geri:hover {
 
-  background: rgba(255, 255, 255, 0.05);
+  background: #f6f4fb;
 
   color: rgba(255, 255, 255, 0.65);
 
@@ -1258,7 +1190,7 @@ body {
 
 .link-ayrac {
 
-  color: rgba(255, 255, 255, 0.2);
+  color: #737d90;
 
   font-size: 0.8rem;
 
@@ -1272,7 +1204,7 @@ body {
 
   border: none;
 
-  color: rgba(99, 102, 241, 0.7);
+  color: rgba(142, 137, 196, 0.7);
 
   font-size: 0.82rem;
 
@@ -1292,7 +1224,7 @@ body {
 
 .btn-link:hover {
 
-  color: #a5b4fc;
+  color: #8572b7;
 
 }
 
@@ -1300,11 +1232,11 @@ body {
 
 .btn-turuncu {
 
-  background: linear-gradient(135deg, #f97316, #ef4444);
+  background: linear-gradient(135deg, #f97316, #c26a86);
 
   color: #fff;
 
-  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 4px 20px rgba(180, 95, 123, 0.3);
 
   margin-top: 4px;
 
@@ -1314,7 +1246,7 @@ body {
 
   transform: translateY(-1px);
 
-  box-shadow: 0 6px 25px rgba(239, 68, 68, 0.45);
+  box-shadow: 0 6px 25px rgba(180, 95, 123, 0.45);
 
 }
 
@@ -1344,13 +1276,13 @@ body {
 
   gap: 12px;
 
-  background: rgba(239, 68, 68, 0.08);
+  background: rgba(180, 95, 123, 0.08);
 
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(180, 95, 123, 0.3);
 
-  border-left: 3px solid #ef4444;
+  border-left: 3px solid #c26a86;
 
-  color: #fca5a5;
+  color: #b45f7b;
 
   padding: 14px 16px;
 
@@ -1382,7 +1314,7 @@ body {
 
   display: block;
 
-  color: #fca5a5;
+  color: #b45f7b;
 
   font-size: 0.9rem;
 
@@ -1416,7 +1348,7 @@ body {
 
   font-size: 0.88rem;
 
-  color: rgba(255, 255, 255, 0.5);
+  color: #737d90;
 
   transition: color 0.2s;
 
@@ -1428,7 +1360,7 @@ body {
 
 .hatirla-alan:hover {
 
-  color: rgba(255, 255, 255, 0.8);
+  color: #4c566b;
 
 }
 
@@ -1438,7 +1370,7 @@ body {
 
   height: 16px;
 
-  accent-color: #6366f1;
+  accent-color: #8e89c4;
 
   cursor: pointer;
 
@@ -1468,7 +1400,7 @@ body {
 
   height: 5px;
 
-  background: rgba(255, 255, 255, 0.06);
+  background: #f6f4fb;
 
   border-radius: 3px;
 
@@ -1490,7 +1422,7 @@ body {
 
 .guc-bar.seviye-1 {
 
-  background: linear-gradient(90deg, #ef4444, #f87171);
+  background: linear-gradient(90deg, #c26a86, #b45f7b);
 
 }
 
@@ -1508,9 +1440,9 @@ body {
 
 .guc-bar.seviye-4 {
 
-  background: linear-gradient(90deg, #10b981, #34d399);
+  background: linear-gradient(90deg, #5ea996, #4f9583);
 
-  box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 10px rgba(94, 169, 150, 0.4);
 
 }
 
@@ -1534,7 +1466,7 @@ body {
 
   font-size: 0.8rem;
 
-  color: rgba(255, 255, 255, 0.3);
+  color: #737d90;
 
   display: flex;
 
@@ -1612,7 +1544,7 @@ body {
 
   background: rgba(255,253,250,.96);
 
-  border: 1px solid rgba(255,255,255,.94);
+  border: 1px solid #e5e7f0;
 
   box-shadow: 0 30px 95px rgba(39,65,102,.17), 0 0 0 1px rgba(54,83,124,.07);
 
@@ -1678,11 +1610,6 @@ body {
 
 
 /* ===== VoyageAI responsive + dual theme refinements ===== */
-html, body, #__nuxt { width: 100%; min-height: 100%; }
-html, body { margin: 0; overflow-x: clip; }
-body { display: block; background: #f5f8ff; }
-body.theme-dark { background: #0c1428; }
-body.theme-light { background: #f5f8ff; }
 .sayfa { width: 100%; min-width: 0; min-height: 100vh; min-height: 100dvh; padding: clamp(20px, 4vw, 56px) 20px; }
 .sayfa:has(.form-kart) {
   display: flex; width: 100%; min-height: 100vh; min-height: 100dvh;
@@ -1709,14 +1636,14 @@ body.theme-light { background: #f5f8ff; }
   width: clamp(210px, 25vw, 420px); height: clamp(290px, 34vw, 510px);
   left: max(24px, calc(50% - 750px)); top: 50%;
   transform: translateY(-52%) rotate(-6deg);
-  border: 10px solid rgba(255,255,255,.92); border-bottom-width: 26px;
+  border: 10px solid #e5e7f0; border-bottom-width: 26px;
   border-radius: 10px;
   background: linear-gradient(160deg, rgba(37,91,175,.15), rgba(34,67,139,.04)), url('/voyage-coast.jpg') center / cover;
   box-shadow: 0 22px 70px rgba(35,55,100,.18);
 }
 .sayfa.theme-dark:has(.form-kart)::after {
   border-color: rgba(225,236,255,.82);
-  box-shadow: 0 22px 80px rgba(0,0,0,.32);
+  box-shadow: 0 22px 80px rgba(77, 86, 140, 0.16);
 }
 .sayfa .form-kart {
   position: relative; z-index: 2; flex: 0 1 500px;
@@ -1726,13 +1653,13 @@ body.theme-light { background: #f5f8ff; }
 }
 .sayfa.theme-light .form-kart {
   background: rgba(255,254,253,.97);
-  border: 1px solid rgba(255,255,255,.95);
+  border: 1px solid #e5e7f0;
   box-shadow: 0 24px 75px rgba(39,65,102,.16);
 }
 .sayfa.theme-dark .form-kart {
   background: rgba(20,31,55,.97);
   border: 1px solid rgba(152,176,223,.23);
-  box-shadow: 0 28px 85px rgba(0,0,0,.38);
+  box-shadow: 0 28px 85px rgba(77, 86, 140, 0.16);
 }
 /* Keep original typefaces, branding and gradient buttons. */
 .sayfa.theme-dark .voyage-brand .baslik { color: #f4f7ff; }
@@ -1744,7 +1671,7 @@ body.theme-light { background: #f5f8ff; }
 .sayfa.theme-dark .form-kart .sekme.aktif { color: white; }
 .sayfa.theme-dark .form-kart .alan label { color: #d4def0; }
 .sayfa.theme-dark .form-kart .alan input:not([type=checkbox]) {
-  background: #16233c; border-color: #455777; color: #f8fbff;
+  background: #ffffff; border-color: #455777; color: #f8fbff;
 }
 .sayfa.theme-dark .form-kart .alan input::placeholder { color: #9aabc6; }
 .sayfa.theme-dark .form-kart .hatirla-alan { color: #d0daec; }
@@ -1789,5 +1716,46 @@ body.theme-light { background: #f5f8ff; }
 @media (prefers-reduced-motion: reduce) {
   .sayfa .form-kart { animation: none; }
 }
+
+
+/* ===== VoyageAI ortak pastel tema (giriş sayfası) ===== */
+.sayfa { font-family: var(--v-font); color: var(--v-ink); background: transparent; }
+.sayfa.theme-light:has(.form-kart) {
+  background:
+    radial-gradient(ellipse 42% 62% at 7% 48%, rgba(168, 190, 232, 0.45), transparent 90%),
+    radial-gradient(ellipse 45% 62% at 95% 70%, rgba(249, 207, 219, 0.5), transparent 90%),
+    linear-gradient(120deg, #e8eefb 0%, #f7f4fc 50%, #fbeef3 100%);
+}
+.sayfa:has(.form-kart)::after {
+  background: linear-gradient(160deg, rgba(182, 164, 218, 0.22), rgba(232, 184, 202, 0.08)), url('/voyage-coast.jpg') center / cover;
+  box-shadow: 0 22px 70px rgba(77, 86, 140, 0.16);
+}
+.sayfa.theme-light .form-kart {
+  background: #efecf7;
+  border: 1px solid #ece8f5;
+  box-shadow: var(--v-shadow);
+}
+.voyage-brand .baslik { color: var(--v-ink); font-family: var(--v-font-accent); }
+.voyage-brand .baslik em { color: var(--v-lilac-deep); font-style: italic; font-weight: 400; }
+.voyage-brand .alt-baslik { color: #8b83ba; }
+.brand-star { color: var(--v-lilac); }
+.form-kart .sekme-grup { background: var(--v-surface-soft); border-color: #e4e0f1; }
+.form-kart .sekme { color: var(--v-muted); }
+.form-kart .sekme-kayan { background: var(--v-gradient-button); box-shadow: 0 6px 16px rgba(133, 114, 183, 0.25); }
+.form-kart .alan label { color: #4c566b; }
+.form-kart .alan input:not([type=checkbox]) { background: #fff; color: var(--v-ink); border-color: #e0deeb; }
+.form-kart .alan input::placeholder { color: var(--v-soft); }
+.form-kart .alan input:not([type=checkbox]):focus-visible { border-color: var(--v-lilac); box-shadow: 0 0 0 3px rgba(182, 164, 218, 0.25); }
+.form-kart .hatirla-alan { color: #4c566b; }
+.form-kart .btn-birincil { background: var(--v-gradient-button); box-shadow: 0 12px 28px rgba(133, 114, 183, 0.25); }
+.form-kart .btn-link { color: var(--v-lilac-deep); }
+.form-kart .goz-btn { color: var(--v-soft); }
+.form-kart .goz-btn:hover { color: var(--v-lilac-deep); }
+.form-kart .mesaj.hata, .form-kart .kilitli-uyari { color: var(--v-pink-deep); background: #fff1f4; }
+.form-kart .mesaj.basari { color: var(--v-mint); background: #eaf6f2; }
+.form-kart .sekme:focus-visible, .form-kart button:focus-visible { outline-color: #c9bdea; }
+.spinner { border-color: #ece8f5; border-top-color: var(--v-lilac); }
+.yukle-yazi { color: var(--v-muted); }
+.sayfa .kart.yukle-kart { background: #fff; border-color: #ece8f5; box-shadow: var(--v-shadow); }
 
 </style>

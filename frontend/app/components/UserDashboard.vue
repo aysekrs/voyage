@@ -47,9 +47,9 @@ const avatarHarfi = computed(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--card-bg, rgba(255, 255, 255, 0.05));
+  background: var(--card-bg, #f6f4fb);
   backdrop-filter: blur(12px);
-  border: 1px solid var(--card-border, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--card-border, #e5e7f0);
   border-radius: 16px;
   padding: 10px 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -67,7 +67,7 @@ const avatarHarfi = computed(() => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  background: linear-gradient(135deg, #8e89c4 0%, #b6a4da 100%);
   color: #ffffff;
   font-size: 0.95rem;
   font-weight: 700;
@@ -79,7 +79,7 @@ const avatarHarfi = computed(() => {
 .user-email-metin {
   font-size: 0.88rem;
   font-weight: 700;
-  color: var(--text-main, #ffffff);
+  color: var(--text-main, #293042);
 }
 
 .ust-btn-grup {
@@ -89,8 +89,8 @@ const avatarHarfi = computed(() => {
 }
 
 .ust-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #efecf7;
+  border: 1px solid #e5e7f0;
   color: var(--text-main, #ffffff);
   font-size: 0.78rem;
   font-weight: 600;
@@ -101,17 +101,17 @@ const avatarHarfi = computed(() => {
 }
 
 .ust-btn:hover {
-  background: rgba(255, 255, 255, 0.16);
+  background: #efecf7;
   transform: translateY(-1px);
 }
 
 .ust-btn.cikis-btn {
-  background: rgba(239, 68, 68, 0.12);
-  border-color: rgba(239, 68, 68, 0.25);
-  color: #fca5a5;
+  background: rgba(180, 95, 123, 0.12);
+  border-color: rgba(180, 95, 123, 0.25);
+  color: #b45f7b;
 }
 
 .ust-btn.cikis-btn:hover {
-  background: rgba(239, 68, 68, 0.25);
+  background: rgba(180, 95, 123, 0.25);
 }
 </style>
