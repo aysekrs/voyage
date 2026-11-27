@@ -15,6 +15,7 @@ LLM'in uydurduğu bir değer kontrolsüz seyahate dönüşmez.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import re
 from datetime import date, timedelta
@@ -274,30 +275,46 @@ def kural_tabanli_cikar(metin: str, bugun: date, sehirler: list[str] | None = No
 # ---------------------------------------------------------------- LLM
 
 SISTEM_ISTEMI = """Sen VoyageAI seyahat asistanının bilgi çıkarma modülüsün.
-Kullanıcının mesajlarından seyahat bilgilerini çıkar ve SADECE bir JSON nesnesi döndür.
+Kullanıcının mesajlarından seyahat bilgilerini çıkar ve SADECE aşağıdaki anahtarları
+içeren tek bir JSON nesnesi döndür (açıklama, markdown ya da ``` yazma).
 Bugünün tarihi: {bugun}.
 
-Alanlar (bilmediğin alanı null bırak, ASLA tahmin etme ya da uydurma):
-- origin_city: kalkış şehri (Türkçe ad, örn. "İzmir")
-- origin_airport_code: kalkış havalimanı IATA kodu (biliyorsan, örn. "ADB")
-- destination: gitmek istediği şehir, Türkçe adıyla (örn. "Roma", "Viyana"). Söylemediyse null.
-- budget_try: toplam bütçe, Türk lirası, sayı (örn. "40 bin" -> 40000). Başka para birimi ise null.
-- people_count: kişi sayısı, tam sayı
+Anahtarlar (bilmediğin alanı null bırak, ASLA tahmin etme ya da uydurma):
+- origin_city: yola çıkılacak şehir, Türkçe adıyla ("İzmir'den" -> "İzmir", "Münih'ten" -> "Münih")
+- origin_airport_code: kalkış havalimanının 3 harfli IATA kodu; emin değilsen null
+- destination: gidilecek şehir, Türkçe adıyla ("Roma'ya" -> "Roma"). Söylemediyse null.
+- budget_try: toplam bütçe, Türk lirası, sayı ("40 bin" -> 40000). TL dışı para birimiyse null.
+- people_count: kişi sayısı, tam sayı ("eşimle" -> 2, "tek başıma" -> 1)
 - start_date, end_date: "YYYY-AA-GG". Yıl söylenmediyse bugünden sonraki ilk tarih.
-- nature_weight, food_weight, history_weight, nightlife_weight: kullanıcının doğa, yemek,
-  tarih/kültür ve gece hayatına verdiği önem; toplamı 100, 5'in katları. Kullanıcı ilgi
-  alanından hiç bahsetmediyse dördü de null.
+  "15 Temmuz'da 4 gece" -> bitiş 19 Temmuz.
+- nature_weight, food_weight, history_weight, nightlife_weight: doğa, yemek, tarih/kültür ve
+  gece hayatına verilen önem; tam sayı, toplamı 100. Bahsedilmeyen alana az, "istemiyorum"
+  denen alana 0 ver. Hiç ilgi alanı söylenmediyse dördü de null.
+
+Mesajlar sırayla gelir; sonraki mesaj öncekini düzeltir ("aslında 3 kişiyiz").
+
+Örnek: "İzmir'den Roma'ya 2 kişi 15-20 Temmuz, 40 bin TL, tarih ve yemek"
+-> {{"origin_city": "İzmir", "origin_airport_code": "ADB", "destination": "Roma",
+    "budget_try": 40000, "people_count": 2, "start_date": "YYYY-07-15", "end_date": "YYYY-07-20",
+    "nature_weight": 10, "food_weight": 40, "history_weight": 40, "nightlife_weight": 10}}
 """
+
+log = logging.getLogger("voyage.ai")
 
 
 def llm_ayarli() -> bool:
     return bool(os.getenv("LLM_API_KEY") and os.getenv("LLM_BASE_URL") and os.getenv("LLM_MODEL"))
 
 
-def llm_ile_cikar(kullanici_mesajlari: list[str], bugun: date, zaman_asimi: float = 20) -> dict | None:
-    """OpenAI uyumlu /chat/completions ile çıkarım. Hata olursa None döner."""
+def llm_cagir(kullanici_mesajlari: list[str], bugun: date,
+              zaman_asimi: float = 25) -> tuple[dict | None, str | None]:
+    """OpenAI uyumlu /chat/completions çağrısı. (json_sözlük, hata_mesajı) döner.
+
+    Bazı servisler response_format'ı desteklemez; 400 alınırsa onsuz bir kez daha denenir.
+    LLM_REASONING_EFFORT (örn. Gemini için "low") verilirse isteğe eklenir.
+    """
     if not llm_ayarli():
-        return None
+        return None, "LLM_API_KEY, LLM_BASE_URL ve LLM_MODEL .env'de tanımlı değil."
     import httpx
 
     url = os.getenv("LLM_BASE_URL", "").rstrip("/") + "/chat/completions"
@@ -310,18 +327,44 @@ def llm_ile_cikar(kullanici_mesajlari: list[str], bugun: date, zaman_asimi: floa
             {"role": "user", "content": "\n".join(f"- {m}" for m in kullanici_mesajlari)},
         ],
     }
+    if os.getenv("LLM_REASONING_EFFORT"):
+        govde["reasoning_effort"] = os.getenv("LLM_REASONING_EFFORT")
+    basliklar = {"Authorization": f"Bearer {os.getenv('LLM_API_KEY')}"}
+
     try:
-        cevap = httpx.post(
-            url, json=govde, timeout=zaman_asimi,
-            headers={"Authorization": f"Bearer {os.getenv('LLM_API_KEY')}"},
-        )
-        cevap.raise_for_status()
-        icerik = cevap.json()["choices"][0]["message"]["content"]
-        icerik = re.sub(r"^```(?:json)?|```$", "", icerik.strip()).strip()
-        veri = json.loads(icerik)
-    except Exception:
-        return None
+        cevap = httpx.post(url, json=govde, timeout=zaman_asimi, headers=basliklar)
+        if cevap.status_code == 400:
+            govde.pop("response_format", None)
+            cevap = httpx.post(url, json=govde, timeout=zaman_asimi, headers=basliklar)
+        if cevap.status_code >= 400:
+            return None, f"LLM HTTP {cevap.status_code}: {cevap.text[:300]}"
+        icerik = cevap.json()["choices"][0]["message"]["content"] or ""
+    except httpx.TimeoutException:
+        return None, f"LLM {zaman_asimi:.0f} saniyede cevap vermedi."
+    except Exception as hata:  # ağ hatası, beklenmeyen cevap biçimi
+        return None, f"LLM çağrısı başarısız: {type(hata).__name__}: {hata}"
+
+    # ```json ... ``` ya da baştaki/sondaki açıklamayı temizle
+    eslesme = re.search(r"\{.*\}", icerik, re.S)
+    if not eslesme:
+        return None, f"LLM JSON döndürmedi: {icerik[:200]}"
+    try:
+        veri = json.loads(eslesme.group(0))
+    except json.JSONDecodeError as hata:
+        return None, f"LLM geçersiz JSON döndürdü: {hata}"
     if not isinstance(veri, dict):
+        return None, "LLM JSON nesnesi döndürmedi."
+    return veri, None
+
+
+def llm_ile_cikar(kullanici_mesajlari: list[str], bugun: date) -> dict | None:
+    """LLM ile çıkarım. Hata olursa sebebi backend penceresine yazılır ve None döner
+    (asistan kurallarla devam eder)."""
+    if not llm_ayarli():
+        return None
+    veri, hata = llm_cagir(kullanici_mesajlari, bugun)
+    if hata:
+        log.warning("AI asistan kurallara geçti: %s", hata)
         return None
     return {a: veri[a] for a in ALANLAR if veri.get(a) not in (None, "")}
 
@@ -408,6 +451,12 @@ def dogrula(bilgi: dict, bugun: date,
     else:
         eksik.append("origin_city")
     kod = str(temiz.get("origin_airport_code") or "").strip().upper()
+    if kod and kodlar is not None and kod not in kodlar and kalkis_sozlugu:
+        # LLM yanlış/uydurma kod verdiyse ve şehri tanıyorsak şehrin kodunu kullan
+        from havalimani_arama import normalize
+        bulunan = kalkis_sozlugu.get(normalize(temiz.get("origin_city")))
+        if bulunan:
+            kod = bulunan[1]
     if kod:
         temiz["origin_airport_code"] = kod
         if kodlar is not None and kod not in kodlar:

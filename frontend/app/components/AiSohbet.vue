@@ -314,7 +314,8 @@ async function onayla() {
         </button>
         <p class="b-not">
           <template v-if="!kart.destination">Gidilecek şehri bir sonraki adımda, bütçene ve ilgi alanlarına göre önerilen şehirlerden seçeceksin.</template>
-          <span v-if="durum?.kaynak === 'kural'"> (Yapay zekâ anahtarı tanımlı değil; bilgiler kurallarla çıkarıldı.)</span>
+          <span v-if="durum?.kaynak === 'llm'"> ✨ Bilgiler yapay zekâ ile anlaşıldı.</span>
+          <span v-else-if="durum?.kaynak === 'kural'"> (Bilgiler kurallarla çıkarıldı; yapay zekâ bağlı değil ya da şu an cevap vermedi.)</span>
         </p>
       </form>
     </aside>
