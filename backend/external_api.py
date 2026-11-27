@@ -78,7 +78,10 @@ def get_exchange_rate(
         "TRY": 1.0,
         "USD": 45.0,
         "EUR": 52.0,
-        "GBP": 60.0
+        "GBP": 60.0,
+        # Öneri hesabındaki İsviçre ve Mısır şehirleri için
+        "CHF": 55.0,
+        "EGP": 0.9
     }
 
     source = from_currency.upper()

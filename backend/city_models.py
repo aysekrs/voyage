@@ -1,6 +1,7 @@
 
 from sqlalchemy import (
     Column,
+    Text,
     Integer,
     String,
     Float,
@@ -105,6 +106,13 @@ class Yer(Base):
 
     ortalama_ucret = Column(
         Float,
+        nullable=True
+    )
+
+    # Ücretin para birimi (EUR, TRY...). B'nin verisinden gelir;
+    # sütun migration e5b1c7a9d2f4 ile her veritabanında bulunur.
+    fiyat_para_birimi = Column(
+        Text,
         nullable=True
     )
 
