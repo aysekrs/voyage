@@ -64,7 +64,7 @@ async function kullaniciAdiHatirla() {
 
 <style scoped>
 .btn-mavi {
-  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  background: linear-gradient(135deg, #789bd6, #8e89c4);
   color: #fff;
   box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
   margin-top: 4px;

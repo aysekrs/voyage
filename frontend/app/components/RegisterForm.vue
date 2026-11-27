@@ -358,7 +358,7 @@ function kayitFormSifirla() {
   cursor: pointer;
   user-select: none;
   font-size: 0.84rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: #4c566b;
   line-height: 1.45;
 }
 
@@ -366,7 +366,7 @@ function kayitFormSifirla() {
   width: 18px;
   height: 18px;
   margin-top: 2px;
-  accent-color: #6366f1;
+  accent-color: #8e89c4;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -374,7 +374,7 @@ function kayitFormSifirla() {
 .kvkk-link-btn {
   background: none;
   border: none;
-  color: #818cf8;
+  color: #a39ed3;
   font-size: inherit;
   font-weight: 600;
   padding: 0;
@@ -385,7 +385,7 @@ function kayitFormSifirla() {
 }
 
 .kvkk-link-btn:hover {
-  color: #a5b4fc;
+  color: #8572b7;
 }
 
 /* ─── Modal Stilleri ────────────────────────────────────────── */
@@ -393,7 +393,7 @@ function kayitFormSifirla() {
   position: fixed;
   top: 0; left: 0;
   width: 100vw; height: 100vh;
-  background: rgba(10, 14, 26, 0.8);
+  background: rgba(41, 48, 66, 0.35);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
@@ -406,13 +406,13 @@ function kayitFormSifirla() {
   width: 100%;
   max-width: 520px;
   max-height: 85vh;
-  background: #111827;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #ffffff;
+  border: 1px solid #e5e7f0;
   border-radius: 16px;
   padding: 24px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(77, 86, 140, 0.16), 0 0 0 1px rgba(142, 137, 196, 0.15);
   color: #e5e7eb;
 }
 
@@ -421,13 +421,13 @@ function kayitFormSifirla() {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #e5e7f0;
 }
 
 .modal-baslik {
   font-size: 1.15rem;
   font-weight: 700;
-  color: #fff;
+  color: #293042;
 }
 
 .modal-kapat-btn {
@@ -442,8 +442,8 @@ function kayitFormSifirla() {
 }
 
 .modal-kapat-btn:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  color: #8572b7;
+  background: #efecf7;
 }
 
 .modal-govde {
@@ -451,7 +451,7 @@ function kayitFormSifirla() {
   padding: 16px 0;
   font-size: 0.88rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
+  color: #4c566b;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -465,16 +465,16 @@ function kayitFormSifirla() {
 }
 
 .modal-govde li {
-  color: rgba(255, 255, 255, 0.75);
+  color: #4c566b;
 }
 
 .modal-govde strong {
-  color: #a5b4fc;
+  color: #8572b7;
 }
 
 .modal-alt-alan {
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid #e5e7f0;
 }
 
 .modal-onay-btn {

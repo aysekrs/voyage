@@ -1,334 +1,227 @@
-/* ──────────────────────────────────────────────────────────────────────────
-   main.css — Tam Kapsamlı Tema (Dark / Light Mode) Stilleri
-   ────────────────────────────────────────────────────────────────────────── */
+@import "tailwindcss";
+
+/* ======================================================================
+   VoyageAI ortak tema
+   Giriş sonrası ekranlardaki pastel mavi / lila / pembe tema bütün siteye
+   uygulanır. Renkler tek yerde: aşağıdaki :root değişkenleri.
+
+   Tailwind renkleri de bu temaya bağlandı; böylece Tailwind sınıfıyla
+   yazılmış ekranlar (ör. bg-blue-600, text-gray-600) dosyalarına
+   dokunmadan aynı görünür.
+   ====================================================================== */
 
 :root {
-  /* Koyu Mod (Varsayılan Dark Mode) */
-  --bg-gradient: linear-gradient(135deg, #0a0e1a 0%, #121829 100%);
-  --text-main: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.65);
-  --card-bg: rgba(255, 255, 255, 0.05);
-  --card-border: rgba(255, 255, 255, 0.12);
-  --input-bg: rgba(255, 255, 255, 0.08);
-  --input-border: rgba(255, 255, 255, 0.15);
-  --input-text: #ffffff;
-  --modal-bg: #111827;
-  --modal-text: #f9fafb;
-  --modal-border: rgba(255, 255, 255, 0.15);
+  --v-ink: #293042;
+  --v-muted: #737d90;
+  --v-soft: #9aa2b4;
+
+  --v-blue: #789bd6;
+  --v-blue-deep: #5f74b3;
+  --v-lilac: #b6a4da;
+  --v-lilac-deep: #8572b7;
+  --v-pink: #e8b8ca;
+  --v-pink-deep: #b45f7b;
+  --v-mint: #4f9583;
+
+  --v-line: #e5e7f0;
+  --v-surface: #ffffff;
+  --v-surface-soft: #f6f4fb;
+  --v-page: #f7f6fb;
+
+  --v-gradient-soft: linear-gradient(110deg, #e1eafb 0%, #eee5f7 54%, #f9dfe9 100%);
+  --v-gradient-button: linear-gradient(110deg, #789bd6 0%, #b6a4da 100%);
+  --v-shadow: 0 18px 50px rgba(77, 86, 140, 0.1);
+
+  --v-font: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+  --v-font-accent: Georgia, "Times New Roman", serif;
+
+  /* Eski bileşenlerin beklediği değişkenler (ör. kullanıcı paneli) */
+  --text-main: var(--v-ink);
+  --text-muted: var(--v-muted);
+  --card-bg: var(--v-surface);
+  --card-border: var(--v-line);
+  --ink: var(--v-ink);
+  --muted: var(--v-muted);
 }
 
-.theme-light {
-  /* Açık Mod (Light Mode) */
-  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-  --text-main: #0f172a;
-  --text-muted: #475569;
-  --card-bg: #ffffff;
-  --card-border: #cbd5e1;
-  --input-bg: #ffffff;
-  --input-border: #cbd5e1;
-  --input-text: #0f172a;
-  --modal-bg: #ffffff;
-  --modal-text: #0f172a;
-  --modal-border: #cbd5e1;
+@theme {
+  --font-sans: "Nunito Sans", "Segoe UI", system-ui, sans-serif;
+
+  --color-blue-50: #eef3fc;
+  --color-blue-100: #e1eafb;
+  --color-blue-200: #c9d8f4;
+  --color-blue-500: #8aa4dc;
+  --color-blue-600: #7f93d2;
+  --color-blue-700: #6a78bd;
+
+  --color-indigo-600: #8e89c4;
+  --color-indigo-700: #7a74b5;
+
+  --color-purple-50: #f3eefb;
+  --color-purple-700: #8572b7;
+
+  --color-green-50: #eaf6f2;
+  --color-green-600: #5ea996;
+  --color-green-700: #4f9583;
+
+  --color-red-50: #fff1f4;
+  --color-red-600: #b45f7b;
+  --color-red-700: #9d4c68;
+
+  --color-amber-700: #b7864a;
+
+  --color-slate-50: #faf9fd;
+  --color-slate-100: #f7f6fb;
+  --color-slate-800: #293042;
+  --color-slate-900: #293042;
+
+  --color-gray-100: #f3f2f8;
+  --color-gray-200: #e5e7f0;
+  --color-gray-300: #dfdcea;
+  --color-gray-400: #a7aebd;
+  --color-gray-500: #8a93a6;
+  --color-gray-600: #737d90;
+  --color-gray-700: #5b6478;
 }
 
-/* Yumuşak Renk Geçişleri */
-body, .sayfa, .kart, .modal-icerik, input, button, .kpi-kart, .dashboard-header, .eylem-panel, .eylem-btn {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  overflow-x: clip;
 }
 
-/* ─── AÇIK MOD (LIGHT MODE) ÖZEL KURALLARI ──────────────────────────────── */
-
-/* 1. Sayfa Arka Planı (Kenardan Kenara Saf Beyaz) */
-html.theme-light,
-body.theme-light,
-.theme-light.sayfa,
-.theme-light .sayfa {
-  background: #ffffff !important;
-  background-image: none !important;
-  color: #0f172a !important;
+body {
+  background: #fcfbfe;
+  color: var(--v-ink);
+  font-family: var(--v-font);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* 2. Kartlar (Giriş, Kayıt vb.) */
-.theme-light .kart {
-  background: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
-  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.1) !important;
-  color: #0f172a !important;
+::selection {
+  background: #e4dcf5;
+  color: var(--v-ink);
 }
 
-.theme-light .baslik {
-  color: #0f172a !important;
+:focus-visible {
+  outline: 3px solid #c9bdea;
+  outline-offset: 2px;
 }
 
-.theme-light .alt-baslik {
-  color: #475569 !important;
+/* Tailwind ile yazılmış form alanlarının odak rengi */
+select:focus,
+input:focus,
+textarea:focus {
+  border-color: var(--v-lilac);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(182, 164, 218, 0.25);
 }
 
-/* Ana Sayfa Giriş / Kayıt Sekme & Link Stilleri */
-.theme-light .sekme-grup {
-  background: #f1f5f9 !important;
-  border: 1px solid #cbd5e1 !important;
+/* ---------- Ortak yapı taşları (bütün sayfalar) ---------- */
+
+.kap {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding-inline: clamp(16px, 4vw, 40px);
 }
 
-.theme-light .sekme {
-  color: #475569 !important;
-  font-weight: 600 !important;
+.v-buton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 22px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--v-gradient-button);
+  box-shadow: 0 10px 24px rgba(133, 114, 183, 0.24);
+  color: white;
+  font: inherit;
+  font-weight: 800;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.theme-light .sekme:hover {
-  color: #0f172a !important;
+.v-buton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px rgba(133, 114, 183, 0.3);
 }
 
-.theme-light .sekme.aktif {
-  color: #ffffff !important;
-  font-weight: 700 !important;
+.v-buton:disabled {
+  cursor: default;
+  opacity: 0.65;
 }
 
-.theme-light .sekme-kayan {
-  background: #4f46e5 !important;
-  border: 1px solid #4338ca !important;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
+.v-buton-ikincil {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border: 1px solid #e3e1ec;
+  border-radius: 14px;
+  background: white;
+  color: var(--v-ink);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
 }
 
-.theme-light .btn-link {
-  color: #4f46e5 !important;
-  font-weight: 600 !important;
+.v-buton-ikincil:hover {
+  border-color: var(--v-lilac);
+  background: var(--v-surface-soft);
 }
 
-.theme-light .btn-link:hover {
-  color: #3730a3 !important;
-  text-decoration: underline !important;
+.v-kart {
+  border: 1px solid #eeecf4;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 6px 24px rgba(77, 86, 140, 0.06);
 }
 
-/* 3. Form Girdileri & Etiketler */
-.theme-light input {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
+.v-ust-yazi {
+  color: #8b83ba;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
 }
 
-.theme-light input::placeholder {
-  color: #94a3b8 !important;
+.v-baslik {
+  margin: 0;
+  color: var(--v-ink);
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 800;
+  letter-spacing: -0.6px;
 }
 
-.theme-light label {
-  color: #334155 !important;
+.v-cip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #e7e5ef;
+  border-radius: 999px;
+  background: white;
+  color: var(--v-muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
 }
 
-/* 4. Dashboard & Kullanıcı Paneli */
-.theme-light .dashboard-header {
-  background: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08) !important;
+.v-cip:hover {
+  border-color: #cfc6e8;
+  color: var(--v-ink);
 }
 
-.theme-light .karshilama-baslik {
-  color: #0f172a !important;
+.v-cip.aktif {
+  border-color: var(--v-ink);
+  background: var(--v-ink);
+  color: white;
 }
-
-.theme-light .karshilama-alt {
-  color: #64748b !important;
-}
-
-.theme-light .kpi-kart {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04) !important;
-}
-
-.theme-light .kpi-etiket {
-  color: #64748b !important;
-}
-
-.theme-light .kpi-alt {
-  color: #64748b !important;
-}
-
-.theme-light .eylem-panel {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05) !important;
-}
-
-.theme-light .eylem-baslik {
-  color: #0f172a !important;
-}
-
-.theme-light .eylem-btn {
-  background: #f8fafc !important;
-  border: 1px solid #cbd5e1 !important;
-  color: #0f172a !important;
-}
-
-.theme-light .eylem-btn:hover {
-  background: #f1f5f9 !important;
-  border-color: #94a3b8 !important;
-}
-
-.theme-light .eylem-btn.cikis {
-  background: #fef2f2 !important;
-  border-color: #fca5a5 !important;
-  color: #dc2626 !important;
-}
-
-/* 5. Modallar (Profil, Oturumlar, Loglar & Sekme Butonları) */
-.theme-light .modal-overlay {
-  background: rgba(15, 23, 42, 0.4) !important;
-  backdrop-filter: blur(8px) !important;
-}
-
-.theme-light .modal-icerik {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
-  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.25) !important;
-}
-
-.theme-light .modal-baslik {
-  color: #0f172a !important;
-  font-weight: 700 !important;
-}
-
-.theme-light .modal-alt {
-  color: #475569 !important;
-  font-weight: 500 !important;
-}
-
-.theme-light .modal-kapat-btn {
-  color: #334155 !important;
-  background: #f1f5f9 !important;
-  border: 1px solid #cbd5e1 !important;
-}
-
-.theme-light .modal-kapat-btn:hover {
-  color: #0f172a !important;
-  background: #e2e8f0 !important;
-}
-
-.theme-light .sekme-nav {
-  background: #f1f5f9 !important;
-  border: 1px solid #cbd5e1 !important;
-  padding: 4px !important;
-}
-
-.theme-light .sekme-btn {
-  color: #334155 !important;
-  font-weight: 600 !important;
-  background: transparent !important;
-}
-
-.theme-light .sekme-btn:hover {
-  color: #0f172a !important;
-  background: #e2e8f0 !important;
-}
-
-.theme-light .sekme-btn.aktif {
-  background: #4f46e5 !important;
-  color: #ffffff !important;
-  border: 1px solid #4338ca !important;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3) !important;
-}
-
-.theme-light .bilgi-grup label,
-.theme-light .girdi-grup label {
-  color: #334155 !important;
-  font-weight: 700 !important;
-}
-
-.theme-light .bilgi-deger {
-  background: #f8fafc !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
-  font-weight: 600 !important;
-}
-
-.theme-light .girdi-grup input {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
-}
-
-.theme-light .btn-kapat-birincil {
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
-  font-weight: 700 !important;
-}
-
-.theme-light .btn-kapat-birincil:hover {
-  background: #e2e8f0 !important;
-  border-color: #94a3b8 !important;
-}
-
-.theme-light .oturum-kart,
-.theme-light .zaman-kart,
-.theme-light .log-kart,
-.theme-light .detay-kutu {
-  background: #f8fafc !important;
-  border: 1px solid #cbd5e1 !important;
-  color: #0f172a !important;
-}
-
-.theme-light .cihaz-adi,
-.theme-light .islem-baslik {
-  color: #0f172a !important;
-  font-weight: 700 !important;
-}
-
-.theme-light .oturum-bilgi-satir,
-.theme-light .log-tarih,
-.theme-light .detay-metin {
-  color: #475569 !important;
-}
-
-.theme-light .btn-oturum-kapat {
-  background: #fef2f2 !important;
-  color: #dc2626 !important;
-  border: 1px solid #fca5a5 !important;
-  font-weight: 700 !important;
-}
-
-/* Şifre Sıfırlama & Form Doğrulama Light Mode Stilleri */
-.theme-light .dogrulama-bilgi {
-  background: #f1f5f9 !important;
-  border: 1px solid #cbd5e1 !important;
-}
-
-.theme-light .dogrulama-bilgi p {
-  color: #334155 !important;
-}
-
-.theme-light .dogrulama-bilgi strong {
-  color: #4f46e5 !important;
-  font-weight: 700 !important;
-}
-
-.theme-light .btn-geri {
-  background: #f8fafc !important;
-  border: 1px solid #cbd5e1 !important;
-  color: #334155 !important;
-}
-
-.theme-light .btn-geri:hover {
-  background: #e2e8f0 !important;
-  color: #0f172a !important;
-}
-
-.theme-light .hatirla-alan {
-  color: #334155 !important;
-}
-
-.theme-light .guc-bar-arkaplan {
-  background: #e2e8f0 !important;
-}
-
-.theme-light .guc-liste li {
-  color: #64748b !important;
-}
-
-.theme-light .guc-liste li.gecirli {
-  color: #059669 !important;
-  font-weight: 700 !important;
-}
-

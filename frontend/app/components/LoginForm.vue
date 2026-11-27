@@ -115,27 +115,27 @@ async function girisYap() {
 </script>
 
 <style scoped>
-.voyage-login{display:flex;flex-direction:column;gap:21px;width:100%;color:#14213e;font-family:inherit}
+.voyage-login{display:flex;flex-direction:column;gap:21px;width:100%;color:#293042;font-family:inherit}
 .alan{display:flex;flex-direction:column;gap:9px}
-.alan>label{font-size:12px;letter-spacing:2px;font-weight:800;color:#455875}
+.alan>label{font-size:12px;letter-spacing:2px;font-weight:800;color:#5b6478}
 .input-wrap{position:relative;display:flex;align-items:center}
-.input-wrap input{width:100%;min-width:0;box-sizing:border-box;height:55px;border:1px solid #ccd6e7;border-radius:13px;background:rgba(255,255,255,.94);padding:0 49px 0 47px;color:#162747;font:inherit;font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s}
-.input-wrap input:focus{border-color:#4869ed;box-shadow:0 0 0 4px rgba(76,98,238,.12)}
-.input-wrap input::placeholder{color:#97a5bb}
-.field-icon{position:absolute;left:15px;width:20px;height:20px;color:#637595;pointer-events:none}
-.goz-btn{position:absolute;right:8px;display:grid;place-items:center;width:38px;height:38px;padding:8px;border:0;background:transparent;color:#7b8aa3;cursor:pointer;border-radius:9px}
-.goz-btn:hover{background:#eef2ff;color:#3d52c8}.goz-btn svg{width:21px;height:21px}
+.input-wrap input{width:100%;min-width:0;box-sizing:border-box;height:55px;border:1px solid #e0deeb;border-radius:13px;background:#fff;padding:0 49px 0 47px;color:#293042;font:inherit;font-size:15px;outline:none;transition:border-color .2s,box-shadow .2s}
+.input-wrap input:focus{border-color:#b6a4da;box-shadow:0 0 0 4px rgba(182,164,218,.25)}
+.input-wrap input::placeholder{color:#9aa2b4}
+.field-icon{position:absolute;left:15px;width:20px;height:20px;color:#9aa2b4;pointer-events:none}
+.goz-btn{position:absolute;right:8px;display:grid;place-items:center;width:38px;height:38px;padding:8px;border:0;background:transparent;color:#9aa2b4;cursor:pointer;border-radius:9px}
+.goz-btn:hover{background:#f3eefb;color:#8572b7}.goz-btn svg{width:21px;height:21px}
 .options-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:-2px}
-.hatirla-alan{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:#465675;cursor:pointer}
-.hatirla-alan input{width:17px;height:17px;margin:0;accent-color:#4657e9;cursor:pointer}
-.forgot-link{border:0;background:none;padding:5px 0;color:#4756e8;font:inherit;font-size:13px;font-weight:750;cursor:pointer}
+.hatirla-alan{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:#5b6478;cursor:pointer}
+.hatirla-alan input{width:17px;height:17px;margin:0;accent-color:#8e89c4;cursor:pointer}
+.forgot-link{border:0;background:none;padding:5px 0;color:#8572b7;font:inherit;font-size:13px;font-weight:750;cursor:pointer}
 .forgot-link:hover{text-decoration:underline}
-.voyage-submit{width:100%;min-height:58px;display:flex;align-items:center;justify-content:center;gap:12px;padding:13px 18px;border:0;border-radius:13px;background:linear-gradient(105deg,#2353a4 0%,#3c55dc 55%,#7356f2 100%);color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 12px 24px rgba(51,72,191,.2);transition:transform .2s,box-shadow .2s}
-.voyage-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 15px 30px rgba(51,72,191,.28)}
+.voyage-submit{width:100%;min-height:58px;display:flex;align-items:center;justify-content:center;gap:12px;padding:13px 18px;border:0;border-radius:13px;background:var(--v-gradient-button);color:#fff;font:inherit;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 12px 24px rgba(133,114,183,.2);transition:transform .2s,box-shadow .2s}
+.voyage-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 15px 30px rgba(133,114,183,.28)}
 .voyage-submit:disabled{opacity:.58;cursor:not-allowed}.voyage-submit span{font-size:23px;font-weight:400}
-.footer-note{text-align:center;font-size:12px;font-style:italic;color:#8997ae;padding-top:6px}
-.compass{color:#4565b4;font-size:18px;margin-right:7px}
-.kilitli-kutu{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border:1px solid #fecaca;border-radius:12px;background:#fff1f2;color:#9f1239;font-size:13px}
+.footer-note{text-align:center;font-size:12px;font-style:italic;color:#8a93a6;padding-top:6px}
+.compass{color:#8e89c4;font-size:18px;margin-right:7px}
+.kilitli-kutu{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border:1px solid #f3cad6;border-radius:12px;background:#fff1f4;color:#b45f7b;font-size:13px}
 .kilitli-kutu p{margin:5px 0}.kilit-ikon{font-size:21px}.sayac-metin{display:inline-block;margin-top:5px}
 @media(max-width:420px){.voyage-login{gap:18px}.forgot-link{font-size:12px}.voyage-submit{font-size:15px}}
 </style>

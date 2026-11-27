@@ -1,8 +1,12 @@
+from fastapi.middleware.cors import CORSMiddleware
 """VoyageAI Week 2: FastAPI auth MVP, separate from legacy Nuxt/Nitro handlers."""
 from email.utils import formataddr
 import os, secrets, hashlib, hmac, smtplib
+from external_api import router as external_router
 from email.message import EmailMessage
 from datetime import datetime, timedelta, timezone
+from decimal import Decimal
+from typing import Literal
 from contextlib import asynccontextmanager
 from jwt.exceptions import InvalidTokenError
 import jwt, psycopg
@@ -68,6 +72,7 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(title="VoyageAI Auth", lifespan=lifespan)
+app.include_router(external_router)
 
 class Register(BaseModel):
     email: EmailStr
@@ -545,3 +550,569 @@ def resend(data: Resend, request: Request):
         db.execute("""UPDATE pending_signups SET otp_hash=%s, expires_at=NOW()+INTERVAL '10 minutes',
                       attempts=0 WHERE email=%s""", (digest(email, otp), email))
     return {"message": "Yeni doğrulama kodu gönderildi."}
+
+
+# VoyageAI ?ehir ve seyahat API'leri
+from city_routes import router as city_router
+app.include_router(city_router)
+
+
+# Frontend CORS izni
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3005", "http://127.0.0.1:3005"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+from datetime import date
+from pydantic import BaseModel, Field, model_validator
+
+
+class TripCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=150)
+    # Boş bırakılabilir: AI asistanı seyahati şehir seçmeden oluşturur,
+    # şehir 5. haftadaki öneri ekranından seçilir.
+    destination: str | None = Field(default=None, max_length=150)
+    # Kullanıcının AI'a yazdığı cümle (varsa)
+    user_text: str | None = Field(default=None, max_length=2000)
+    start_date: date
+    end_date: date
+
+    origin_city: str = Field(min_length=1, max_length=150)
+    origin_airport_code: str = Field(min_length=1, max_length=10)
+    budget_try: float = Field(gt=0)
+    people_count: int = Field(gt=0)
+
+    nature_weight: int = Field(ge=0, le=100)
+    food_weight: int = Field(ge=0, le=100)
+    history_weight: int = Field(ge=0, le=100)
+    nightlife_weight: int = Field(ge=0, le=100)
+
+    @model_validator(mode="after")
+    def check_trip(self):
+        if self.end_date <= self.start_date:
+            raise ValueError(
+                "Bitiş tarihi başlangıç tarihinden sonra olmalıdır."
+            )
+
+        if not self.origin_city.strip():
+            raise ValueError("Çıkış şehri boş olamaz.")
+
+        if not self.origin_airport_code.strip():
+            raise ValueError("Havalimanı kodu boş olamaz.")
+
+        total = (
+            self.nature_weight
+            + self.food_weight
+            + self.history_weight
+            + self.nightlife_weight
+        )
+
+        if total != 100:
+            raise ValueError(
+                "Dört ilgi ağırlığının toplamı 100 olmalıdır."
+            )
+
+        return self
+
+
+def check_origin_airport(db, code: str) -> None:
+    """Kalkış havalimanı kodu airports tablosunda olmalı (var olmayan kod girilemesin)."""
+    from airport_routes import havalimani_getir
+    if not havalimani_getir(db, code):
+        raise HTTPException(
+            422,
+            f"'{code.strip().upper()}' geçerli bir havalimanı kodu değil. Listeden bir havalimanı seçin.",
+        )
+
+
+def find_destination_id(db, destination_name: str) -> int:
+    """Seçilen şehri veritabanından bul; şehir ID'sini sabit kodlama."""
+    name = destination_name.strip()
+    row = db.execute(
+        "SELECT sehir_id FROM sehirler WHERE LOWER(TRIM(ad)) = LOWER(%s) ORDER BY sehir_id LIMIT 1",
+        (name,),
+    ).fetchone()
+    if not row:
+        raise HTTPException(422, f"'{name}' şehri şehirler veritabanında bulunamadı.")
+    return row["sehir_id"]
+
+
+@app.post("/trips", status_code=201)
+def create_trip(
+    data: TripCreate,
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+    user_id = int(payload["sub"])
+
+    with conn() as db:
+        with db.transaction():
+            check_origin_airport(db, data.origin_airport_code)
+            destination = (data.destination or "").strip() or None
+            destination_id = (
+                find_destination_id(db, destination) if destination else None
+            )
+            trip = db.execute(
+                """
+                INSERT INTO trips (
+                    user_id, title, destination,
+                    start_date, end_date,
+                    origin_city, origin_airport_code,
+                    budget_try, people_count, selected_destination_id,
+                    user_text
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING *
+                """,
+                (
+                    user_id,
+                    data.title.strip(),
+                    destination,
+                    data.start_date,
+                    data.end_date,
+                    data.origin_city.strip(),
+                    data.origin_airport_code.strip().upper(),
+                    data.budget_try,
+                    data.people_count,
+                    destination_id,
+                    data.user_text,
+                ),
+            ).fetchone()
+
+            db.execute(
+                """
+                INSERT INTO trip_members (trip_id, user_id, role)
+                VALUES (%s, %s, 'owner')
+                """,
+                (trip["id"], user_id),
+            )
+
+            db.execute(
+                """
+                INSERT INTO trip_preferences (
+                    trip_id,
+                    nature_weight,
+                    food_weight,
+                    history_weight,
+                    nightlife_weight
+                )
+                VALUES (%s, %s, %s, %s, %s)
+                """,
+                (
+                    trip["id"],
+                    data.nature_weight,
+                    data.food_weight,
+                    data.history_weight,
+                    data.nightlife_weight,
+                ),
+            )
+
+    return trip
+
+
+@app.get("/trips")
+def list_trips(
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+    user_id = int(payload["sub"])
+
+    with conn() as db:
+        trips = db.execute(
+            """
+            SELECT
+                t.id,
+                t.title,
+                t.destination,
+                t.start_date,
+                t.end_date,
+                t.created_at,
+                tm.role
+            FROM trips t
+            JOIN trip_members tm ON tm.trip_id = t.id
+            WHERE tm.user_id = %s
+            ORDER BY t.created_at DESC, t.id DESC
+            """,
+            (user_id,)
+        ).fetchall()
+
+    return {"trips": trips}
+
+from fastapi import Path
+
+@app.get("/trips/{trip_id}")
+def get_trip(
+    trip_id: int = Path(gt=0),
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+
+    with conn() as db:
+        trip = db.execute("""
+            
+SELECT
+    t.*,
+    tm.role,
+    tp.nature_weight,
+    tp.food_weight,
+    tp.history_weight,
+    tp.nightlife_weight
+FROM trips t
+JOIN trip_members tm ON tm.trip_id = t.id
+LEFT JOIN trip_preferences tp ON tp.trip_id = t.id
+WHERE t.id = %s AND tm.user_id = %s
+
+        """, (trip_id, int(payload["sub"]))).fetchone()
+
+    if not trip:
+        raise HTTPException(404, "Seyahat bulunamadı.")
+
+    return trip
+
+
+
+@app.put("/trips/{trip_id}")
+def update_trip(
+    trip_id: int,
+    data: TripCreate,
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+    user_id = int(payload["sub"])
+
+    with conn() as db:
+        with db.transaction():
+            check_origin_airport(db, data.origin_airport_code)
+            destination = (data.destination or "").strip() or None
+            destination_id = (
+                find_destination_id(db, destination) if destination else None
+            )
+            trip = db.execute(
+                """
+                UPDATE trips
+                SET title = %s,
+                    destination = %s,
+                    start_date = %s,
+                    end_date = %s,
+                    origin_city = %s,
+                    origin_airport_code = %s,
+                    budget_try = %s,
+                    people_count = %s,
+                    selected_destination_id = %s,
+                    updated_at = NOW()
+                WHERE id = %s
+                  AND EXISTS (
+                      SELECT 1 FROM trip_members
+                      WHERE trip_id = trips.id
+                        AND user_id = %s
+                        AND role = 'owner'
+                  )
+                RETURNING *
+                """,
+                (
+                    data.title.strip(),
+                    destination,
+                    data.start_date,
+                    data.end_date,
+                    data.origin_city.strip(),
+                    data.origin_airport_code.strip().upper(),
+                    data.budget_try,
+                    data.people_count,
+                    destination_id,
+                    trip_id,
+                    user_id,
+                ),
+            ).fetchone()
+
+            if not trip:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Seyahat bulunamadı veya yetkiniz yok."
+                )
+
+            db.execute(
+                """
+                INSERT INTO trip_preferences (
+                    trip_id,
+                    nature_weight,
+                    food_weight,
+                    history_weight,
+                    nightlife_weight
+                )
+                VALUES (%s, %s, %s, %s, %s)
+                ON CONFLICT (trip_id)
+                DO UPDATE SET
+                    nature_weight = EXCLUDED.nature_weight,
+                    food_weight = EXCLUDED.food_weight,
+                    history_weight = EXCLUDED.history_weight,
+                    nightlife_weight = EXCLUDED.nightlife_weight,
+                    updated_at = NOW()
+                """,
+                (
+                    trip_id,
+                    data.nature_weight,
+                    data.food_weight,
+                    data.history_weight,
+                    data.nightlife_weight,
+                ),
+            )
+
+    return trip
+
+
+
+@app.delete("/trips/{trip_id}")
+def delete_trip(
+    trip_id: int,
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+    user_id = int(payload["sub"])
+
+    with conn() as db:
+        deleted = db.execute("""
+            DELETE FROM trips
+            WHERE id = %s
+              AND EXISTS (
+                  SELECT 1 FROM trip_members
+                  WHERE trip_id = trips.id
+                    AND user_id = %s
+                    AND role = 'owner'
+              )
+            RETURNING id
+        """, (trip_id, user_id)).fetchone()
+
+        if not deleted:
+            raise HTTPException(404, "Seyahat bulunamadı veya yetkiniz yok.")
+
+        db.commit()
+
+    return {"ok": True, "deleted_trip_id": deleted["id"]}
+from pydantic import BaseModel, Field
+
+
+class PreferencesUpdate(BaseModel):
+    nature_score: int = Field(ge=0, le=100)
+    food_score: int = Field(ge=0, le=100)
+    history_score: int = Field(ge=0, le=100)
+    nightlife_score: int = Field(ge=0, le=100)
+
+
+@app.get("/preferences")
+def get_preferences(
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+    user_id = int(payload["sub"])
+
+    with conn() as db:
+        row = db.execute(
+            """
+            SELECT nature_score, food_score,
+                   history_score, nightlife_score, updated_at
+            FROM preferences
+            WHERE user_id = %s
+            """,
+            (user_id,)
+        ).fetchone()
+
+    if not row:
+        return {
+            "nature_score": 0,
+            "food_score": 0,
+            "history_score": 0,
+            "nightlife_score": 0,
+            "updated_at": None
+        }
+
+    return row
+
+
+@app.put("/preferences")
+def update_preferences(
+    data: PreferencesUpdate,
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+    user_id = int(payload["sub"])
+
+    with conn() as db:
+        row = db.execute(
+            """
+            INSERT INTO preferences (
+                user_id, nature_score, food_score,
+                history_score, nightlife_score
+            )
+            VALUES (%s, %s, %s, %s, %s)
+            ON CONFLICT (user_id)
+            DO UPDATE SET
+                nature_score = EXCLUDED.nature_score,
+                food_score = EXCLUDED.food_score,
+                history_score = EXCLUDED.history_score,
+                nightlife_score = EXCLUDED.nightlife_score,
+                updated_at = NOW()
+            RETURNING nature_score, food_score,
+                      history_score, nightlife_score, updated_at
+            """,
+            (
+                user_id,
+                data.nature_score,
+                data.food_score,
+                data.history_score,
+                data.nightlife_score
+            )
+        ).fetchone()
+
+        db.commit()
+
+    return row
+
+# 4. Hafta - Seyahate ucus secenegi kaydetme
+class FlightSave(BaseModel):
+    destination_id: int = Field(gt=0)
+    direction: Literal["outbound", "return"]
+    airline: str | None = Field(default=None, max_length=150)
+    from_airport: str | None = Field(default=None, max_length=10)
+    to_airport: str | None = Field(default=None, max_length=10)
+    departure_time: datetime | None = None
+    arrival_time: datetime | None = None
+    price_per_person: Decimal | None = Field(default=None, ge=0, max_digits=12, decimal_places=2)
+    currency: str | None = Field(default=None, min_length=3, max_length=3)
+    data_source: Literal["real", "mock"]
+
+
+@app.post("/trips/{trip_id}/flights", status_code=201)
+def save_trip_flight(
+    data: FlightSave,
+    trip_id: int = Path(gt=0),
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+    user_id = int(payload["sub"])
+
+    with conn() as db:
+        with db.transaction():
+            authorized = db.execute(
+                """
+                SELECT 1 FROM trip_members
+                WHERE trip_id = %s AND user_id = %s AND role = 'owner'
+                """,
+                (trip_id, user_id)
+            ).fetchone()
+
+            if not authorized:
+                raise HTTPException(404, "Seyahat bulunamadı veya kayıt yetkiniz yok.")
+
+            destination = db.execute(
+                "SELECT 1 FROM sehirler WHERE sehir_id = %s",
+                (data.destination_id,)
+            ).fetchone()
+            if not destination:
+                raise HTTPException(422, "Seçilen şehir bulunamadı.")
+
+            flight = db.execute(
+                """
+                INSERT INTO flights (
+                    trip_id, destination_id, direction, airline,
+                    from_airport, to_airport, departure_time, arrival_time,
+                    price_per_person, currency, data_source
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING *
+                """,
+                (
+                    trip_id, data.destination_id, data.direction,
+                    data.airline,
+                    data.from_airport.upper() if data.from_airport else None,
+                    data.to_airport.upper() if data.to_airport else None,
+                    data.departure_time, data.arrival_time,
+                    data.price_per_person,
+                    data.currency.upper() if data.currency else None,
+                    data.data_source
+                )
+            ).fetchone()
+
+    return flight
+
+
+# 4. Hafta - Seyahate otel secenegi kaydetme
+class AccommodationSave(BaseModel):
+    destination_id: int = Field(gt=0)
+    hotel_name: str = Field(min_length=1, max_length=200)
+    stars: int | None = Field(default=None, ge=0, le=5)
+    nightly_price: Decimal | None = Field(default=None, ge=0, max_digits=12, decimal_places=2)
+    currency: str | None = Field(default=None, pattern=r"^[A-Za-z]{3}$")
+    data_source: Literal["real", "mock"]
+
+
+@app.post("/trips/{trip_id}/accommodations", status_code=201)
+def save_trip_accommodation(
+    data: AccommodationSave,
+    trip_id: int = Path(gt=0),
+    voyage_session: str | None = Cookie(default=None)
+):
+    payload, _ = current_user(voyage_session)
+    user_id = int(payload["sub"])
+    hotel_name = data.hotel_name.strip()
+    if not hotel_name:
+        raise HTTPException(422, "Otel adı boş olamaz.")
+
+    with conn() as db:
+        with db.transaction():
+            authorized = db.execute(
+                """
+                SELECT 1 FROM trip_members
+                WHERE trip_id = %s AND user_id = %s AND role = 'owner'
+                """,
+                (trip_id, user_id)
+            ).fetchone()
+
+            if not authorized:
+                raise HTTPException(404, "Seyahat bulunamadı veya kayıt yetkiniz yok.")
+
+            destination = db.execute(
+                "SELECT 1 FROM sehirler WHERE sehir_id = %s",
+                (data.destination_id,)
+            ).fetchone()
+            if not destination:
+                raise HTTPException(422, "Seçilen şehir bulunamadı.")
+
+            accommodation = db.execute(
+                """
+                INSERT INTO accommodations (
+                    trip_id, destination_id, hotel_name, stars,
+                    nightly_price, currency, data_source
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING *
+                """,
+                (
+                    trip_id, data.destination_id, hotel_name, data.stars,
+                    data.nightly_price,
+                    data.currency.upper() if data.currency else None,
+                    data.data_source
+                )
+            ).fetchone()
+
+    return accommodation
+
+
+# 5. Hafta - Şehir önerileri (maliyet + puan), bkz. trip_options.py
+import trip_options  # noqa: E402
+
+trip_options.register(app, conn, current_user)
+
+# Keşfet sayfası (şehir kartları), bkz. explore_routes.py
+from explore_routes import router as explore_router  # noqa: E402
+
+app.include_router(explore_router)
+
+# 5. hafta (Kişi B): AI asistan
+from ai_routes import router as ai_router
+app.include_router(ai_router)
+
+# Havalimanı arama (kalkış şehri seçimi)
+from airport_routes import router as airport_router
+app.include_router(airport_router)

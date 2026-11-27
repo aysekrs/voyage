@@ -7,6 +7,7 @@ from oneri_motoru import oneri_hesapla
 from database import SessionLocal
 from city_models import Sehir, Yer
 from rota_servisi import router as rota_router
+from rota_kayit_servisi import router as kayit_router
 
 app = FastAPI(
     title="VoyageAI API",
@@ -14,6 +15,7 @@ app = FastAPI(
     version="1.0.0"
 )
 app.include_router(rota_router)
+app.include_router(kayit_router)
 
 # Frontend uygulamasının erişim izni
 
@@ -21,10 +23,12 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3005",
-        "http://127.0.0.1:3005"
+        "http://127.0.0.1:3005",
+        "http://localhost:3006",
+        "http://127.0.0.1:3006",
     ],
     allow_credentials=True,
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
