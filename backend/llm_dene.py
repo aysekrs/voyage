@@ -68,6 +68,7 @@ def main() -> None:
 
     bugun = date.today()
     basarili = 0
+    son_hata = ""
     for cumle in ORNEKLER:
         print("\n" + "=" * 70)
         print("Cümle:", cumle)
@@ -76,6 +77,7 @@ def main() -> None:
         sure = time.perf_counter() - bas
         if hata:
             print(f"  HATA ({sure:.1f} sn): {hata}")
+            son_hata = hata
             continue
         basarili += 1
         kural = kural_tabanli_cikar(cumle, bugun)
@@ -90,7 +92,9 @@ def main() -> None:
     elif basarili:
         print(f"KISMEN: {basarili}/{len(ORNEKLER)} cümle çalıştı. Hataları yukarıda gör.")
     else:
-        print("ÇALIŞMADI. İpuçları:")
+        # Ekranın sonunda görünsün diye hatanın kısa özeti
+        print("ÇALIŞMADI. Son hata:", " ".join(son_hata.split())[:400])
+        print("İpuçları:")
         print("  * HTTP 401/403 -> anahtar yanlış ya da kopyalarken eksik kalmış")
         print("  * HTTP 404     -> model adı yanlış:  python llm_dene.py --modeller")
         print("  * HTTP 429     -> ücretsiz kullanım sınırı doldu, biraz bekleyip tekrar dene")
