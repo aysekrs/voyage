@@ -18,6 +18,7 @@ import json
 import logging
 import os
 import re
+import time
 from datetime import date, timedelta
 
 ALANLAR = [
@@ -306,55 +307,88 @@ def llm_ayarli() -> bool:
     return bool(os.getenv("LLM_API_KEY") and os.getenv("LLM_BASE_URL") and os.getenv("LLM_MODEL"))
 
 
+GECICI_HATALAR = {429, 500, 502, 503, 504}
+
+
+def llm_modelleri() -> list[str]:
+    """LLM_MODEL virgülle ayrılmış birden çok model olabilir: ilk model yoğunsa sıradaki denenir."""
+    return [m.strip() for m in os.getenv("LLM_MODEL", "").split(",") if m.strip()]
+
+
 def llm_cagir(kullanici_mesajlari: list[str], bugun: date,
-              zaman_asimi: float = 25) -> tuple[dict | None, str | None]:
+              zaman_asimi: float = 12) -> tuple[dict | None, str | None]:
     """OpenAI uyumlu /chat/completions çağrısı. (json_sözlük, hata_mesajı) döner.
 
-    Bazı servisler response_format'ı desteklemez; 400 alınırsa onsuz bir kez daha denenir.
-    LLM_REASONING_EFFORT (örn. Gemini için "low") verilirse isteğe eklenir.
+    * Model yoğunsa (429/503 gibi geçici hata) 1 sn bekleyip bir kez daha dener,
+      yine olmazsa LLM_MODEL'deki sıradaki modele geçer.
+    * Bazı servisler response_format'ı desteklemez; 400 alınırsa onsuz tekrar denenir.
+    * LLM_REASONING_EFFORT (örn. Gemini için "low") verilirse isteğe eklenir.
     """
     if not llm_ayarli():
         return None, "LLM_API_KEY, LLM_BASE_URL ve LLM_MODEL .env'de tanımlı değil."
     import httpx
 
     url = os.getenv("LLM_BASE_URL", "").rstrip("/") + "/chat/completions"
-    govde = {
-        "model": os.getenv("LLM_MODEL"),
-        "temperature": 0,
-        "response_format": {"type": "json_object"},
-        "messages": [
-            {"role": "system", "content": SISTEM_ISTEMI.format(bugun=bugun.isoformat())},
-            {"role": "user", "content": "\n".join(f"- {m}" for m in kullanici_mesajlari)},
-        ],
-    }
-    if os.getenv("LLM_REASONING_EFFORT"):
-        govde["reasoning_effort"] = os.getenv("LLM_REASONING_EFFORT")
     basliklar = {"Authorization": f"Bearer {os.getenv('LLM_API_KEY')}"}
+    hatalar: list[str] = []
 
-    try:
-        cevap = httpx.post(url, json=govde, timeout=zaman_asimi, headers=basliklar)
-        if cevap.status_code == 400:
-            govde.pop("response_format", None)
-            cevap = httpx.post(url, json=govde, timeout=zaman_asimi, headers=basliklar)
+    for model in llm_modelleri():
+        govde = {
+            "model": model,
+            "temperature": 0,
+            "response_format": {"type": "json_object"},
+            "messages": [
+                {"role": "system", "content": SISTEM_ISTEMI.format(bugun=bugun.isoformat())},
+                {"role": "user", "content": "\n".join(f"- {m}" for m in kullanici_mesajlari)},
+            ],
+        }
+        if os.getenv("LLM_REASONING_EFFORT"):
+            govde["reasoning_effort"] = os.getenv("LLM_REASONING_EFFORT")
+
+        cevap = None
+        for deneme in range(2):  # geçici hatada aynı modelle bir kez daha
+            try:
+                cevap = httpx.post(url, json=govde, timeout=zaman_asimi, headers=basliklar)
+                if cevap.status_code == 400 and "response_format" in govde:
+                    govde.pop("response_format")
+                    cevap = httpx.post(url, json=govde, timeout=zaman_asimi, headers=basliklar)
+            except httpx.TimeoutException:
+                cevap = None
+                hatalar.append(f"{model}: {zaman_asimi:.0f} saniyede cevap vermedi")
+                break  # zaman aşımında aynı modeli bekletme, sıradakine geç
+            except Exception as hata:  # ağ hatası
+                return None, f"LLM çağrısı başarısız: {type(hata).__name__}: {hata}"
+            if cevap.status_code in GECICI_HATALAR and deneme == 0:
+                time.sleep(1)
+                continue
+            break
+
+        if cevap is None:
+            continue
+        if cevap.status_code in GECICI_HATALAR:
+            hatalar.append(f"{model}: HTTP {cevap.status_code} (yoğun/sınır)")
+            continue
         if cevap.status_code >= 400:
-            return None, f"LLM HTTP {cevap.status_code}: {cevap.text[:300]}"
-        icerik = cevap.json()["choices"][0]["message"]["content"] or ""
-    except httpx.TimeoutException:
-        return None, f"LLM {zaman_asimi:.0f} saniyede cevap vermedi."
-    except Exception as hata:  # ağ hatası, beklenmeyen cevap biçimi
-        return None, f"LLM çağrısı başarısız: {type(hata).__name__}: {hata}"
+            # Anahtar ya da model adı yanlış: diğer modeller de büyük ihtimalle aynı hatayı verir
+            return None, f"LLM HTTP {cevap.status_code} ({model}): {cevap.text[:300]}"
+        try:
+            icerik = cevap.json()["choices"][0]["message"]["content"] or ""
+        except Exception as hata:
+            return None, f"LLM beklenmeyen cevap biçimi: {type(hata).__name__}"
 
-    # ```json ... ``` ya da baştaki/sondaki açıklamayı temizle
-    eslesme = re.search(r"\{.*\}", icerik, re.S)
-    if not eslesme:
-        return None, f"LLM JSON döndürmedi: {icerik[:200]}"
-    try:
-        veri = json.loads(eslesme.group(0))
-    except json.JSONDecodeError as hata:
-        return None, f"LLM geçersiz JSON döndürdü: {hata}"
-    if not isinstance(veri, dict):
-        return None, "LLM JSON nesnesi döndürmedi."
-    return veri, None
+        # ```json ... ``` ya da baştaki/sondaki açıklamayı temizle
+        eslesme = re.search(r"\{.*\}", icerik, re.S)
+        if not eslesme:
+            return None, f"LLM JSON döndürmedi: {icerik[:200]}"
+        try:
+            veri = json.loads(eslesme.group(0))
+        except json.JSONDecodeError as hata:
+            return None, f"LLM geçersiz JSON döndürdü: {hata}"
+        if not isinstance(veri, dict):
+            return None, "LLM JSON nesnesi döndürmedi."
+        return veri, None
+
+    return None, "Hiçbir model cevap vermedi: " + "; ".join(hatalar)
 
 
 def llm_ile_cikar(kullanici_mesajlari: list[str], bugun: date) -> dict | None:

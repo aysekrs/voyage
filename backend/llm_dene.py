@@ -94,6 +94,8 @@ def main() -> None:
         print("  * HTTP 401/403 -> anahtar yanlış ya da kopyalarken eksik kalmış")
         print("  * HTTP 404     -> model adı yanlış:  python llm_dene.py --modeller")
         print("  * HTTP 429     -> ücretsiz kullanım sınırı doldu, biraz bekleyip tekrar dene")
+        print("  * HTTP 503 / cevap vermedi -> model şu an yoğun. LLM_MODEL'e virgülle yedek model ekle:")
+        print("                   LLM_MODEL=birinci-model,yedek-model   (liste: python llm_dene.py --modeller)")
         raise SystemExit(1)
 
 

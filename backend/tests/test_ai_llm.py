@@ -51,6 +51,7 @@ def sahte_httpx(monkeypatch):
     monkeypatch.setenv("LLM_BASE_URL", "https://ornek.test/v1/")
     monkeypatch.setenv("LLM_MODEL", "test-model")
     monkeypatch.delenv("LLM_REASONING_EFFORT", raising=False)
+    monkeypatch.setattr(ai_cikarim.time, "sleep", lambda _s: None)
     return modul
 
 
@@ -105,7 +106,7 @@ def test_zaman_asimi(sahte_httpx):
 
 
 def test_llm_hata_verirse_kurallarla_devam(sahte_httpx, caplog):
-    sahte_httpx.cevaplar.append(SahteCevap(429, {"error": "rate limit"}))
+    sahte_httpx.cevaplar += [SahteCevap(429, {"error": "rate limit"}), SahteCevap(429, {"error": "rate limit"})]
     bilgi, kaynak = cikar(["İzmir'den 2 kişi"], BUGUN)
     assert kaynak == "kural" and bilgi["people_count"] == 2
     assert "429" in caplog.text
@@ -130,3 +131,41 @@ def test_llmin_uydurdugu_kod_sehirden_duzeltilir():
 def test_anahtar_yoksa_llm_cagrilmaz(monkeypatch):
     monkeypatch.delenv("LLM_API_KEY", raising=False)
     assert ai_cikarim.llm_ile_cikar(["x"], BUGUN) is None
+
+
+# ---------- yoğunluk: tekrar deneme ve yedek model ----------
+
+def test_503_sonra_ayni_modelle_tekrar_dener(sahte_httpx):
+    sahte_httpx.cevaplar += [SahteCevap(503, {"error": "busy"}), SahteCevap(200, llm_cevabi('{"people_count": 2}'))]
+    veri, hata = llm_cagir(["x"], BUGUN)
+    assert veri == {"people_count": 2} and len(sahte_httpx.cagrilar) == 2
+
+
+def test_model_yogunsa_yedek_modele_gecer(sahte_httpx, monkeypatch):
+    monkeypatch.setenv("LLM_MODEL", "hizli-model, yedek-model")
+    sahte_httpx.cevaplar += [SahteCevap(503, {}), SahteCevap(503, {}),
+                             SahteCevap(200, llm_cevabi('{"people_count": 4}'))]
+    veri, hata = llm_cagir(["x"], BUGUN)
+    assert veri == {"people_count": 4}
+    assert [c["json"]["model"] for c in sahte_httpx.cagrilar] == ["hizli-model", "hizli-model", "yedek-model"]
+
+
+def test_zaman_asiminda_bekletmeden_yedege_gecer(sahte_httpx, monkeypatch):
+    monkeypatch.setenv("LLM_MODEL", "a,b")
+    sahte_httpx.cevaplar += [sahte_httpx.TimeoutException(), SahteCevap(200, llm_cevabi('{"people_count": 1}'))]
+    veri, _ = llm_cagir(["x"], BUGUN)
+    assert veri == {"people_count": 1} and len(sahte_httpx.cagrilar) == 2
+
+
+def test_hepsi_yogunsa_hepsini_soyler(sahte_httpx, monkeypatch):
+    monkeypatch.setenv("LLM_MODEL", "a,b")
+    sahte_httpx.cevaplar += [SahteCevap(503, {})] * 4
+    veri, hata = llm_cagir(["x"], BUGUN)
+    assert veri is None and "a: HTTP 503" in hata and "b: HTTP 503" in hata
+
+
+def test_anahtar_hatasinda_yedek_denenmez(sahte_httpx, monkeypatch):
+    monkeypatch.setenv("LLM_MODEL", "a,b")
+    sahte_httpx.cevaplar.append(SahteCevap(401, {"error": "bad key"}))
+    veri, hata = llm_cagir(["x"], BUGUN)
+    assert veri is None and "401" in hata and len(sahte_httpx.cagrilar) == 1

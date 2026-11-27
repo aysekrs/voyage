@@ -18,8 +18,8 @@ export async function aiProxy(event: H3Event, yol: string, method: 'GET' | 'POST
       method,
       body: method === 'POST' ? await readBody(event) : undefined,
       headers: { cookie: `voyage_session=${encodeURIComponent(token)}` },
-      // LLM cevabı birkaç saniye sürebilir
-      timeout: 30000,
+      // LLM cevabı sürebilir; yoğunlukta yedek modele geçiş dahil
+      timeout: 45000,
       retry: 0
     })
   } catch (err: any) {
