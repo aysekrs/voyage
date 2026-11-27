@@ -166,7 +166,8 @@ def get_places(
             "latitude": y.enlem,
             "longitude": y.boylam,
             "visit_duration": y.ziyaret_suresi,
-            "average_price": y.ortalama_ucret
+            "average_price": y.ortalama_ucret,
+            "price_currency": y.fiyat_para_birimi or sehir.para_birimi
         }
         if destination_id in pilot_sehirler:
             bilgi = kontrol.get(y.yer_id)

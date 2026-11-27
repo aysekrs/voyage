@@ -16,6 +16,7 @@ interface Yer {
   longitude: number | null
   visit_duration: number | null
   average_price: number | null
+  price_currency?: string | null
 }
 
 const API_URL = 'http://127.0.0.1:8000'
@@ -50,6 +51,22 @@ function sureYaz(dakika: number) {
   const kalan = dakika % 60
   if (!saat) return `${kalan} dk`
   return kalan ? `${saat} sa ${kalan} dk` : `${saat} saat`
+}
+
+// Ücret, yerin kendi para biriminde (ör. 18,5 € ya da 450 ₺)
+function ucretYaz(yer: Yer) {
+  if (yer.average_price === null || yer.average_price === undefined) return 'Ücret bilinmiyor'
+  if (Number(yer.average_price) === 0) return 'Ücretsiz'
+  try {
+    return new Intl.NumberFormat('tr-TR', {
+      style: 'currency',
+      currency: yer.price_currency || 'TRY',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    }).format(Number(yer.average_price))
+  } catch {
+    return `${yer.average_price} ${yer.price_currency ?? ''}`.trim()
+  }
 }
 
 function haritadaGoster(id: number) {
@@ -150,7 +167,7 @@ onMounted(async () => {
               <span class="yer-kategori">{{ kategoriBilgisi(yer.category)?.ad ?? 'Diğer' }}</span>
               <div class="yer-bilgi">
                 <span>⏱ {{ yer.visit_duration ? sureYaz(yer.visit_duration) : 'Süre bilinmiyor' }}</span>
-                <span>₺ {{ yer.average_price ?? 'Ücret bilinmiyor' }}</span>
+                <span>🎟 {{ ucretYaz(yer) }}</span>
               </div>
             </div>
             <button
