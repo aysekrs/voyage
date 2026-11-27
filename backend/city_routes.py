@@ -137,7 +137,12 @@ def get_places(
     # Di─şer ┼şehirlerin mevcut API ├ğ─▒kt─▒s─▒ de─şi┼şmeden kal─▒r.
     pilot_sehirler = {1, 8, 24, 39, 82}
     kontrol = {}
-    if destination_id in pilot_sehirler:
+    # hafta2_api_yerler sadece B'nin veritabanında var; başka bir
+    # veritabanında yoksa kaynak bilgisi "kaynak_bekliyor" olarak döner.
+    kontrol_tablosu_var = db.execute(
+        text("SELECT to_regclass('hafta2_api_yerler') IS NOT NULL")
+    ).scalar()
+    if destination_id in pilot_sehirler and kontrol_tablosu_var:
         satirlar = db.execute(
             text("""
                 SELECT yer_id, kaynak_durumu, kaynak_url,
@@ -250,29 +255,37 @@ def get_map_places(city_id: int):
         ).mappings().all()
 
         # Aday koordinatlar─▒ ayr─▒ getir.
-        candidates = db.execute(
-            text("""
-                SELECT
-                    y.yer_id AS id,
-                    y.ad AS name,
-                    k.enlem AS latitude,
-                    k.boylam AS longitude,
-                    'candidate' AS status
-                FROM koordinat_adaylari k
-                JOIN yerler y ON y.yer_id = k.yer_id
-                WHERE y.sehir_id = :city_id
-                  AND k.enlem IS NOT NULL
-                  AND k.boylam IS NOT NULL
-                  AND (y.enlem IS NULL OR y.boylam IS NULL)
-                  AND NOT EXISTS (
-                      SELECT 1
-                      FROM hafta2_koordinat_uyarilari u
-                      WHERE u.yer_id = y.yer_id
-                        AND u.denetim_durumu = 'SUPHELI_KOORDINAT'
-                  )
-            """),
-            {"city_id": city_id}
-        ).mappings().all()
+        # Aday koordinat tabloları sadece B'nin veritabanında var;
+        # yoksa harita sadece doğrulanmış konumları gösterir.
+        aday_tablolari_var = db.execute(text("""
+            SELECT to_regclass('koordinat_adaylari') IS NOT NULL
+               AND to_regclass('hafta2_koordinat_uyarilari') IS NOT NULL
+        """)).scalar()
+        candidates = []
+        if aday_tablolari_var:
+            candidates = db.execute(
+                text("""
+                    SELECT
+                        y.yer_id AS id,
+                        y.ad AS name,
+                        k.enlem AS latitude,
+                        k.boylam AS longitude,
+                        'candidate' AS status
+                    FROM koordinat_adaylari k
+                    JOIN yerler y ON y.yer_id = k.yer_id
+                    WHERE y.sehir_id = :city_id
+                      AND k.enlem IS NOT NULL
+                      AND k.boylam IS NOT NULL
+                      AND (y.enlem IS NULL OR y.boylam IS NULL)
+                      AND NOT EXISTS (
+                          SELECT 1
+                          FROM hafta2_koordinat_uyarilari u
+                          WHERE u.yer_id = y.yer_id
+                            AND u.denetim_durumu = 'SUPHELI_KOORDINAT'
+                      )
+                """),
+                {"city_id": city_id}
+            ).mappings().all()
 
         return {
             "verified": [dict(row) for row in verified],

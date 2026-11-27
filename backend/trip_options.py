@@ -16,6 +16,7 @@ import httpx
 from fastapi import Cookie, HTTPException, Path
 
 import cost_calculator as cc
+import fiyat_tahmini as ft
 from external_api import get_exchange_rate
 from rota_servisi import get_destination_route
 
@@ -25,11 +26,10 @@ MIN_YER_SAYISI = 1
 # Rota hesabında günde gezilen saat
 GUNLUK_GEZI_SAATI = 5
 
-# Kayıtlı uçuş/otel yoksa kullanılan sahte fiyatlar (TL, kişi başı / gecelik)
-SAHTE_FIYAT = {
-    "yurt_ici": {"ucus": 1450.0, "otel": 1750.0},
-    "yurt_disi": {"ucus": 4500.0, "otel": 3000.0},
-}
+# Kayıtlı uçuş/otel yoksa öneri hesabının kendi eklediği tahmini kayıtlar
+# bu adlarla tutulur (yeniden hesaplamada silinip güncel tahminle yazılır)
+TAHMINI_HAVAYOLU = "Örnek Havayolu"
+TAHMINI_OTEL_EKI = " Örnek Otel"
 
 # yerler.kategori değerleri -> ilgi alanları
 KATEGORI_ALAN = {
@@ -112,6 +112,8 @@ def _aday_sehirler(db, origin_airport_code: str | None):
                s.doga_puani, s.yemek_puani, s.tarih_puani, s.gece_hayati_puani,
                s.gunluk_yemek_maliyeti,
                COUNT(y.yer_id) AS yer_sayisi,
+               AVG(y.enlem) AS merkez_enlem,
+               AVG(y.boylam) AS merkez_boylam,
                COUNT(*) FILTER (WHERE y.kategori = 'doğa') AS doga_sayisi,
                COUNT(*) FILTER (WHERE y.kategori = 'yemek') AS yemek_sayisi,
                COUNT(*) FILTER (WHERE y.kategori = 'tarih') AS tarih_sayisi,
@@ -145,11 +147,45 @@ def _sehir_puanlari(sehir) -> dict:
     })
 
 
-def _bolge(sehir) -> str:
-    return "yurt_ici" if (sehir["ulke"] or "").strip() == "Türkiye" else "yurt_disi"
+def _yurt_ici(sehir) -> bool:
+    return (sehir["ulke"] or "").strip() == "Türkiye"
 
 
-def _en_ucuz_ucus(db, kur, trip, sehir, yon: str):
+def _kalkis_koordinati(db, havalimani_kodu: str | None):
+    """Kalkış havalimanının koordinatı (B'nin airports tablosundan). Yoksa None."""
+    if not havalimani_kodu:
+        return None
+    tablo_var = db.execute("SELECT to_regclass('airports') IS NOT NULL AS var").fetchone()
+    if not tablo_var or not tablo_var["var"]:
+        return None
+    satir = db.execute(
+        "SELECT lat, lon FROM airports WHERE iata = %s",
+        (havalimani_kodu.strip().upper(),),
+    ).fetchone()
+    return (satir["lat"], satir["lon"]) if satir else None
+
+
+def _ucus_mesafesi(kalkis, sehir):
+    if not kalkis or sehir["merkez_enlem"] is None or sehir["merkez_boylam"] is None:
+        return None
+    return ft.mesafe_km(kalkis[0], kalkis[1], sehir["merkez_enlem"], sehir["merkez_boylam"])
+
+
+def _eski_tahminleri_sil(db, trip_id: int):
+    db.execute(
+        "DELETE FROM flights WHERE trip_id = %s AND data_source = 'mock' AND airline = %s",
+        (trip_id, TAHMINI_HAVAYOLU),
+    )
+    db.execute(
+        """
+        DELETE FROM accommodations
+        WHERE trip_id = %s AND data_source = 'mock' AND hotel_name LIKE %s
+        """,
+        (trip_id, "%" + TAHMINI_OTEL_EKI),
+    )
+
+
+def _en_ucuz_ucus(db, kur, trip, sehir, yon: str, km):
     """Seyahat + şehir için kayıtlı en ucuz uçuş. Yoksa sahte uçuş eklenir
     (trip_options'ın bağlanacağı bir flights satırı olsun diye)."""
     ucuslar = db.execute(
@@ -164,7 +200,7 @@ def _en_ucuz_ucus(db, kur, trip, sehir, yon: str):
         en_ucuz = min(ucuslar, key=lambda u: kur.tl(u["price_per_person"], u["currency"]))
         return en_ucuz["id"], kur.tl(en_ucuz["price_per_person"], en_ucuz["currency"])
 
-    fiyat = SAHTE_FIYAT[_bolge(sehir)]["ucus"]
+    fiyat = ft.ucus_tahmini(km, _yurt_ici(sehir))
     gidis = yon == "outbound"
     tarih = trip["start_date"] if gidis else trip["end_date"]
     kalkis = datetime.combine(tarih, time(10, 0), tzinfo=timezone.utc)
@@ -173,11 +209,11 @@ def _en_ucuz_ucus(db, kur, trip, sehir, yon: str):
         INSERT INTO flights (trip_id, destination_id, direction, airline,
                              from_airport, to_airport, departure_time,
                              price_per_person, currency, data_source)
-        VALUES (%s, %s, %s, 'Örnek Havayolu', %s, %s, %s, %s, 'TRY', 'mock')
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'TRY', 'mock')
         RETURNING id
         """,
         (
-            trip["id"], sehir["sehir_id"], yon,
+            trip["id"], sehir["sehir_id"], yon, TAHMINI_HAVAYOLU,
             trip["origin_airport_code"] if gidis else sehir["havalimani_kodu"],
             sehir["havalimani_kodu"] if gidis else trip["origin_airport_code"],
             kalkis, fiyat,
@@ -198,7 +234,7 @@ def _en_ucuz_otel(db, kur, trip, sehir):
         en_ucuz = min(oteller, key=lambda o: kur.tl(o["nightly_price"], o["currency"]))
         return en_ucuz["id"], kur.tl(en_ucuz["nightly_price"], en_ucuz["currency"])
 
-    fiyat = SAHTE_FIYAT[_bolge(sehir)]["otel"]
+    fiyat = ft.otel_tahmini(sehir["ulke"])
     yeni = db.execute(
         """
         INSERT INTO accommodations (trip_id, destination_id, hotel_name, stars,
@@ -206,7 +242,7 @@ def _en_ucuz_otel(db, kur, trip, sehir):
         VALUES (%s, %s, %s, 3, %s, 'TRY', 'mock')
         RETURNING id
         """,
-        (trip["id"], sehir["sehir_id"], f"{sehir['ad']} Örnek Otel", fiyat),
+        (trip["id"], sehir["sehir_id"], f"{sehir['ad']}{TAHMINI_OTEL_EKI}", fiyat),
     ).fetchone()
     return yeni["id"], fiyat
 
@@ -296,18 +332,26 @@ def register(app, conn, current_user):
                     raise HTTPException(422, "Hesaplanacak aday şehir bulunamadı.")
 
                 db.execute("DELETE FROM trip_options WHERE trip_id = %s", (trip_id,))
+                _eski_tahminleri_sil(db, trip_id)
+                kalkis = _kalkis_koordinati(db, trip["origin_airport_code"])
 
                 for sehir in adaylar:
-                    gidis_id, gidis_tl = _en_ucuz_ucus(db, kur, trip, sehir, "outbound")
-                    donus_id, donus_tl = _en_ucuz_ucus(db, kur, trip, sehir, "return")
+                    km = _ucus_mesafesi(kalkis, sehir)
+                    gidis_id, gidis_tl = _en_ucuz_ucus(db, kur, trip, sehir, "outbound", km)
+                    donus_id, donus_tl = _en_ucuz_ucus(db, kur, trip, sehir, "return", km)
                     otel_id, gecelik_tl = _en_ucuz_otel(db, kur, trip, sehir)
 
                     maliyet = cc.maliyet_hesapla(
                         gidis_kisi_basi_tl=gidis_tl,
                         donus_kisi_basi_tl=donus_tl,
                         gecelik_fiyat_tl=gecelik_tl,
-                        gunluk_yemek_tl=_f(sehir["gunluk_yemek_maliyeti"]),
-                        gunluk_ulasim_tl=None,  # sehirler tablosunda henüz yok
+                        gunluk_yemek_tl=(
+                            _f(sehir["gunluk_yemek_maliyeti"])
+                            if sehir["gunluk_yemek_maliyeti"] is not None
+                            else ft.yemek_tahmini(sehir["ulke"])
+                        ),
+                        # sehirler tablosunda günlük ulaşım alanı yok
+                        gunluk_ulasim_tl=ft.ulasim_tahmini(sehir["ulke"]),
                         rotadaki_ucretler_tl=_rotadaki_ucretler(db, kur, sehir, gun),
                         start_date=trip["start_date"],
                         end_date=trip["end_date"],
