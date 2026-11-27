@@ -169,3 +169,12 @@ def test_anahtar_hatasinda_yedek_denenmez(sahte_httpx, monkeypatch):
     sahte_httpx.cevaplar.append(SahteCevap(401, {"error": "bad key"}))
     veri, hata = llm_cagir(["x"], BUGUN)
     assert veri is None and "401" in hata and len(sahte_httpx.cagrilar) == 1
+
+
+def test_400de_reasoning_effort_da_cikarilir(sahte_httpx, monkeypatch):
+    monkeypatch.setenv("LLM_REASONING_EFFORT", "low")
+    sahte_httpx.cevaplar += [SahteCevap(400, {"error": "unknown field reasoning_effort"}),
+                             SahteCevap(200, llm_cevabi('{"people_count": 2}'))]
+    veri, _ = llm_cagir(["x"], BUGUN)
+    assert veri == {"people_count": 2}
+    assert "reasoning_effort" not in sahte_httpx.cagrilar[1]["json"]

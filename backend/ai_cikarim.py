@@ -349,8 +349,10 @@ def llm_cagir(kullanici_mesajlari: list[str], bugun: date,
         for deneme in range(2):  # geçici hatada aynı modelle bir kez daha
             try:
                 cevap = httpx.post(url, json=govde, timeout=zaman_asimi, headers=basliklar)
-                if cevap.status_code == 400 and "response_format" in govde:
-                    govde.pop("response_format")
+                if cevap.status_code == 400 and ("response_format" in govde or "reasoning_effort" in govde):
+                    # Bu model isteğe bağlı ayarlardan birini tanımıyor: onlarsız tekrar dene
+                    govde.pop("response_format", None)
+                    govde.pop("reasoning_effort", None)
                     cevap = httpx.post(url, json=govde, timeout=zaman_asimi, headers=basliklar)
             except httpx.TimeoutException:
                 cevap = None
