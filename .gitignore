@@ -13,3 +13,6 @@ __pycache__/
 *.bak
 *_yedek*
 *.log
+
+# B'nin veritabanı dökümü (kişisel veri, repoya girmez)
+sehir_yer*.sql

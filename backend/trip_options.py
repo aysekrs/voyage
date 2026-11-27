@@ -211,11 +211,15 @@ def _en_ucuz_otel(db, kur, trip, sehir):
     return yeni["id"], fiyat
 
 
-def _rotadaki_ucretler(db, sehir_id: int, gun: int) -> list:
+def _rotadaki_ucretler(db, kur, sehir, gun: int) -> list:
     """B'nin rota servisiyle gün sayısı kadar rota çıkar, duraklardaki
-    yerlerin ortalama ücretlerini dön (ücretler TL kabul edilir)."""
+    yerlerin ortalama ücretlerini TL olarak dön.
+
+    Ücretin para birimi yerler.fiyat_para_birimi'nden okunur (EUR, TRY...);
+    boşsa şehrin para birimi kullanılır. Ücreti boş olan yer 0 sayılır.
+    """
     rota = get_destination_route(
-        destination_id=sehir_id, days=gun, hours_per_day=GUNLUK_GEZI_SAATI
+        destination_id=sehir["sehir_id"], days=gun, hours_per_day=GUNLUK_GEZI_SAATI
     )
     yer_idleri = [
         durak["place_id"]
@@ -225,10 +229,17 @@ def _rotadaki_ucretler(db, sehir_id: int, gun: int) -> list:
     if not yer_idleri:
         return []
     satirlar = db.execute(
-        "SELECT ortalama_ucret FROM yerler WHERE yer_id = ANY(%s)",
+        """
+        SELECT ortalama_ucret, fiyat_para_birimi
+        FROM yerler
+        WHERE yer_id = ANY(%s) AND ortalama_ucret IS NOT NULL
+        """,
         (yer_idleri,),
     ).fetchall()
-    return [_f(s["ortalama_ucret"]) for s in satirlar]
+    return [
+        kur.tl(s["ortalama_ucret"], s["fiyat_para_birimi"] or sehir["para_birimi"])
+        for s in satirlar
+    ]
 
 
 def _sonuclari_getir(db, trip_id: int):
@@ -297,7 +308,7 @@ def register(app, conn, current_user):
                         gecelik_fiyat_tl=gecelik_tl,
                         gunluk_yemek_tl=_f(sehir["gunluk_yemek_maliyeti"]),
                         gunluk_ulasim_tl=None,  # sehirler tablosunda henüz yok
-                        rotadaki_ucretler_tl=_rotadaki_ucretler(db, sehir["sehir_id"], gun),
+                        rotadaki_ucretler_tl=_rotadaki_ucretler(db, kur, sehir, gun),
                         start_date=trip["start_date"],
                         end_date=trip["end_date"],
                         people_count=kisi,
